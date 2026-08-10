@@ -1,10 +1,10 @@
 import { useState, useRef, useCallback } from 'react';
 import { createPortal } from 'react-dom';
-import COURSE_DATA from '../data/courseData';
+import COURSE_DATA from '../data/courseData.ts';
 import { useStorage } from '../hooks/useStorage';
-import { BookOpen, GraduationCap, Blocks } from 'lucide-react';
+import { BookOpen, Blocks, Clapperboard } from 'lucide-react';
 
-type ZoneType = 'picturebook' | 'science' | 'hands-on';
+type ZoneType = 'picturebook' | 'hands-on';
 
 interface VideoItem {
   lessonId: number;
@@ -19,7 +19,7 @@ interface VideoItem {
 function generateVideoList(): VideoItem[] {
   const videos: VideoItem[] = [];
 
-  COURSE_DATA.forEach((course: any) => {
+  COURSE_DATA.forEach((course) => {
     const numStr = String(course.id).padStart(2, '0');
     const coverImage = course.coverImage?.replace(/^\.\.\//, './assets/') || '';
 
@@ -27,23 +27,11 @@ function generateVideoList(): VideoItem[] {
     videos.push({
       lessonId: course.id,
       courseTitle: course.title || `第${course.id}课`,
-      videoUrl: `./assets/videos/videos/${numStr}/video.mp4`,
+      videoUrl: course.picturebookVideos?.[0]?.startsWith('.') ? course.picturebookVideos[0] : `./${course.picturebookVideos?.[0] || `assets/videos/videos/${numStr}/video.mp4`}`,
       title: `${course.title || '绘本动画'} - 第${course.id}课`,
       coverImage,
       zone: 'picturebook',
     });
-
-    // 科普视频 - 使用Bilibili占位链接（实际链接需要从课程数据获取）
-    if (course.id <= 8) {
-      videos.push({
-        lessonId: course.id,
-        courseTitle: course.title || `第${course.id}课`,
-        videoUrl: 'bilibili-placeholder',
-        title: `科普知识 - 第${course.id}课`,
-        coverImage,
-        zone: 'science',
-      });
-    }
 
     // 动手教学视频 - 每4课有一个
     if (course.id % 4 === 0) {
@@ -71,18 +59,12 @@ export default function CinemaPage() {
 
   const zones = [
     { key: 'picturebook' as ZoneType, label: '绘本动画区', Icon: BookOpen, color: 'var(--kid-purple-400)' },
-    { key: 'science' as ZoneType, label: '科普知识区', Icon: GraduationCap, color: 'var(--kid-blue-500)' },
     { key: 'hands-on' as ZoneType, label: '动手教学区', Icon: Blocks, color: 'var(--kid-orange-400)' },
   ];
 
   const filteredVideos = allVideos.filter(v => v.zone === activeZone);
 
   const handleVideoClick = (video: VideoItem) => {
-    // 跳过占位的Bilibili链接
-    if (video.videoUrl === 'bilibili-placeholder') {
-      alert('科普视频功能正在开发中，敬请期待！');
-      return;
-    }
     setPlayingVideo(video);
   };
 
@@ -108,11 +90,11 @@ export default function CinemaPage() {
   const getZoneVideos = (zone: ZoneType) => allVideos.filter(v => v.zone === zone);
 
   return (
-    <div className="kid-float-in" style={{ width: 1920, minHeight: 1000, padding: '40px 48px', boxSizing: 'border-box' }}>
+    <div className="kid-float-in responsive-page section-page cinema-page" style={{ width: 1920, minHeight: 1000, padding: '40px 48px', boxSizing: 'border-box' }}>
       {/* 顶部标题区 */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 32 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 20 }}>
-          <div style={{ fontSize: 48 }}>🎬</div>
+          <Clapperboard size={48} strokeWidth={1.7} />
           <div>
             <h1 style={{ fontSize: 36, fontWeight: 900, color: 'var(--kid-gray-800)', margin: 0 }}>精彩影院</h1>
             <p style={{ fontSize: 16, color: 'var(--kid-gray-400)', margin: '4px 0 0 0' }}>精选32节课程视频，随时观看学习</p>
@@ -163,7 +145,7 @@ export default function CinemaPage() {
       </div>
 
       {/* 视频网格 */}
-      <div style={{
+      <div className="media-card-grid" style={{
         display: 'grid',
         gridTemplateColumns: 'repeat(4, 1fr)',
         gap: 24,
@@ -332,7 +314,7 @@ export default function CinemaPage() {
           }}
           onClick={handleCloseVideo}
         >
-          <div
+          <div className="cinema-modal-content"
             style={{
               width: '90%',
               maxWidth: 1200,
@@ -408,7 +390,7 @@ export default function CinemaPage() {
                 <img src="./assets/characters/characters/diandian.png" alt="点点" style={{ width: 36, height: 44 }} />
               </div>
               <p style={{ color: 'var(--kid-gray-500)', fontSize: 14, margin: 0 }}>
-                团团和点点陪你一起看电影学知识 🎬
+                团团和点点陪你一起看电影学知识
               </p>
             </div>
           </div>

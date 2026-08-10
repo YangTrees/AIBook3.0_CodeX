@@ -1,22 +1,14 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { createPortal } from 'react-dom';
-import COURSE_DATA from '../data/courseData';
+import COURSE_DATA from '../data/courseData.ts';
 import { useStorage } from '../hooks/useStorage';
+import { Gamepad2, RotateCcw, CircleCheck, Rocket } from 'lucide-react';
 
 export default function GamePage() {
   const [playingGame, setPlayingGame] = useState<{ lessonId: number; title: string } | null>(null);
   const [showConfetti, setShowConfetti] = useState(false);
-  const [modalVisible, setModalVisible] = useState(false);
+  const [gameFrameKey, setGameFrameKey] = useState(0);
   const { storage, markGameCompleted } = useStorage();
-
-  // Handle modal animation state
-  useEffect(() => {
-    if (playingGame) {
-      setModalVisible(true);
-    } else {
-      setModalVisible(false);
-    }
-  }, [playingGame]);
 
   const gameList = COURSE_DATA.map(course => ({
     lessonId: course.id,
@@ -50,11 +42,11 @@ export default function GamePage() {
   };
 
   return (
-    <div className="kid-float-in" style={{ width: 1920, minHeight: 1000, padding: '40px 48px', boxSizing: 'border-box' }}>
+    <div className="kid-float-in responsive-page section-page game-page" style={{ width: 1920, minHeight: 1000, padding: '40px 48px', boxSizing: 'border-box' }}>
       {/* 顶部标题区 */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 32 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 20 }}>
-          <div style={{ fontSize: 48 }}>🎮</div>
+          <Gamepad2 size={48} strokeWidth={1.7} />
           <div>
             <h1 style={{ fontSize: 36, fontWeight: 900, color: 'var(--kid-gray-800)', margin: 0 }}>趣味游戏</h1>
             <p style={{ fontSize: 16, color: 'var(--kid-gray-400)', margin: '4px 0 0 0' }}>32个互动游戏，自由练习巩固知识点</p>
@@ -67,7 +59,7 @@ export default function GamePage() {
       </div>
 
       {/* 游戏网格 */}
-      <div style={{
+      <div className="media-card-grid" style={{
         display: 'grid',
         gridTemplateColumns: 'repeat(4, 1fr)',
         gap: 24,
@@ -204,7 +196,7 @@ export default function GamePage() {
                     textAlign: 'center',
                     fontWeight: progress === 100 ? 700 : 400,
                   }}>
-                    {progress === 100 ? '已通关 ✨' : '点击开始游戏'}
+                    {progress === 100 ? '已通关' : '点击开始游戏'}
                   </p>
                 </div>
               </div>
@@ -220,8 +212,8 @@ export default function GamePage() {
           style={{
             position: 'fixed',
             inset: 0,
-            background: modalVisible ? 'rgba(0,0,0,0.85)' : 'rgba(0,0,0,0)',
-            backdropFilter: modalVisible ? 'blur(8px)' : 'blur(0px)',
+            background: 'rgba(0,0,0,0.85)',
+            backdropFilter: 'blur(8px)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -276,8 +268,7 @@ export default function GamePage() {
               <div style={{ display: 'flex', gap: 12 }}>
                 <button
                   onClick={() => {
-                    const iframe = document.querySelector('iframe');
-                    if (iframe) iframe.src = iframe.src;
+                    setGameFrameKey(value => value + 1);
                   }}
                   className="kid-btn game-control-btn"
                   style={{
@@ -291,7 +282,7 @@ export default function GamePage() {
                     cursor: 'pointer',
                   }}
                 >
-                  🔄 重新开始
+                  <RotateCcw size={18} /> 重新开始
                 </button>
                 <button
                   onClick={handleGameComplete}
@@ -308,7 +299,7 @@ export default function GamePage() {
                     boxShadow: '0 4px 14px rgba(240, 138, 36, 0.35)',
                   }}
                 >
-                  ✅ 我完成了
+                  <CircleCheck size={18} /> 我完成了
                 </button>
               </div>
             </div>
@@ -316,6 +307,7 @@ export default function GamePage() {
             {/* 游戏iframe */}
             <div style={{ flex: 1, background: 'var(--kid-gray-100)', position: 'relative' }}>
               <iframe
+                key={gameFrameKey}
                 src={`./assets/games/games/index${String(playingGame.lessonId).padStart(2, '0')}.html`}
                 style={{
                   width: '100%',
@@ -344,7 +336,7 @@ export default function GamePage() {
                   color: 'var(--kid-green-600)',
                   margin: 0,
                 }}>
-                  团团和点点的加油声 🚀
+                  团团和点点的加油声 <Rocket size={18} />
                 </p>
                 <p style={{
                   fontSize: 12,
@@ -366,10 +358,10 @@ export default function GamePage() {
                   key={i}
                   className="confetti-piece"
                   style={{
-                    left: `${Math.random() * 100}%`,
-                    background: ['#feca57', '#ff6b6b', '#48dbfb', '#1a8c5c', '#a55eea', '#f08a24'][Math.floor(Math.random() * 6)],
-                    animationDelay: `${Math.random() * 0.5}s`,
-                    animationDuration: `${1.5 + Math.random() * 1}s`,
+                    left: `${(i * 37) % 100}%`,
+                    background: ['#feca57', '#ff6b6b', '#48dbfb', '#1a8c5c', '#a55eea', '#f08a24'][i % 6],
+                    animationDelay: `${(i % 10) * 0.05}s`,
+                    animationDuration: `${1.5 + (i % 7) * 0.12}s`,
                   }}
                 />
               ))}

@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
-import type { QuizItem } from '../../data/courseData';
+import type { QuizItem } from '../../data/courseData.ts';
+import { Medal, TriangleAlert, CircleCheck } from 'lucide-react';
 
 interface QuizRecord {
   total: number;
@@ -83,7 +84,7 @@ export default function QuizModule({ quiz, courseTitle, onComplete }: QuizModule
       if (timerRef.current) clearInterval(timerRef.current);
       const record: QuizRecord = {
         total: quiz.length,
-        correct: correctCount + 1,
+        correct: correctCount,
         errors: totalErrors,
         timeSeconds,
         completed: true,
@@ -103,10 +104,9 @@ export default function QuizModule({ quiz, courseTitle, onComplete }: QuizModule
 
   /* ===== 完成页 ===== */
   if (completed) {
-    const accuracy = Math.round(((correctCount + 1) / quiz.length) * 100);
+    const accuracy = quiz.length > 0 ? Math.min(100, Math.round((Math.min(correctCount, quiz.length) / quiz.length) * 100)) : 0;
     const mins = Math.floor(timeSeconds / 60);
     const secs = timeSeconds % 60;
-    const medalEmoji = accuracy >= 90 ? '🥇' : accuracy >= 70 ? '🥈' : '🥉';
     const medalText = accuracy >= 90 ? '太棒了！获得金星勋章！' : accuracy >= 70 ? '不错！获得银星勋章！' : '继续加油！获得铜星勋章！';
     const gradientColor = accuracy >= 90
       ? 'linear-gradient(135deg, #f5c842, #e8a810)'
@@ -125,7 +125,7 @@ export default function QuizModule({ quiz, courseTitle, onComplete }: QuizModule
           color: '#fff',
           boxShadow: '0 8px 28px rgba(0,0,0,0.12)',
         }}>
-          <div style={{ fontSize: 60, marginBottom: 12 }}>{medalEmoji}</div>
+          <Medal size={60} strokeWidth={1.5} style={{ marginBottom: 12 }} />
           <h3 style={{ fontSize: 28, fontWeight: 900, marginBottom: 6 }}>答题完成！</h3>
           <p style={{ fontSize: 16, opacity: 0.88 }}>《{courseTitle}》知识问答</p>
         </div>
@@ -158,7 +158,7 @@ export default function QuizModule({ quiz, courseTitle, onComplete }: QuizModule
           padding: '18px 24px',
           textAlign: 'center',
         }}>
-          <div style={{ fontSize: 28, marginBottom: 6 }}>{medalEmoji}</div>
+          <Medal size={28} strokeWidth={1.7} style={{ marginBottom: 6 }} />
           <p style={{ fontWeight: 800, fontSize: 18, color: 'var(--kid-gray-700)', marginBottom: 4 }}>{medalText}</p>
           <p style={{ fontSize: 14, color: 'var(--kid-gray-400)' }}>前往课程总结查看完整成绩 →</p>
         </div>
@@ -295,7 +295,7 @@ export default function QuizModule({ quiz, courseTitle, onComplete }: QuizModule
           padding: '14px 18px',
           display: 'flex', alignItems: 'flex-start', gap: 12,
         }}>
-          <span style={{ fontSize: 22 }}>⚠️</span>
+          <TriangleAlert size={22} />
           <div>
             <p style={{ fontWeight: 800, fontSize: 16, color: 'var(--kid-red-500)', marginBottom: 3 }}>
               回答错误！请重新选择正确答案。
@@ -316,7 +316,7 @@ export default function QuizModule({ quiz, courseTitle, onComplete }: QuizModule
           padding: '14px 18px',
           display: 'flex', alignItems: 'flex-start', gap: 12,
         }}>
-          <span style={{ fontSize: 22 }}>✅</span>
+          <CircleCheck size={22} />
           <div>
             <p style={{ fontWeight: 800, fontSize: 16, color: 'var(--kid-green-500)', marginBottom: 4 }}>
               回答正确！
@@ -361,7 +361,7 @@ export default function QuizModule({ quiz, courseTitle, onComplete }: QuizModule
             className="kid-btn kid-btn-green"
             style={{ width: '100%' }}
           >
-            {currentQ < quiz.length - 1 ? '下一题 →' : '完成答题 🎉'}
+            {currentQ < quiz.length - 1 ? '下一题 →' : '完成答题'}
           </button>
         )}
       </div>

@@ -1,11 +1,12 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import type { ReactNode } from 'react';
 import COURSE_DATA from '../data/courseData.ts';
 import KnowledgeViewer from './modules/KnowledgeViewer';
 import QuizModule from './modules/QuizModule';
 import GameModule from './modules/GameModule';
 import SummaryModule from './modules/SummaryModule';
 import { useStorage } from '../hooks/useStorage';
-import { Video, BookOpen, BookImage, Brain, Gamepad2, Wrench, Trophy } from 'lucide-react';
+import { BookOpen, BookImage, Brain, Gamepad2, Wrench, Trophy } from 'lucide-react';
 
 interface CoursePageProps {
   courseId: number;
@@ -21,7 +22,6 @@ interface QuizRecord {
 }
 
 const MODULES = [
-  { id: 1, title: '科普视频', Icon: Video, subtitle: '课程导入', color: '#2185d0', bg: '#eef7ff' },
   { id: 2, title: '核心知识', Icon: BookOpen, subtitle: '知识讲解', color: '#6244c8', bg: '#f5f0ff' },
   { id: 3, title: '绘本视频', Icon: BookImage, subtitle: '绘本动画', color: '#c244a0', bg: '#fdf0fb' },
   { id: 4, title: '知识问答', Icon: Brain, subtitle: '随堂检测', color: '#d05c10', bg: '#fff6ed' },
@@ -37,23 +37,63 @@ const CONTENT_STYLE: React.CSSProperties = {
   margin: '0 auto',
 };
 
+function getPicturebookStoryDescription(title: string, keyPoints: string[]) {
+  const [mainIdea, storyClue, learningGoal] = keyPoints;
+  if (!mainIdea || !storyClue) {
+    return `在『${title}』中，团团和点点会通过一场小冒险，发现本课AI知识在生活里的用处。`;
+  }
+
+  return `在『${title}』中，团团和点点先遇到一个和“${mainIdea}”有关的小难题，再顺着“${storyClue}”这条线索一起寻找办法，最后理解${learningGoal || mainIdea}在生活中的作用。`;
+}
+
 export default function CoursePage({ courseId, onBack }: CoursePageProps) {
   const course = COURSE_DATA.find((c) => c.id === courseId);
-  const [activeModule, setActiveModule] = useState(1);
-  const [completedModules, setCompletedModules] = useState<Set<number>>(new Set());
+  const { storage, saveQuizResult, markGameCompleted, markLessonCompleted, setCurrentPosition, markModuleCompleted, updateVideoProgress, addStudyTime } = useStorage();
+  const savedRecord = storage.lessons[courseId];
+  const [activeModule, setActiveModule] = useState(() => Math.max(2, savedRecord?.currentModule || 2));
+  const [completedModules, setCompletedModules] = useState<Set<number>>(() => new Set((savedRecord?.completedModules || []).filter(id => id >= 2 && id <= 7)));
   const [videoError, setVideoError] = useState(false);
   const [quizRecord, setQuizRecord] = useState<QuizRecord>({
     total: 10, correct: 0, errors: 0, timeSeconds: 0, completed: false,
   });
-  const { saveQuizResult, markGameCompleted, markLessonCompleted } = useStorage();
+  const lastSavedVideoSecond = useRef(0);
+  const videoCompletionSaved = useRef(false);
+
+  useEffect(() => {
+    if (!MODULES.some(module => module.id === activeModule)) {
+      setActiveModule(2);
+    }
+  }, [activeModule]);
 
   useEffect(() => {
     window.scrollTo({ top: 0 });
-    // 标记当前模块为已完成
-    setCompletedModules((prev) => { const next = new Set(prev); next.add(activeModule); return next; });
-    // 切换模块时重置视频错误状态
+    if (MODULES.some(module => module.id === activeModule)) {
+      setCurrentPosition(courseId, activeModule);
+    }
+  }, [activeModule, courseId, setCurrentPosition]);
+
+  useEffect(() => {
+    const timer = window.setInterval(() => addStudyTime(courseId, 30), 30000);
+    return () => window.clearInterval(timer);
+  }, [addStudyTime, courseId]);
+
+  const completeModule = (moduleId: number) => {
+    setCompletedModules(prev => new Set([...prev, moduleId]));
+    markModuleCompleted(courseId, moduleId);
+  };
+
+  const goToModule = (moduleId: number) => {
     setVideoError(false);
-  }, [activeModule]);
+    setActiveModule(moduleId);
+  };
+
+  const completeAndContinue = () => {
+    completeModule(activeModule);
+    if (activeModule < 7) {
+      setVideoError(false);
+      setActiveModule(activeModule + 1);
+    }
+  };
 
   if (!course) {
     return (
@@ -64,12 +104,13 @@ export default function CoursePage({ courseId, onBack }: CoursePageProps) {
   }
 
   const numStr = String(course.lessonNum).padStart(2, '0');
-  const activeMod = MODULES[activeModule - 1];
+  const activeMod = MODULES.find(module => module.id === activeModule) || MODULES[0];
+  const activeModulePosition = MODULES.findIndex(module => module.id === activeModule) + 1;
 
   /* 视频占位卡 */
   const VideoPlaceholder = ({
     icon, title, desc, accentColor, accentBg,
-  }: { icon: string; title: string; desc: string; accentColor: string; accentBg: string }) => (
+  }: { icon: ReactNode; title: string; desc: string; accentColor: string; accentBg: string }) => (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
       <div style={{
         background: accentBg,
@@ -78,7 +119,7 @@ export default function CoursePage({ courseId, onBack }: CoursePageProps) {
         padding: '20px 24px',
         textAlign: 'center',
       }}>
-        <div style={{ fontSize: 44, marginBottom: 8 }}>{icon}</div>
+        <div style={{ display: 'flex', justifyContent: 'center', color: accentColor, marginBottom: 8 }}>{icon}</div>
         <h3 style={{ fontWeight: 800, fontSize: 20, color: 'var(--kid-gray-700)', marginBottom: 4 }}>{title}</h3>
         <p style={{ fontSize: 15, color: 'var(--kid-gray-400)' }}>{desc}</p>
       </div>
@@ -100,7 +141,7 @@ export default function CoursePage({ courseId, onBack }: CoursePageProps) {
           background: `${accentColor}20`,
           display: 'flex', alignItems: 'center', justifyContent: 'center',
         }}>
-          <span style={{ fontSize: 40 }}>{icon}</span>
+          <span style={{ display: 'flex', color: accentColor }}>{icon}</span>
         </div>
         <p style={{ color: accentColor, fontSize: 17, fontWeight: 700 }}>即将上线</p>
         <p style={{ color: 'var(--kid-gray-400)', fontSize: 14, maxWidth: 320, textAlign: 'center' }}>
@@ -112,101 +153,29 @@ export default function CoursePage({ courseId, onBack }: CoursePageProps) {
 
   const renderModule = () => {
     switch (activeModule) {
-      case 1: {
-        const scienceVids = course.scienceVideos || [];
-        if (scienceVids.length === 0) {
-          return <VideoPlaceholder icon="🎥" title="科普视频" desc="本节AI科普导入视频即将上线" accentColor="#2185d0" accentBg="#eef7ff" />;
-        }
-        return (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
-            {scienceVids.slice(0, 1).map((vid, idx) => (
-              <div key={idx}>
-                {/* 视频标题 */}
-                <div style={{
-                  display: 'flex', alignItems: 'center', gap: 10,
-                  marginBottom: 10, padding: '0 4px',
-                }}>
-                  <span style={{
-                    background: '#2185d0', color: '#fff',
-                    borderRadius: 8, width: 28, height: 28,
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    fontSize: 14, fontWeight: 800, flexShrink: 0,
-                  }}>{idx + 1}</span>
-                  <span style={{ fontWeight: 700, fontSize: 16, color: 'var(--kid-gray-700)' }}>
-                    {vid.title}
-                  </span>
-                </div>
-                {/* Bilibili 嵌入播放器 */}
-                <div style={{
-                  borderRadius: 20,
-                  overflow: 'hidden',
-                  border: '1.5px solid var(--kid-blue-200)',
-                  boxShadow: '0 4px 20px rgba(33,133,208,0.10)',
-                  background: '#000',
-                }}>
-                  <iframe
-                    src={vid.url}
-                    style={{
-                      width: '100%',
-                      height: 540,
-                      border: 'none',
-                      display: 'block',
-                    }}
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                    title={vid.title}
-                    />
-                </div>
-              </div>
-            ))}
-            {/* 视频简介 */}
-            <div style={{
-              background: '#eef7ff',
-              borderRadius: 18,
-              padding: '16px 22px',
-              border: '1.5px solid #2185d015',
-            }}>
-              <h4 style={{ fontWeight: 800, fontSize: 17, color: '#2185d0', marginBottom: 6 }}>
-                📺 科普导入
-              </h4>
-              <p style={{ fontSize: 15, color: 'var(--kid-gray-500)', lineHeight: 1.75 }}>
-                以上视频来自 Bilibili 科普频道，围绕「{course.title}」的核心概念，帮助小朋友在生动有趣的动画中建立对AI的初步认识。
-              </p>
-            </div>
-          </div>
-        );
-      }
-
       case 2:
         return (
           <KnowledgeViewer
             images={course.knowledgeImages}
             knowledgePoints={course.keyPoints}
             courseId={courseId}
+            onComplete={() => completeModule(2)}
           />
         );
 
       case 3: {
-        const videoPath = `./assets/videos/videos/${numStr}/video.mp4`;
+        const rawVideoPath = `assets/videos/videos/${numStr}/story.mp4`;
+        const videoPath = rawVideoPath.startsWith('.') ? rawVideoPath : `./${rawVideoPath}`;
+        const storyDescription = getPicturebookStoryDescription(course.title, course.keyPoints);
         return (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
-            <div style={{
-              background: '#fdf0fb',
-              border: '1.5px solid #c244a022',
-              borderRadius: 20,
-              padding: '20px 24px',
-              textAlign: 'center',
-            }}>
-              <div style={{ fontSize: 44, marginBottom: 8 }}>🎞️</div>
-              <h3 style={{ fontWeight: 800, fontSize: 20, color: 'var(--kid-gray-700)', marginBottom: 4 }}>绘本动画</h3>
-              <p style={{ fontSize: 15, color: 'var(--kid-gray-400)' }}>第{courseId}课专属绘本动画</p>
-            </div>
             <div style={{
               background: '#fff',
               borderRadius: 20,
               overflow: 'hidden',
               border: '1.5px solid var(--kid-gray-200)',
               boxShadow: '0 4px 20px rgba(0,0,0,0.06)',
+              position: 'relative',
             }}>
               {videoError ? (
                 <div style={{
@@ -218,20 +187,52 @@ export default function CoursePage({ courseId, onBack }: CoursePageProps) {
                   justifyContent: 'center',
                   gap: 10,
                 }}>
-                  <div style={{ fontSize: 48, opacity: 0.6 }}>🎞️</div>
+                  <BookImage size={48} strokeWidth={1.5} style={{ opacity: 0.6 }} />
                   <p style={{ color: '#c244a0', fontSize: 16, fontWeight: 700 }}>绘本视频暂未就绪</p>
                   <p style={{ color: '#999', fontSize: 13 }}>{videoPath}</p>
                 </div>
               ) : (
+                <>
                 <video
                   key={courseId}
                   controls
+                  controlsList="nodownload noplaybackrate noremoteplayback"
+                  disablePictureInPicture
+                  disableRemotePlayback
+                  playsInline
                   style={{ width: '100%', aspectRatio: '16/9', background: '#000', display: 'block' }}
                   preload="metadata"
+                  onContextMenu={(event) => event.preventDefault()}
+                  onDragStart={(event) => event.preventDefault()}
+                  onKeyDown={(event) => {
+                    if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 's') {
+                      event.preventDefault();
+                    }
+                  }}
                   onError={() => setVideoError(true)}
+                  onLoadedMetadata={(event) => {
+                    const savedSeconds = savedRecord?.videoProgress[videoPath] || 0;
+                    if (savedSeconds > 0 && savedSeconds < event.currentTarget.duration - 2) {
+                      event.currentTarget.currentTime = savedSeconds;
+                      lastSavedVideoSecond.current = savedSeconds;
+                    }
+                  }}
+                  onTimeUpdate={(event) => {
+                    const video = event.currentTarget;
+                    const seconds = Math.floor(video.currentTime);
+                    if (seconds - lastSavedVideoSecond.current >= 5) {
+                      lastSavedVideoSecond.current = seconds;
+                      updateVideoProgress(courseId, videoPath, seconds);
+                    }
+                    if (!videoCompletionSaved.current && video.duration > 0 && video.currentTime / video.duration >= 0.8) {
+                      videoCompletionSaved.current = true;
+                      completeModule(3);
+                    }
+                  }}
                 >
                   <source src={videoPath} type="video/mp4" />
                 </video>
+                </>
               )}
             </div>
             <div style={{
@@ -240,9 +241,9 @@ export default function CoursePage({ courseId, onBack }: CoursePageProps) {
               padding: '16px 20px',
               border: '1.5px solid #c244a015',
             }}>
-              <h4 style={{ fontWeight: 800, fontSize: 17, color: '#c244a0', marginBottom: 6 }}>📖 绘本故事</h4>
+              <h4 style={{ fontWeight: 800, fontSize: 17, color: '#c244a0', marginBottom: 6 }}>绘本故事</h4>
               <p style={{ fontSize: 15, color: 'var(--kid-gray-500)', lineHeight: 1.75 }}>
-                观看团团和点点在『{course.title}』中的精彩冒险故事，通过生动有趣的绘本动画，深入理解本节课的AI核心概念。
+                {storyDescription}
               </p>
             </div>
           </div>
@@ -266,26 +267,26 @@ export default function CoursePage({ courseId, onBack }: CoursePageProps) {
               );
               // 如果答题完成，标记课程为已完成
               if (record.completed) {
-                markLessonCompleted(courseId);
+                completeModule(4);
               }
             }}
           />
         );
 
       case 5:
-        return <GameModule courseId={courseId} numStr={numStr} onComplete={() => markGameCompleted(courseId)} />;
+        return <GameModule courseId={courseId} numStr={numStr} onComplete={() => { markGameCompleted(courseId); completeModule(5); }} />;
 
       case 6:
         return (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
-            <VideoPlaceholder icon="🧱" title="动手时间" desc="乐高拼插实操指导视频，上传后自动加载" accentColor="#d07010" accentBg="#fffbeb" />
+            <VideoPlaceholder icon={<Wrench size={44} strokeWidth={1.6} />} title="动手时间" desc="乐高拼插实操指导视频，上传后自动加载" accentColor="#d07010" accentBg="#fffbeb" />
             <div style={{
               background: '#fffbeb',
               borderRadius: 18,
               padding: '18px 22px',
               border: '1.5px solid #f5c84215',
             }}>
-              <h4 style={{ fontWeight: 800, fontSize: 17, color: '#b07800', marginBottom: 10 }}>🛠️ 动手实践</h4>
+              <h4 style={{ fontWeight: 800, fontSize: 17, color: '#b07800', marginBottom: 10 }}>动手实践</h4>
               <p style={{ fontSize: 15, color: 'var(--kid-gray-500)', lineHeight: 1.75, marginBottom: 12 }}>
                 跟着视频指引，用乐高积木动手拼出本节课的知识模型，在实操中加深理解！
               </p>
@@ -315,10 +316,10 @@ export default function CoursePage({ courseId, onBack }: CoursePageProps) {
   };
 
   return (
-    <div style={{ width: 1920, minHeight: 1000 }}>
+    <div className="responsive-page course-page" style={{ width: 1920, minHeight: 1000 }}>
 
       {/* ===== 顶部导航栏 ===== */}
-      <div style={{
+      <div className="course-topbar" style={{
         position: 'sticky', top: 0, zIndex: 40,
         background: 'rgba(255,255,255,0.95)',
         borderBottom: '1.5px solid var(--kid-blue-100)',
@@ -326,7 +327,7 @@ export default function CoursePage({ courseId, onBack }: CoursePageProps) {
         backdropFilter: 'blur(12px)',
       }}>
         {/* Header 行 */}
-        <div style={{
+        <div className="course-title-row" style={{
           display: 'flex', alignItems: 'center', gap: 16,
           padding: '14px 40px 10px',
         }}>
@@ -370,7 +371,7 @@ export default function CoursePage({ courseId, onBack }: CoursePageProps) {
         </div>
 
         {/* 模块标签行 */}
-        <div style={{
+        <div className="course-module-tabs" style={{
           display: 'flex',
           overflowX: 'auto',
           gap: 10,
@@ -383,7 +384,7 @@ export default function CoursePage({ courseId, onBack }: CoursePageProps) {
             return (
               <button
                 key={mod.id}
-                onClick={() => setActiveModule(mod.id)}
+                onClick={() => goToModule(mod.id)}
                 className={`kid-module-tab ${isActive ? 'active' : 'inactive'} ${isCompleted ? 'completed' : ''}`}
                 style={isActive ? {
                   background: `linear-gradient(135deg, ${mod.color}dd, ${mod.color})`,
@@ -404,10 +405,10 @@ export default function CoursePage({ courseId, onBack }: CoursePageProps) {
       </div>
 
       {/* ===== 内容区 ===== */}
-      <div style={CONTENT_STYLE}>
+      <div className="course-content" style={CONTENT_STYLE}>
 
         {/* 模块标题栏 */}
-        <div className="kid-float-in" style={{
+        <div className="kid-float-in course-section-heading" style={{
           display: 'flex', alignItems: 'center', gap: 20,
           marginBottom: 28,
           background: activeMod.bg,
@@ -418,9 +419,15 @@ export default function CoursePage({ courseId, onBack }: CoursePageProps) {
           <activeMod.Icon size={40} strokeWidth={1.5} style={{ color: activeMod.color }} />
           <div style={{ flex: 1 }}>
             <h2 style={{ fontWeight: 900, fontSize: 26, color: activeMod.color, marginBottom: 2 }}>
-              {activeMod.title}
+              {activeModule === 3 ? `绘本视频 · ${course.title}` : activeMod.title}
             </h2>
-            <p style={{ fontSize: 15, color: 'var(--kid-gray-400)' }}>{activeMod.subtitle}</p>
+            <p style={{ fontSize: 15, color: 'var(--kid-gray-400)' }}>
+              {activeModule === 2
+                ? `本节课我们将要学习：${course.keyPoints[0] || '本课的AI核心知识'}`
+                : activeModule === 3
+                  ? '本课绘本动画'
+                  : activeMod.subtitle}
+            </p>
           </div>
           <div style={{
             background: `${activeMod.color}18`,
@@ -428,22 +435,22 @@ export default function CoursePage({ courseId, onBack }: CoursePageProps) {
             fontSize: 14, fontWeight: 700,
             padding: '6px 16px', borderRadius: 12,
           }}>
-            {activeModule} / 7
+            {activeModulePosition} / {MODULES.length}
           </div>
         </div>
 
         {/* 模块内容 */}
-        <div className="kid-float-in">
+        <div className="kid-float-in course-module-content">
           {renderModule()}
         </div>
 
         {/* 导航按钮 */}
-        <div style={{
+        <div className="course-actions" style={{
           display: 'flex', gap: 16, marginTop: 40,
         }}>
-          {activeModule > 1 && (
+          {activeModule > 2 && (
             <button
-              onClick={() => setActiveModule(activeModule - 1)}
+              onClick={() => { setVideoError(false); setActiveModule(activeModule - 1); }}
               className="kid-btn kid-btn-secondary"
               style={{ flex: 1, gap: 8 }}
             >
@@ -452,20 +459,21 @@ export default function CoursePage({ courseId, onBack }: CoursePageProps) {
           )}
           {activeModule < 7 && (
             <button
-              onClick={() => setActiveModule(activeModule + 1)}
+              onClick={completeAndContinue}
+              disabled={(activeModule === 4 || activeModule === 5) && !completedModules.has(activeModule)}
               className="kid-btn kid-btn-primary"
-              style={{ flex: 1, gap: 8 }}
+              style={{ flex: 1, gap: 8, opacity: ((activeModule === 4 || activeModule === 5) && !completedModules.has(activeModule)) ? 0.5 : 1 }}
             >
-              下一模块 →
+              {(activeModule === 4 || activeModule === 5) && !completedModules.has(activeModule) ? '请先完成本环节' : completedModules.has(activeModule) ? '下一模块 →' : '完成本环节，继续 →'}
             </button>
           )}
           {activeModule === 7 && (
             <button
-              onClick={onBack}
+              onClick={() => { completeModule(7); markLessonCompleted(courseId); onBack(); }}
               className="kid-btn kid-btn-green"
               style={{ flex: 1, gap: 8 }}
             >
-              🎉 完成学习，返回首页
+              完成学习，返回首页
             </button>
           )}
         </div>

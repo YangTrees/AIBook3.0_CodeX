@@ -1,5 +1,7 @@
 ﻿// AUTO-GENERATED — Do not edit manually
 
+import lessonQuizzes from './lessonQuizzes.json';
+
 export interface QuizOption {
   key: string;
   text: string;
@@ -32,7 +34,7 @@ export interface Course {
   quiz: QuizItem[];
 }
 
-export const courses: Course[] = [
+const courseCatalog: Course[] = [
   {
     "id": 1,
     "title": "小侦探找线索",
@@ -8125,4 +8127,137 @@ export const courses: Course[] = [
   }
 ]
   }
-];export default courses;
+];
+
+const option = (key: string, text: string): QuizOption => ({ key, text });
+
+/**
+ * 根据每课自己的知识点生成专属复习题，避免跨课程重复使用通用题。
+ * 题量和 QuizItem 数据结构保持不变，便于答题、错题本和学习记录继续使用。
+ */
+function buildLessonQuiz(course: Course): QuizItem[] {
+  const [point1, point2, point3, point4] = course.keyPoints;
+  const lesson = `《${course.title}》`;
+
+  return [
+    {
+      question: `${lesson}中，哪一项最能概括本课首先要认识的知识？`,
+      options: [
+        option('A', '只要记住故事人物，不需要理解知识'),
+        option('B', point1),
+        option('C', '让机器代替我们完成所有思考'),
+        option('D', '只关注画面颜色和声音大小'),
+      ],
+      answer: 'B',
+      explanation: `本课首先要掌握的是：${point1}`,
+    },
+    {
+      question: `${lesson}介绍的关键方法或规律是什么？`,
+      options: [
+        option('A', point2),
+        option('B', '遇到问题时完全依靠运气'),
+        option('C', '跳过观察，直接得出答案'),
+        option('D', '所有问题都只能用同一种方法解决'),
+      ],
+      answer: 'A',
+      explanation: `本课介绍的关键方法或规律是：${point2}`,
+    },
+    {
+      question: `学习${lesson}时，哪一项属于重要原理？`,
+      options: [
+        option('A', '机器只需要电量，不需要规则和信息'),
+        option('B', '答案看起来复杂就一定正确'),
+        option('C', point3),
+        option('D', '只要速度快，就不必检查结果'),
+      ],
+      answer: 'C',
+      explanation: `需要理解的重要原理是：${point3}`,
+    },
+    {
+      question: `完成${lesson}后，下面哪句话应该写进学习成果？`,
+      options: [
+        option('A', '我只记住了角色名字'),
+        option('B', '我以后不需要验证自己的判断'),
+        option('C', '我已经能让机器拥有人的感情'),
+        option('D', point4),
+      ],
+      answer: 'D',
+      explanation: `本课的学习成果之一是理解：${point4}`,
+    },
+    {
+      question: `关于${lesson}的知识，下面哪种说法是错误的？`,
+      options: [
+        option('A', point1),
+        option('B', point2),
+        option('C', '不需要理解本课知识，随便猜也能一直得到可靠结果'),
+        option('D', point3),
+      ],
+      answer: 'C',
+      explanation: '可靠的结果来自对知识和方法的正确运用，不能依靠随意猜测。',
+    },
+    {
+      question: `如果要把${lesson}的知识用到新问题中，第一步更合适的是？`,
+      options: [
+        option('A', '先忽略题目条件'),
+        option('B', `先回想并运用“${point1}”`),
+        option('C', '直接照抄别人的答案'),
+        option('D', '只选择看起来最长的选项'),
+      ],
+      answer: 'B',
+      explanation: `解决新问题时，应先理解并运用本课知识：${point1}`,
+    },
+    {
+      question: `团团要向同学讲清${lesson}的方法，哪句话最准确？`,
+      options: [
+        option('A', '这个方法没有步骤，也没有规律'),
+        option('B', '只要记住结论，不必知道为什么'),
+        option('C', point2),
+        option('D', '每次都选择相反答案就可以'),
+      ],
+      answer: 'C',
+      explanation: `向别人解释时，应准确说出：${point2}`,
+    },
+    {
+      question: `点点在复习${lesson}，哪项内容能帮助他检查理解是否正确？`,
+      options: [
+        option('A', point3),
+        option('B', '是否把所有选项都选了一遍'),
+        option('C', '是否只看了故事封面'),
+        option('D', '是否避开了所有需要思考的问题'),
+      ],
+      answer: 'A',
+      explanation: `可以用这条原理检查理解：${point3}`,
+    },
+    {
+      question: `${lesson}的知识卡片缺少最后一句，应该补上哪项内容？`,
+      options: [
+        option('A', '机器永远不会出错'),
+        option('B', '学习知识只需要记住一个词'),
+        option('C', '任何信息都可以不加判断地相信'),
+        option('D', point4),
+      ],
+      answer: 'D',
+      explanation: `知识卡片应补充：${point4}`,
+    },
+    {
+      question: `怎样才算真正掌握了${lesson}的内容？`,
+      options: [
+        option('A', '能背出课程名称就够了'),
+        option('B', `能结合“${point1}”和“${point3}”分析实际问题`),
+        option('C', '答题时不看题目随机选择'),
+        option('D', '只记住一次游戏得分'),
+      ],
+      answer: 'B',
+      explanation: '真正掌握知识，不只是记住名称，还要能理解原理并用于分析实际问题。',
+    },
+  ];
+}
+
+const importedLessonQuizzes = lessonQuizzes as Record<string, QuizItem[]>;
+
+export const courses: Course[] = courseCatalog.map(course => ({
+  ...course,
+  quiz: importedLessonQuizzes[String(course.id)] || buildLessonQuiz(course),
+}));
+
+export default courses;

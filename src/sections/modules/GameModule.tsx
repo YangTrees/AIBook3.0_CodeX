@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Gamepad2 } from 'lucide-react';
+import { Gamepad2, Target, Palette, Blocks, Trophy, CircleCheck, Lightbulb } from 'lucide-react';
 
 interface GameModuleProps {
   courseId: number;
@@ -40,7 +40,7 @@ export default function GameModule({ courseId, numStr, onComplete }: GameModuleP
           boxShadow: '0 4px 20px rgba(0,0,0,0.05)',
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 20 }}>
-            <div style={{ fontSize: 36 }}>🎯</div>
+            <Target size={36} strokeWidth={1.8} />
             <div>
               <p style={{ fontWeight: 800, fontSize: 20, color: 'var(--kid-gray-700)', marginBottom: 3 }}>准备好了吗？</p>
               <p style={{ fontSize: 15, color: 'var(--kid-gray-400)' }}>专为本节课设计，团团&点点陪你玩</p>
@@ -49,9 +49,9 @@ export default function GameModule({ courseId, numStr, onComplete }: GameModuleP
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 28 }}>
             {[
-              { icon: '🎨', text: '专为本节课设计的趣味互动游戏' },
-              { icon: '🧸', text: '跟团团点点一起复盘游戏' },
-              { icon: '🏆', text: '通过游戏巩固本节课核心知识点' },
+              { Icon: Palette, text: '专为本节课设计的趣味互动游戏' },
+              { Icon: Blocks, text: '跟团团点点一起复盘游戏' },
+              { Icon: Trophy, text: '通过游戏巩固本节课核心知识点' },
             ].map((item) => (
               <div key={item.text} style={{
                 display: 'flex', alignItems: 'center', gap: 12,
@@ -60,7 +60,7 @@ export default function GameModule({ courseId, numStr, onComplete }: GameModuleP
                 borderRadius: 14,
                 border: '1px solid var(--kid-green-100)',
               }}>
-                <span style={{ fontSize: 20 }}>{item.icon}</span>
+                <item.Icon size={20} strokeWidth={1.8} />
                 <span style={{ fontSize: 16, color: 'var(--kid-gray-600)', fontWeight: 600 }}>{item.text}</span>
               </div>
             ))}
@@ -71,7 +71,7 @@ export default function GameModule({ courseId, numStr, onComplete }: GameModuleP
             className="kid-btn kid-btn-green"
             style={{ width: '100%', fontSize: 20, padding: '18px 24px', gap: 10 }}
           >
-            <span>🎮</span>
+            <Gamepad2 size={20} />
             <span>开始游戏</span>
           </button>
         </div>
@@ -99,7 +99,7 @@ export default function GameModule({ courseId, numStr, onComplete }: GameModuleP
           padding: '32px',
           textAlign: 'center',
         }}>
-          <div style={{ fontSize: 52, marginBottom: 12 }}>🎮</div>
+          <Gamepad2 size={52} strokeWidth={1.5} style={{ marginBottom: 12 }} />
           <p style={{ fontWeight: 800, fontSize: 20, color: 'var(--kid-gray-700)', marginBottom: 8 }}>游戏加载中</p>
           <p style={{ fontSize: 15, color: 'var(--kid-gray-400)', marginBottom: 6 }}>游戏文件路径：{gameSrc}</p>
           <p style={{ fontSize: 13, color: 'var(--kid-gray-300)' }}>请确认游戏资源已正确放置在 assets/games/games/ 目录</p>
@@ -154,7 +154,7 @@ export default function GameModule({ courseId, numStr, onComplete }: GameModuleP
             className="kid-btn kid-btn-green"
             style={{ flex: 1, fontSize: 18, padding: '14px 24px' }}
           >
-            ✅ 我完成了游戏
+            <CircleCheck size={20} /> 我完成了游戏
           </button>
         ) : (
           <div style={{
@@ -166,7 +166,7 @@ export default function GameModule({ courseId, numStr, onComplete }: GameModuleP
             border: '2px solid var(--kid-green-300)',
           }}>
             <span style={{ fontSize: 18, fontWeight: 700, color: 'var(--kid-green-600)' }}>
-              🎉 游戏已完成！继续加油！
+              游戏已完成！继续加油！
             </span>
           </div>
         )}
@@ -180,7 +180,7 @@ export default function GameModule({ courseId, numStr, onComplete }: GameModuleP
         border: '1px solid var(--kid-green-100)',
       }}>
         <p style={{ fontSize: 14, color: 'var(--kid-gray-400)' }}>
-          💡 跟团团点点一起复盘游戏
+          <Lightbulb size={20} /> 跟团团点点一起复盘游戏
         </p>
       </div>
     </div>

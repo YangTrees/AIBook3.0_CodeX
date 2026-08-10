@@ -1,73 +1,100 @@
-# React + TypeScript + Vite
+# AI 人工智能启蒙绘本课程
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+面向儿童的 32 课 AI 启蒙互动学习应用。每节课包含核心知识、绘本动画、知识问答、互动游戏、动手实践和课程总结六个环节。
 
-Currently, two official plugins are available:
+## 主要功能
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- 四章、32 节完整课程地图
+- 六步闯关式课程学习流程
+- 绘本视频进度记录与断点续播
+- 课程问答、错题本和独立错题复习
+- 32 个课程互动小游戏
+- 勋章、课程进度和连续学习统计
+- 儿童学习档案与家长数据中心
+- 学习存档完整导入、导出
+- 桌面大屏、平板和手机响应式布局
+- URL 课程链接与浏览器前进、后退恢复
 
-## React Compiler
+## 技术栈
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- React 19
+- TypeScript
+- Vite 7
+- Tailwind CSS
+- Radix UI
+- Lucide React
 
-## Expanding the ESLint configuration
+应用当前为纯前端项目，学习记录保存在浏览器 `localStorage` 中，不依赖服务器或数据库。
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## 本地运行
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+需要 Node.js 和 npm。
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+常用检查命令：
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm run lint
+npm run build
 ```
+
+生产环境默认使用 `/AIBook/` 作为部署基础路径，可在 `vite.config.ts` 中调整。
+
+## 代码结构
+
+```text
+src/
+├─ components/ui/      通用 UI 组件
+├─ data/
+│  ├─ courseData.ts    32 课课程、题库和资源配置
+│  └─ storageSchema.ts 学习存档结构与迁移逻辑
+├─ hooks/
+│  └─ useStorage.ts    课程进度、错题、勋章和统计
+├─ sections/
+│  ├─ modules/         知识、答题、游戏和总结模块
+│  ├─ HomePage.tsx     课程地图
+│  ├─ CoursePage.tsx   六步课程学习页
+│  ├─ CinemaPage.tsx   视频中心
+│  ├─ GamePage.tsx     游戏中心
+│  ├─ ArchivePage.tsx  儿童学习档案
+│  └─ ParentPage.tsx   家长中心
+└─ App.tsx             页面导航、URL 状态与画布适配
+```
+
+课程图片、视频和小游戏位于 `public/assets/`。
+
+## 学习完成规则
+
+| 环节 | 完成方式 |
+|---|---|
+| 核心知识 | 浏览到最后一张知识卡 |
+| 绘本视频 | 播放达到 80% |
+| 知识问答 | 提交完整答题结果 |
+| 互动游戏 | 完成游戏并触发通关 |
+| 动手实践 | 由学习者确认完成 |
+| 课程总结 | 查看总结并完成课程 |
+
+## 学习存档
+
+默认存储键为 `ai_book_learning_data`。存档采用版本化结构，旧数据会在读取或导入时自动补齐新字段。
+
+家长中心提供两种导出：
+
+- 学习报告：便于家长阅读的汇总数据
+- 存档备份：可以重新导入的完整原始记录
+
+在清理浏览器数据、换设备或迁移其他客户端前，应先导出存档备份。
+
+## 响应式规则
+
+- 宽度大于 900px：保留 1920×1080 大屏画布并等比例适配
+- 宽度不超过 900px：切换为原生响应式布局
+- 宽度不超过 520px：课程、统计和答题选项优先使用单列布局
+
+## 内容维护
+
+`src/data/courseData.ts` 标记为自动生成文件，不应直接进行大规模手工编辑。更新课程内容时应保证封面、知识图片、视频、游戏路径和题库结构一致。

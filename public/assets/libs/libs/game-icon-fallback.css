@@ -1,0 +1,43 @@
+/* Font Awesome glyph fallback for the self-contained game pages.
+   The original bundle did not include its webfont files, so use dependable
+   text/vector-like symbols instead of showing missing-glyph boxes. */
+.fa-solid,
+.fas {
+  display: inline-flex;
+  min-width: 1em;
+  align-items: center;
+  justify-content: center;
+  font-family: Arial, "Microsoft YaHei", sans-serif !important;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 1;
+}
+.fa-solid::before,
+.fas::before { font-family: inherit !important; }
+.fa-chevron-right::before { content: "›"; }
+.fa-arrow-left::before { content: "←"; }
+.fa-arrow-right::before { content: "→"; }
+.fa-arrow-down::before { content: "↓"; }
+.fa-arrow-up::before { content: "↑"; }
+.fa-star::before { content: "★"; }
+.fa-check::before,
+.fa-check-circle::before,
+.fa-check-double::before { content: "✓"; }
+.fa-circle-xmark::before { content: "×"; }
+.fa-rotate-left::before { content: "↶"; }
+.fa-rotate-right::before { content: "↷"; }
+.fa-paper-plane::before { content: "➤"; }
+.fa-bullseye::before { content: "◎"; }
+.fa-gamepad::before { content: "游戏"; font-size: .65em; }
+.fa-robot::before { content: "AI"; font-size: .7em; }
+.fa-glass-water::before { content: "▥"; }
+.fa-bucket::before { content: "▣"; }
+.fa-droplet::before { content: "+"; }
+.fa-droplet-slash::before { content: "−"; }
+.fa-triangle-exclamation::before { content: "!"; }
+.fa-trophy::before { content: "★"; }
+.fa-water::before { content: "≈"; }
+.fa-face-laugh-beam::before { content: ":)"; font-size: .7em; }
+.fa-ear-listen::before { content: "听"; font-size: .7em; }
+.fa-magnifying-glass::before { content: "查"; font-size: .7em; }
+.fa-puzzle-piece::before { content: "拼"; font-size: .7em; }

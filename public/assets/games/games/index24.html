@@ -8,6 +8,7 @@
     <script src="../../libs/libs/tailwind.min.js"></script>
     <!-- 加载 FontAwesome -->
     <link rel="stylesheet" href="../../libs/libs/font-awesome.all.min.css">
+    <link rel="stylesheet" href="../../libs/libs/game-icon-fallback.css">
     <!-- 加载 Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
     
@@ -454,7 +455,7 @@ let pathHistory = [];
                         if(rx === tx && ry === ty) {
                             div.innerHTML = '<i class="fa-solid fa-face-laugh-beam text-green-500"></i>';
                         } else {
-                            div.innerHTML = '<img src="../../characters/characters/diandian.png" alt="点点" style="width:36px;height:40px;">';
+                            div.innerHTML = '<img src="../../characters/characters/diandian.png" alt="点点" style="width:36px;height:auto;object-fit:contain;">';
                         }
                         div.classList.add('robot-cell');
                     }

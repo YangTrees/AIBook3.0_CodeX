@@ -1,13 +1,31 @@
 import { useState } from 'react';
-import COURSE_DATA from '../data/courseData';
+import COURSE_DATA from '../data/courseData.ts';
 import { useStorage } from '../hooks/useStorage';
-import { BarChart3, ClipboardList, FileText, Award } from 'lucide-react';
+import { BarChart3, ClipboardList, FileText, Award, BookOpen, Star, PartyPopper, Medal } from 'lucide-react';
 
 type SubTabType = 'overview' | 'details' | 'wrong' | 'badges';
 
-export default function ArchivePage() {
+interface WrongReviewItem {
+  lessonId: number;
+  courseTitle: string;
+  questionIndex: number;
+  question: string;
+  selectedKey: string;
+  correctKey: string;
+  timestamp: string | undefined;
+}
+
+interface ArchivePageProps {
+  onSelectCourse: (id: number) => void;
+}
+
+export default function ArchivePage({ onSelectCourse }: ArchivePageProps) {
   const [activeSubTab, setActiveSubTab] = useState<SubTabType>('overview');
-  const { storage, getStats } = useStorage();
+  const [reviewQueue, setReviewQueue] = useState<WrongReviewItem[]>([]);
+  const [reviewIndex, setReviewIndex] = useState(0);
+  const [reviewAnswer, setReviewAnswer] = useState<string | null>(null);
+  const [masteredCount, setMasteredCount] = useState(0);
+  const { storage, getStats, markWrongAnswerMastered } = useStorage();
   const stats = getStats();
 
   const subTabs = [
@@ -18,14 +36,7 @@ export default function ArchivePage() {
   ];
 
   // 收集所有错题
-  const allWrongAnswers: Array<{
-    lessonId: number;
-    courseTitle: string;
-    question: string;
-    selectedKey: string;
-    correctKey: string;
-    timestamp: string | undefined;
-  }> = [];
+  const allWrongAnswers: WrongReviewItem[] = [];
   Object.values(storage.lessons).forEach(record => {
     if (record.wrongAnswers && record.wrongAnswers.length > 0) {
       const course = COURSE_DATA.find(c => c.id === record.lessonId);
@@ -33,6 +44,7 @@ export default function ArchivePage() {
         allWrongAnswers.push({
           lessonId: record.lessonId,
           courseTitle: course?.title || `第${record.lessonId}课`,
+          questionIndex: wa.questionIndex,
           question: wa.question,
           selectedKey: wa.selectedKey,
           correctKey: wa.correctKey,
@@ -42,6 +54,32 @@ export default function ArchivePage() {
     }
   });
 
+  const currentReview = reviewQueue[reviewIndex];
+  const currentQuizItem = currentReview
+    ? COURSE_DATA.find(course => course.id === currentReview.lessonId)?.quiz[currentReview.questionIndex]
+    : undefined;
+
+  const startReview = () => {
+    setReviewQueue(allWrongAnswers);
+    setReviewIndex(0);
+    setReviewAnswer(null);
+    setMasteredCount(0);
+  };
+
+  const answerReview = (key: string) => {
+    if (reviewAnswer || !currentReview) return;
+    setReviewAnswer(key);
+    if (key === currentReview.correctKey) {
+      setMasteredCount(value => value + 1);
+      markWrongAnswerMastered(currentReview.lessonId, currentReview.questionIndex);
+    }
+  };
+
+  const nextReview = () => {
+    setReviewAnswer(null);
+    setReviewIndex(value => value + 1);
+  };
+
   const formatTime = (seconds: number): string => {
     if (seconds < 60) return `${seconds}秒`;
     if (seconds < 3600) return `${Math.floor(seconds / 60)}分${seconds % 60}秒`;
@@ -49,11 +87,11 @@ export default function ArchivePage() {
   };
 
   return (
-    <div className="kid-float-in" style={{ width: 1920, minHeight: 1000, padding: '40px 48px', boxSizing: 'border-box' }}>
+    <div className="kid-float-in responsive-page section-page archive-page" style={{ width: 1920, minHeight: 1000, padding: '40px 48px', boxSizing: 'border-box' }}>
       {/* 顶部标题区 */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 32 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 20 }}>
-          <div style={{ fontSize: 48 }}>📚</div>
+          <BookOpen size={48} strokeWidth={1.7} />
           <div>
             <h1 style={{ fontSize: 36, fontWeight: 900, color: 'var(--kid-gray-800)', margin: 0 }}>学习档案</h1>
             <p style={{ fontSize: 16, color: 'var(--kid-gray-400)', margin: '4px 0 0 0' }}>记录你的每一步成长</p>
@@ -66,75 +104,79 @@ export default function ArchivePage() {
       </div>
 
       {/* 顶部统计卡片 */}
-      <div style={{
+      <div className="archive-stats-grid" style={{
         display: 'grid',
         gridTemplateColumns: 'repeat(4, 1fr)',
         gap: 20,
         marginBottom: 32,
       }}>
         <div style={{
-          background: 'linear-gradient(135deg, var(--kid-blue-400), var(--kid-blue-600))',
+          background: 'linear-gradient(135deg, #f4fbff, #dcefff)',
+          border: '1.5px solid #b9ddf6',
           borderRadius: 24,
           padding: '24px 28px',
-          color: 'white',
-          boxShadow: '0 6px 20px rgba(33,133,208,0.3)',
+          color: '#21445f',
+          boxShadow: '0 6px 20px rgba(33,133,208,0.12)',
         }}>
-          <div style={{ fontSize: 14, opacity: 0.9, marginBottom: 8 }}>已完成课程</div>
-          <div style={{ fontSize: 42, fontWeight: 900 }}>
+          <div style={{ fontSize: 15, fontWeight: 800, letterSpacing: '0.02em', marginBottom: 8 }}>已完成课程</div>
+          <div style={{ fontSize: 42, fontWeight: 900, color: '#12649d', lineHeight: 1.1 }}>
             {stats.completedCount}
-            <span style={{ fontSize: 20, opacity: 0.7 }}> / 32</span>
+            <span style={{ fontSize: 20, color: '#4f7897', fontWeight: 700 }}> / 32</span>
           </div>
-          <div style={{ fontSize: 14, opacity: 0.8, marginTop: 8 }}>
-            课程完成度 {Math.round((stats.completedCount / 32) * 100)}%
+          <div style={{ fontSize: 14, color: '#3f6683', fontWeight: 600, marginTop: 10 }}>
+            课程完成度 {Math.min(100, Math.round((stats.completedCount / 32) * 100))}%
           </div>
         </div>
 
         <div style={{
-          background: 'linear-gradient(135deg, var(--kid-green-400), var(--kid-green-600))',
+          background: 'linear-gradient(135deg, #f2fcf6, #d8f6e5)',
+          border: '1.5px solid #b4e5ca',
           borderRadius: 24,
           padding: '24px 28px',
-          color: 'white',
-          boxShadow: '0 6px 20px rgba(39,168,114,0.3)',
+          color: '#1d533b',
+          boxShadow: '0 6px 20px rgba(39,168,114,0.12)',
         }}>
-          <div style={{ fontSize: 14, opacity: 0.9, marginBottom: 8 }}>累计学习时长</div>
-          <div style={{ fontSize: 42, fontWeight: 900 }}>
+          <div style={{ fontSize: 15, fontWeight: 800, letterSpacing: '0.02em', marginBottom: 8 }}>累计学习时长</div>
+          <div style={{ fontSize: 42, fontWeight: 900, color: '#187349', lineHeight: 1.1 }}>
             {formatTime(stats.totalStudySeconds)}
           </div>
-          <div style={{ fontSize: 14, opacity: 0.8, marginTop: 8 }}>
+          <div style={{ fontSize: 14, color: '#3e7057', fontWeight: 600, marginTop: 10 }}>
             继续加油！
           </div>
         </div>
 
         <div style={{
-          background: 'linear-gradient(135deg, var(--kid-orange-400), var(--kid-orange-600))',
+          background: 'linear-gradient(135deg, #fff9ef, #ffe4ba)',
+          border: '1.5px solid #f6cf92',
           borderRadius: 24,
           padding: '24px 28px',
-          color: 'white',
-          boxShadow: '0 6px 20px rgba(224,112,16,0.3)',
+          color: '#70400e',
+          boxShadow: '0 6px 20px rgba(224,112,16,0.12)',
         }}>
-          <div style={{ fontSize: 14, opacity: 0.9, marginBottom: 8 }}>累计错题数</div>
-          <div style={{ fontSize: 42, fontWeight: 900 }}>
+          <div style={{ fontSize: 15, fontWeight: 800, letterSpacing: '0.02em', marginBottom: 8 }}>累计错题数</div>
+          <div style={{ fontSize: 42, fontWeight: 900, color: '#a55010', lineHeight: 1.1 }}>
             {stats.totalErrors}
-            <span style={{ fontSize: 20, opacity: 0.7 }}> 道</span>
+            <span style={{ fontSize: 20, color: '#8a653c', fontWeight: 700 }}> 道</span>
           </div>
-          <div style={{ fontSize: 14, opacity: 0.8, marginTop: 8 }}>
+          <div style={{ fontSize: 14, color: '#7a5a34', fontWeight: 600, marginTop: 10 }}>
             错过的都是进步的机会
           </div>
         </div>
 
         <div style={{
-          background: 'linear-gradient(135deg, var(--kid-yellow-400), var(--kid-yellow-600))',
+          background: 'linear-gradient(135deg, #fffdf4, #fff0b8)',
+          border: '1.5px solid #f1d778',
           borderRadius: 24,
           padding: '24px 28px',
-          color: 'white',
-          boxShadow: '0 6px 20px rgba(200,144,16,0.3)',
+          color: '#70520c',
+          boxShadow: '0 6px 20px rgba(200,144,16,0.12)',
         }}>
-          <div style={{ fontSize: 14, opacity: 0.9, marginBottom: 8 }}>获得勋章</div>
-          <div style={{ fontSize: 42, fontWeight: 900 }}>
+          <div style={{ fontSize: 15, fontWeight: 800, letterSpacing: '0.02em', marginBottom: 8 }}>获得勋章</div>
+          <div style={{ fontSize: 42, fontWeight: 900, color: '#946100', lineHeight: 1.1 }}>
             {storage.badges.length}
-            <span style={{ fontSize: 20, opacity: 0.7 }}> 枚</span>
+            <span style={{ fontSize: 20, color: '#806b36', fontWeight: 700 }}> 枚</span>
           </div>
-          <div style={{ fontSize: 14, opacity: 0.8, marginTop: 8 }}>
+          <div style={{ fontSize: 14, color: '#776332', fontWeight: 600, marginTop: 10 }}>
             {stats.avgAccuracy >= 90 ? '太棒了！' : stats.avgAccuracy >= 70 ? '很不错！' : '继续努力！'}
           </div>
         </div>
@@ -179,9 +221,9 @@ export default function ArchivePage() {
       <div style={{ minHeight: 500 }}>
         {/* 学习总览 */}
         {activeSubTab === 'overview' && (
-          <div className="kid-fade-in" style={{ display: 'flex', gap: 32 }}>
+          <div className="kid-fade-in archive-overview" style={{ display: 'flex', gap: 32 }}>
             {/* 环形进度图 */}
-            <div style={{
+            <div className="archive-progress-card" style={{
               background: 'white',
               borderRadius: 24,
               padding: 28,
@@ -196,7 +238,7 @@ export default function ArchivePage() {
                 height: 200,
                 borderRadius: '50%',
                 background: `conic-gradient(
-                  var(--kid-blue-500) ${(stats.completedCount / 32) * 360}deg,
+                  var(--kid-blue-500) ${Math.min(100, (stats.completedCount / 32) * 100) * 3.6}deg,
                   var(--kid-gray-100) 0deg
                 )`,
                 margin: '0 auto',
@@ -215,7 +257,7 @@ export default function ArchivePage() {
                   justifyContent: 'center',
                 }}>
                   <div style={{ fontSize: 42, fontWeight: 900, color: 'var(--kid-blue-500)' }}>
-                    {Math.round((stats.completedCount / 32) * 100)}%
+                    {Math.min(100, Math.round((stats.completedCount / 32) * 100))}%
                   </div>
                   <div style={{ fontSize: 14, color: 'var(--kid-gray-400)' }}>
                     {stats.completedCount}/32课
@@ -239,7 +281,7 @@ export default function ArchivePage() {
                 const moduleLessons = COURSE_DATA.filter(c => c.module === module);
                 const completedInModule = moduleLessons.filter(l => storage.lessons[l.id]?.completed).length;
                 const total = moduleLessons.length;
-                const percent = Math.round((completedInModule / total) * 100);
+                const percent = total > 0 ? Math.min(100, Math.round((completedInModule / total) * 100)) : 0;
 
                 return (
                   <div key={module} style={{ marginBottom: 20 }}>
@@ -285,7 +327,7 @@ export default function ArchivePage() {
             <h3 style={{ fontSize: 20, fontWeight: 800, color: 'var(--kid-gray-700)', margin: '0 0 24px 0' }}>
               课程学习详情
             </h3>
-            <div style={{
+            <div className="archive-course-grid" style={{
               display: 'grid',
               gridTemplateColumns: 'repeat(4, 1fr)',
               gap: 16,
@@ -331,7 +373,7 @@ export default function ArchivePage() {
                         color: isCompleted ? 'var(--kid-green-500)' : 'var(--kid-gray-400)',
                         fontWeight: 700,
                       }}>
-                        {isCompleted ? '✅ 已完成' : '⏳ 未完成'}
+                        {isCompleted ? '已完成' : '未完成'}
                       </span>
                       {record?.quizAccuracy !== undefined && (
                         <span style={{
@@ -357,15 +399,56 @@ export default function ArchivePage() {
             padding: 28,
             boxShadow: '0 4px 16px rgba(0,0,0,0.08)',
           }}>
-            <h3 style={{ fontSize: 20, fontWeight: 800, color: 'var(--kid-gray-700)', margin: '0 0 24px 0' }}>
-              错题本
-              <span style={{ fontSize: 14, color: 'var(--kid-gray-400)', fontWeight: 400, marginLeft: 12 }}>
-                共 {allWrongAnswers.length} 道错题
-              </span>
-            </h3>
-            {allWrongAnswers.length === 0 ? (
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 24 }}>
+              <h3 style={{ fontSize: 20, fontWeight: 800, color: 'var(--kid-gray-700)', margin: 0 }}>
+                错题本
+                <span style={{ fontSize: 14, color: 'var(--kid-gray-400)', fontWeight: 400, marginLeft: 12 }}>共 {allWrongAnswers.length} 道待复习</span>
+              </h3>
+              {allWrongAnswers.length > 0 && reviewQueue.length === 0 && (
+                <button onClick={startReview} className="kid-btn kid-btn-primary" style={{ padding: '10px 20px' }}>开始错题复习 →</button>
+              )}
+            </div>
+            {reviewQueue.length > 0 ? (
+              reviewIndex < reviewQueue.length ? (
+                <div style={{ maxWidth: 900, margin: '0 auto', padding: 28, borderRadius: 22, background: 'var(--kid-blue-50)', border: '2px solid var(--kid-blue-100)' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 18, color: 'var(--kid-blue-500)', fontWeight: 800 }}>
+                    <span>第{currentReview.lessonId}课 · {currentReview.courseTitle}</span>
+                    <span>{reviewIndex + 1} / {reviewQueue.length}</span>
+                  </div>
+                  <h4 style={{ fontSize: 22, lineHeight: 1.6, color: 'var(--kid-gray-800)', marginBottom: 22 }}>{currentReview.question}</h4>
+                  <div className="review-option-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
+                    {(currentQuizItem?.options || []).map(option => {
+                      const isSelected = reviewAnswer === option.key;
+                      const isCorrect = reviewAnswer !== null && option.key === currentReview.correctKey;
+                      const isWrong = isSelected && option.key !== currentReview.correctKey;
+                      return (
+                        <button key={option.key} onClick={() => answerReview(option.key)} disabled={reviewAnswer !== null} style={{ textAlign: 'left', padding: '16px 18px', borderRadius: 14, border: `2px solid ${isCorrect ? 'var(--kid-green-400)' : isWrong ? 'var(--kid-red-400)' : 'var(--kid-gray-100)'}`, background: isCorrect ? 'var(--kid-green-50)' : isWrong ? 'var(--kid-red-50)' : '#fff', color: 'var(--kid-gray-700)', fontSize: 16, fontWeight: 700, cursor: reviewAnswer ? 'default' : 'pointer' }}>
+                          <span style={{ marginRight: 10, color: 'var(--kid-blue-500)' }}>{option.key}.</span>{option.text}
+                        </button>
+                      );
+                    })}
+                  </div>
+                  {reviewAnswer && (
+                    <div style={{ marginTop: 22, padding: 18, borderRadius: 14, background: reviewAnswer === currentReview.correctKey ? 'var(--kid-green-50)' : 'var(--kid-red-50)' }}>
+                      <strong style={{ color: reviewAnswer === currentReview.correctKey ? 'var(--kid-green-600)' : 'var(--kid-red-500)' }}>
+                        {reviewAnswer === currentReview.correctKey ? '回答正确，这道题已掌握！' : `再想一想，正确答案是 ${currentReview.correctKey}`}
+                      </strong>
+                      {currentQuizItem?.explanation && <p style={{ marginTop: 8, color: 'var(--kid-gray-500)', lineHeight: 1.6 }}>{currentQuizItem.explanation}</p>}
+                      <button onClick={nextReview} className="kid-btn kid-btn-primary" style={{ marginTop: 14, padding: '9px 18px' }}>{reviewIndex === reviewQueue.length - 1 ? '查看结果 →' : '下一题 →'}</button>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <div style={{ textAlign: 'center', padding: '55px 20px' }}>
+                  <Star size={64} strokeWidth={1.5} style={{ marginBottom: 14 }} />
+                  <h4 style={{ fontSize: 26, fontWeight: 900, color: 'var(--kid-gray-800)', marginBottom: 10 }}>本轮复习完成</h4>
+                  <p style={{ color: 'var(--kid-gray-500)', marginBottom: 22 }}>重新掌握 {masteredCount} 道题，未答对的题会继续留在错题本中。</p>
+                  <button onClick={() => setReviewQueue([])} className="kid-btn kid-btn-green">返回错题本</button>
+                </div>
+              )
+            ) : allWrongAnswers.length === 0 ? (
               <div style={{ textAlign: 'center', padding: '60px 0', color: 'var(--kid-gray-400)' }}>
-                <div style={{ fontSize: 64, marginBottom: 16 }}>🎉</div>
+                <PartyPopper size={64} strokeWidth={1.5} style={{ marginBottom: 16 }} />
                 <p style={{ fontSize: 18, fontWeight: 700 }}>太棒了！没有错题！</p>
                 <p style={{ fontSize: 14 }}>继续保持，争取获得更多勋章！</p>
               </div>
@@ -413,6 +496,9 @@ export default function ArchivePage() {
                       <span style={{ color: 'var(--kid-green-500)' }}>
                         ✓ 正确答案：{wa.correctKey}
                       </span>
+                      <button onClick={() => onSelectCourse(wa.lessonId)} style={{ marginLeft: 'auto', border: 'none', borderRadius: 10, padding: '7px 14px', background: 'var(--kid-blue-500)', color: '#fff', fontWeight: 800, cursor: 'pointer' }}>
+                        回到课程复习 →
+                      </button>
                     </div>
                   </div>
                 ))}
@@ -437,24 +523,18 @@ export default function ArchivePage() {
             </h3>
             {storage.badges.length === 0 ? (
               <div style={{ textAlign: 'center', padding: '60px 0', color: 'var(--kid-gray-400)' }}>
-                <div style={{ fontSize: 64, marginBottom: 16 }}>🏅</div>
+                <Medal size={64} strokeWidth={1.5} style={{ marginBottom: 16 }} />
                 <p style={{ fontSize: 18, fontWeight: 700 }}>还没有获得勋章</p>
                 <p style={{ fontSize: 14 }}>完成课程答题，正确率达到70%以上即可获得！</p>
               </div>
             ) : (
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 20 }}>
+              <div className="badge-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 20 }}>
                 {storage.badges.map(badge => {
                   const badgeColor = badge.type === 'gold'
                     ? 'linear-gradient(135deg, #f5c842, #e8a810)'
                     : badge.type === 'silver'
                       ? 'linear-gradient(135deg, #9ab0c8, #6a8aaa)'
                       : 'linear-gradient(135deg, #f5a84d, #e07010)';
-                  const badgeEmoji = badge.type === 'gold'
-                    ? '🥇'
-                    : badge.type === 'silver'
-                      ? '🥈'
-                      : '🥉';
-
                   return (
                     <div
                       key={badge.id}
@@ -476,10 +556,9 @@ export default function ArchivePage() {
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        fontSize: 36,
                         boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
                       }}>
-                        {badgeEmoji}
+                        <Medal size={38} color="#fff" strokeWidth={1.8} />
                       </div>
                       <h4 style={{
                         fontSize: 15,
@@ -487,7 +566,7 @@ export default function ArchivePage() {
                         color: 'var(--kid-gray-700)',
                         margin: '0 0 6px 0',
                       }}>
-                        {badge.name}
+                        {badge.name.replace(/[🥇🥈🥉]\s*/gu, '')}
                       </h4>
                       <p style={{
                         fontSize: 12,

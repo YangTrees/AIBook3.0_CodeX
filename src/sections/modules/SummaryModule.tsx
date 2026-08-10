@@ -1,5 +1,5 @@
-import type { Course } from '../../data/courseData';
-import { Trophy, Medal, Award, Video, BookOpen, BookImage, Brain, Gamepad2, Wrench } from 'lucide-react';
+import type { Course } from '../../data/courseData.ts';
+import { Trophy, Medal, Award, BookOpen, BookImage, Brain, Gamepad2, Wrench, BarChart3, ClipboardList, Map, Rocket, GraduationCap } from 'lucide-react';
 
 interface QuizRecord {
   total: number;
@@ -45,7 +45,6 @@ const MEDALS = [
 ];
 
 const LEARNING_STEPS = [
-  { Icon: Video, label: '科普视频' },
   { Icon: BookOpen, label: '核心知识' },
   { Icon: BookImage, label: '绘本视频' },
   { Icon: Brain, label: '知识问答' },
@@ -55,8 +54,8 @@ const LEARNING_STEPS = [
 ];
 
 export default function SummaryModule({ course, quizRecord }: SummaryModuleProps) {
-  const accuracy = quizRecord.completed
-    ? Math.round((quizRecord.correct / quizRecord.total) * 100)
+  const accuracy = quizRecord.completed && quizRecord.total > 0
+    ? Math.min(100, Math.round((Math.min(quizRecord.correct, quizRecord.total) / quizRecord.total) * 100))
     : 0;
 
   const medal = MEDALS.find((m) => accuracy >= m.min) || MEDALS[MEDALS.length - 1];
@@ -100,7 +99,7 @@ export default function SummaryModule({ course, quizRecord }: SummaryModuleProps
           marginBottom: 14,
           display: 'flex', alignItems: 'center', gap: 8,
         }}>
-          <span>📚</span> 核心知识点复盘
+          <BookOpen size={21} /> 核心知识点复盘
         </h4>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
           {course.keyPoints.map((point, i) => (
@@ -138,7 +137,7 @@ export default function SummaryModule({ course, quizRecord }: SummaryModuleProps
           marginBottom: 14,
           display: 'flex', alignItems: 'center', gap: 8,
         }}>
-          <span>📊</span> 答题数据统计
+          <BarChart3 size={21} /> 答题数据统计
         </h4>
         {quizRecord.completed ? (
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 14 }}>
@@ -158,7 +157,7 @@ export default function SummaryModule({ course, quizRecord }: SummaryModuleProps
           </div>
         ) : (
           <div style={{ textAlign: 'center', padding: '24px 0', color: 'var(--kid-gray-400)' }}>
-            <div style={{ fontSize: 36, marginBottom: 8 }}>📝</div>
+            <ClipboardList size={36} strokeWidth={1.6} style={{ marginBottom: 8 }} />
             <p style={{ fontSize: 16 }}>尚未完成知识问答</p>
             <p style={{ fontSize: 14, marginTop: 4 }}>请先完成第4模块的知识问答</p>
           </div>
@@ -178,7 +177,7 @@ export default function SummaryModule({ course, quizRecord }: SummaryModuleProps
           marginBottom: 16,
           display: 'flex', alignItems: 'center', gap: 8,
         }}>
-          <span>🗺️</span> 学习旅程
+          <Map size={21} /> 学习旅程
         </h4>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10 }}>
           {LEARNING_STEPS.map((step, i) => (
@@ -228,7 +227,7 @@ export default function SummaryModule({ course, quizRecord }: SummaryModuleProps
           border: '1.5px solid var(--kid-blue-100)',
         }}>
           <h4 style={{ fontWeight: 800, fontSize: 17, color: 'var(--kid-blue-500)', marginBottom: 6 }}>
-            🚀 下节课预告
+            <Rocket size={20} /> 下节课预告
           </h4>
           <p style={{ fontSize: 15, color: 'var(--kid-gray-500)', lineHeight: 1.7 }}>
             继续探索AI的神奇世界，完成第{course.id + 1}课的学习！
@@ -245,7 +244,7 @@ export default function SummaryModule({ course, quizRecord }: SummaryModuleProps
           border: '2px solid #f5c84255',
           boxShadow: '0 6px 24px rgba(245,200,66,0.15)',
         }}>
-          <div style={{ fontSize: 52, marginBottom: 10 }}>🎓</div>
+          <GraduationCap size={52} strokeWidth={1.5} style={{ marginBottom: 10 }} />
           <h4 style={{ fontWeight: 900, fontSize: 26, color: '#c87000', marginBottom: 8 }}>
             恭喜完成32节全部课程！
           </h4>

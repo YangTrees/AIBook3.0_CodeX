@@ -188,7 +188,7 @@
         <div id="characters-container" class="absolute bottom-[-20px] w-full flex justify-between items-end px-4 md:px-10 pointer-events-none z-20 hidden">
             <!-- 团团 (男孩) -->
             <div class="relative animate-float" style="animation-delay: 0s;">
-                <img src="../../characters/characters/tuantuan.png" alt="团团" style="width:140px;height:180px;" class="md:w-[180px] md:h-[220px]"/>
+                <img src="../../characters/characters/tuantuan.png" alt="团团" style="width:140px;height:auto;object-fit:contain;" class="md:w-[180px]"/>
             </div>
 
             <!-- 统一的底部对话框 -->
@@ -199,7 +199,7 @@
 
             <!-- 点点 (云朵机器人 -->
             <div class="relative animate-float" style="animation-delay: 1s;">
-                <img src="../../characters/characters/diandian.png" alt="点点" style="width:150px;height:170px;" class="md:w-[200px] md:h-[220px]"/>
+                <img src="../../characters/characters/diandian.png" alt="点点" style="width:150px;height:auto;object-fit:contain;" class="md:w-[200px]"/>
             </div>
         </div>
 
@@ -226,9 +226,9 @@ const ASSETS = {
         };
 
         const LEVELS = {
-            1: { title: "猫狗对对碰", age: "3-5岁", desc: "教点点认识动物", targets: ['cat', 'dog'], trainCount: 5, testCount: 3 },
-            2: { title: "动物大集合", age: "6-7岁", desc: "认识更多小动物", targets: ['cat', 'dog', 'rabbit'], trainCount: 6, testCount: 3 },
-            3: { title: "标签小侦探", age: "8-9岁", desc: "找出贴错标签的卡片！", type: 'detective' }
+            1: { title: "猫狗分辨站", difficulty: "难度：基础", desc: "给猫和狗贴上正确标签", targets: ['cat', 'dog'], trainCount: 5 },
+            2: { title: "动物大集合", difficulty: "难度：进阶", desc: "在三种动物中快速完成分类", targets: ['cat', 'dog', 'rabbit'], trainCount: 7 },
+            3: { title: "标签小侦探", difficulty: "难度：挑战", desc: "找出贴错标签的卡片！", type: 'detective' }
         };
 
         // --- 状态管琀---
@@ -274,21 +274,21 @@ const dialogueBox = document.getElementById('dialogue-box');
                     
                     <div class="bg-white/90 p-8 rounded-3xl shadow-xl border-4 border-[#FDE047] mb-8 relative">
                         <div class="absolute -top-6 left-1/2 transform -translate-x-1/2 bg-[#F5A623] text-white px-6 py-2 rounded-full font-bold shadow-md">
-                            选择分龄关卡
+                            选择难度关卡
                         </div>
                         <div class="flex flex-col md:flex-row gap-4 mt-4">
                             <button onclick="startGame(1)" class="flex-1 bg-[#FEF3C7] hover:bg-[#FDE68A] border-4 border-[#F5A623] text-[#8B5A2B] p-4 rounded-2xl transition-transform hover:-translate-y-2 shadow-[0_6px_0_#F5A623] active:translate-y-0 active:shadow-none">
-                                <div class="text-lg font-bold mb-1">3-5页</div>
+                                <div class="text-lg font-bold mb-1">难度：基础</div>
                                 <div class="text-2xl mb-2">🐱 🐶</div>
-                                <div class="font-bold">猫狗对对碀</div>
+                                <div class="font-bold">猫狗分辨站</div>
                             </button>
                             <button onclick="startGame(2)" class="flex-1 bg-[#E0F2FE] hover:bg-[#BAE6FD] border-4 border-[#38BDF8] text-[#1E3A8A] p-4 rounded-2xl transition-transform hover:-translate-y-2 shadow-[0_6px_0_#38BDF8] active:translate-y-0 active:shadow-none">
-                                <div class="text-lg font-bold mb-1">6-7页</div>
+                                <div class="text-lg font-bold mb-1">难度：进阶</div>
                                 <div class="text-2xl mb-2">🐱 🐶 🐰</div>
                                 <div class="font-bold">动物大集合</div>
                             </button>
                             <button onclick="startGame(3)" class="flex-1 bg-[#FCE7F3] hover:bg-[#FBCFE8] border-4 border-[#EC4899] text-[#831843] p-4 rounded-2xl transition-transform hover:-translate-y-2 shadow-[0_6px_0_#EC4899] active:translate-y-0 active:shadow-none">
-                                <div class="text-lg font-bold mb-1">8-9页</div>
+                                <div class="text-lg font-bold mb-1">难度：挑战</div>
                                 <div class="text-2xl mb-2">🔍 ❌</div>
                                 <div class="font-bold">标签小侦探</div>
                             </button>
@@ -307,8 +307,70 @@ const dialogueBox = document.getElementById('dialogue-box');
             scoreDisplay.classList.remove('hidden');
             charContainer.classList.remove('hidden');
 
-            // 统一使用侦探游戏
-            initDetectiveGame();
+            if (level === 3) initDetectiveGame();
+            else initLabelQuiz(level);
+        }
+
+        // ==========================================
+        // 关卡 1、2：不同难度的贴标签快问快答
+        // ==========================================
+        let labelQuiz = null;
+
+        function initLabelQuiz(level) {
+            const config = LEVELS[level];
+            const keys = Array.from({ length: config.trainCount }, () => config.targets[Math.floor(Math.random() * config.targets.length)]);
+            labelQuiz = { level: level, keys: keys, index: 0, correct: 0 };
+            gameState = 'quiz';
+            renderLabelQuiz();
+        }
+
+        function renderLabelQuiz() {
+            const config = LEVELS[labelQuiz.level];
+            const key = labelQuiz.keys[labelQuiz.index];
+            const item = ITEMS[key];
+            const icon = ASSETS[key][Math.floor(Math.random() * ASSETS[key].length)];
+            const choices = [...config.targets].sort(() => Math.random() - 0.5);
+            const progress = Math.round(labelQuiz.index / config.trainCount * 100);
+
+            mainContent.innerHTML = `
+                <div class="w-full max-w-2xl text-center animate-pop pb-28">
+                    <div class="inline-block bg-white rounded-full px-5 py-2 border-2 border-[#F5A623] text-[#8B5A2B] font-bold mb-4">${config.difficulty} · 第 ${labelQuiz.index + 1} / ${config.trainCount} 题</div>
+                    <h2 class="text-3xl text-[#8B5A2B] font-bold mb-2">${config.title}</h2>
+                    <p class="text-[#D97706] font-bold mb-5">看看图片，为它选一个正确标签</p>
+                    <div class="w-full bg-white rounded-full h-4 overflow-hidden border-2 border-[#E5D3B3] mb-6"><div class="bg-[#4A90E2] h-full transition-all" style="width:${progress}%"></div></div>
+                    <div class="bg-white rounded-3xl border-4 border-[#FDE047] shadow-xl p-8 mb-6">
+                        <div class="text-8xl mb-4">${icon}</div>
+                        <div class="text-lg text-gray-500">它应该贴上什么标签？</div>
+                    </div>
+                    <div class="grid gap-4" style="grid-template-columns:repeat(${choices.length},minmax(0,1fr))">
+                        ${choices.map(choice => `<button onclick="answerLabelQuiz('${choice}')" class="bg-white border-4 border-[#E5D3B3] hover:border-[#4A90E2] hover:bg-[#E0F2FE] rounded-2xl p-4 text-xl font-bold text-[#8B5A2B] shadow-[0_5px_0_#E5D3B3] active:translate-y-1 active:shadow-none">${ITEMS[choice].name}</button>`).join('')}
+                    </div>
+                </div>`;
+            charSpeak('tuantuan', labelQuiz.level === 1 ? '从猫和狗里选一个正确标签吧！' : '这次多了兔子，别被相似的图片迷惑哦！');
+        }
+
+        function answerLabelQuiz(choice) {
+            if (!labelQuiz || gameState === 'answering') return;
+            gameState = 'answering';
+            const realKey = labelQuiz.keys[labelQuiz.index];
+            if (choice === realKey) {
+                labelQuiz.correct++;
+                score += 10;
+                scoreVal.innerText = score;
+                setCharEmotion('happy');
+                charSpeak('diandian', '标签贴对啦！我记住了。');
+                createConfetti(mainContent.getBoundingClientRect(), 12);
+            } else {
+                setCharEmotion('sad');
+                charSpeak('tuantuan', `这不是${ITEMS[realKey].name}，再记住它的样子！`);
+            }
+            setTimeout(() => {
+                labelQuiz.index++;
+                gameState = 'quiz';
+                if (labelQuiz.index >= labelQuiz.keys.length) {
+                    showSuccessScreen(`挑战完成！<br/>你答对了 ${labelQuiz.correct} / ${labelQuiz.keys.length} 题。`);
+                } else renderLabelQuiz();
+            }, 850);
         }
 
         // ==========================================
@@ -557,6 +619,8 @@ setTimeout(() => {
         }
 
         function setCharEmotion(emotion) {
+            // 当前角色使用图片素材，没有内嵌 SVG 表情节点时保持安全降级。
+            if (!tMouth || !dEyes || !dScreen) return;
             if (emotion === 'happy') {
                 tMouth.setAttribute('d', 'M85 105 Q100 120 115 105 L115 110 Q100 125 85 110 Z'); // 大笑
 tMouth.setAttribute('fill', '#EF4444');

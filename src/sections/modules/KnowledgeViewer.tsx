@@ -1,12 +1,14 @@
 import { useState } from 'react';
+import { BookOpen, Lightbulb, ClipboardList } from 'lucide-react';
 
 interface KnowledgeViewerProps {
   images: string[];
   knowledgePoints: string[];
   courseId: number;
+  onComplete?: () => void;
 }
 
-export default function KnowledgeViewer({ images, knowledgePoints, courseId }: KnowledgeViewerProps) {
+export default function KnowledgeViewer({ images, knowledgePoints, courseId, onComplete }: KnowledgeViewerProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [imageError, setImageError] = useState(false);
   const total = images.length;
@@ -21,6 +23,7 @@ export default function KnowledgeViewer({ images, knowledgePoints, courseId }: K
     if (currentIndex < total - 1) {
       setImageError(false);
       setCurrentIndex(currentIndex + 1);
+      if (currentIndex === total - 2) onComplete?.();
     }
   };
 
@@ -51,7 +54,7 @@ export default function KnowledgeViewer({ images, knowledgePoints, courseId }: K
               display: 'flex', flexDirection: 'column',
               alignItems: 'center', justifyContent: 'center', gap: 12,
             }}>
-              <div style={{ fontSize: 52 }}>📖</div>
+              <BookOpen size={52} strokeWidth={1.5} />
               <p style={{ color: 'var(--kid-blue-400)', fontSize: 15, fontWeight: 700 }}>
                 第{currentIndex + 1}张知识讲解图
               </p>
@@ -168,7 +171,7 @@ export default function KnowledgeViewer({ images, knowledgePoints, courseId }: K
         padding: '20px 24px',
       }}>
         <div style={{ display: 'flex', alignItems: 'flex-start', gap: 14 }}>
-          <div style={{ fontSize: 28, marginTop: 2 }}>💡</div>
+          <Lightbulb size={28} strokeWidth={1.7} style={{ marginTop: 2 }} />
           <div>
             <div style={{
               fontSize: 13, color: 'var(--kid-blue-500)',
@@ -201,7 +204,7 @@ export default function KnowledgeViewer({ images, knowledgePoints, courseId }: K
           marginBottom: 14,
           display: 'flex', alignItems: 'center', gap: 8,
         }}>
-          <span>📝</span> 本课全部知识点
+          <ClipboardList size={20} /> 本课全部知识点
         </h4>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
           {knowledgePoints.map((point, i) => (

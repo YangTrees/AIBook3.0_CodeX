@@ -427,10 +427,10 @@
         <!-- 角色展示区-->
         <div class="character-container">
             <div class="tuantuan">
-                <img src="../../characters/characters/tuantuan.png" alt="团团" style="width:90px;height:140px;object-fit:contain;" />
+                <img src="../../characters/characters/tuantuan.png" alt="团团" style="width:90px;height:auto;object-fit:contain;" />
             </div>
             <div class="diandian">
-                <img src="../../characters/characters/diandian.png" alt="点点" style="width:130px;height:120px;object-fit:contain;" />
+                <img src="../../characters/characters/diandian.png" alt="点点" style="width:130px;height:auto;object-fit:contain;" />
             </div>
         </div>
 
@@ -498,7 +498,7 @@
 
             <div class="g3-library">
                 <div class="g3-action-item" draggable="true" ondragstart="g3Drag(event)" data-act="up"><span class="icon">⬆️</span>刷上面</div>
-                <div class="g3-action-item" draggable="true" ondragstart="g3Drag(event)" data-act="up"><span class="icon">⬇️</span>刷下面</div>
+                <div class="g3-action-item" draggable="true" ondragstart="g3Drag(event)" data-act="down"><span class="icon">⬇️</span>刷下面</div>
                 <div class="g3-action-item" draggable="true" ondragstart="g3Drag(event)" data-act="rotate"><span class="icon">🔄</span>刷里面</div>
                 <div class="g3-action-item" draggable="true" ondragstart="g3Drag(event)" data-act="done"><span class="icon">✅</span>刷外面</div>
             </div>
@@ -511,6 +511,8 @@
                     <div class="g3-slot" ondrop="g3Drop(event)" ondragover="g3AllowDrop(event)">动作 2</div>
                     <span style="color:#aaa; font-weight:bold;">→</span>
                     <div class="g3-slot" ondrop="g3Drop(event)" ondragover="g3AllowDrop(event)">动作 3</div>
+                    <span style="color:#aaa; font-weight:bold;">→</span>
+                    <div class="g3-slot" ondrop="g3Drop(event)" ondragover="g3AllowDrop(event)">动作 4</div>
                 </div>
                 
                 <div>
@@ -792,6 +794,20 @@ const slots = $$('.g3-slot');
                 return;
             }
 
+            const actionNames = {
+                up: '刷上面',
+                down: '刷下面',
+                rotate: '刷里面',
+                done: '刷外面'
+            };
+            const requiredActions = Object.keys(actionNames);
+            const missingActions = requiredActions.filter(action => !sequence.includes(action));
+            if (missingActions.length > 0) {
+                $('g3-feedback').innerText = `还缺少：${missingActions.map(action => actionNames[action]).join('、')}`;
+                $('g3-feedback').style.color = "var(--btn-red)";
+                return;
+            }
+
             g3IsRunning = true;
             setRobotExpression('focus');
             const feedback = $('g3-feedback');
@@ -818,7 +834,7 @@ for(let round = 1; round <= g3CurrentLoop; round++) {
                 // 内层：执行序别            
 for(let i = 0; i < sequence.length; i++) {
 let actName = sequence[i];
-                    feedback.innerText = `第${round} 轮：正在执行 [${actName}]`;
+                    feedback.innerText = `第${round} 轮：正在执行【${actionNames[actName]}】`;
                     
                     // 高亮槽位和进度点
 slots[i].style.transform = "scale(1.1)";

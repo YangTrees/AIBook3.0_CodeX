@@ -45,6 +45,14 @@
             transform: translateY(6px);
             box-shadow: 0 0 0 #047857, 0 4px 4px rgba(0,0,0,0.3);
         }
+        .game-hud { letter-spacing: .03em; }
+        .game-hud strong { color: #fde047; }
+        .target-chip { display: inline-flex; align-items: center; gap: 8px; border-radius: 999px; padding: 8px 14px; font-weight: 800; background: #fef3c7; border: 2px solid #f59e0b; color: #78350f; }
+        .answer-btn { min-height: 74px; transition: transform .15s ease, box-shadow .15s ease; }
+        .answer-btn:hover { transform: translateY(-3px); }
+        .answer-btn:active { transform: translateY(2px); }
+        .time-track { height: 12px; overflow: hidden; border: 2px solid #334155; border-radius: 999px; background: #e2e8f0; box-shadow: inset 0 1px 2px rgba(15,23,42,.18); }
+        .time-fill { width: 100%; height: 100%; border-radius: inherit; transition: width .2s linear, background .2s ease; background: linear-gradient(90deg, #34d399, #facc15); }
     </style>
 </head>
 <body class="min-h-screen flex flex-col items-center py-6 px-4">
@@ -62,27 +70,27 @@
         <div class="bg-slate-800 rounded-3xl p-6 flex flex-col items-center border-4 border-red-500 hover:scale-105 transition transform cursor-pointer" onclick="startGame(1)">
             <div class="w-24 h-24 bg-red-100 rounded-full flex items-center justify-center mb-4 text-5xl">📦</div>
             <h2 class="text-2xl font-bold text-red-400 mb-2">游戏 1</h2>
-            <h3 class="text-xl font-bold text-white mb-4">鹦鹉分拣场</h3>
-            <p class="text-slate-400 text-center text-sm mb-6 flex-grow">帮鹦鹉把传送带上的物品分类。注意，它只会死记硬背！</p>
-            <button class="btn-game text-white font-bold py-3 px-8 rounded-full w-full">开始训练</button>
+            <h3 class="text-xl font-bold text-white mb-4">鹦鹉接图形</h3>
+            <p class="text-slate-400 text-center text-sm mb-6 flex-grow">接住鹦鹉认识的图形，接错会扣分。坚持 1 分钟！</p>
+            <button class="btn-game text-white font-bold py-3 px-8 rounded-full w-full">开始挑战</button>
         </div>
 
         <!-- 游戏2卡片 -->
         <div class="bg-slate-800 rounded-3xl p-6 flex flex-col items-center border-4 border-blue-500 hover:scale-105 transition transform cursor-pointer" onclick="startGame(2)">
             <div class="w-24 h-24 bg-blue-100 rounded-full flex items-center justify-center mb-4 text-5xl">🎯</div>
             <h2 class="text-2xl font-bold text-blue-400 mb-2">游戏 2</h2>
-            <h3 class="text-xl font-bold text-white mb-4">特征抓捕大师</h3>
-            <p class="text-slate-400 text-center text-sm mb-6 flex-grow">用各种不同的卡片训练它！抓住所有"有三个角"的图形：</p>
-            <button class="btn-game text-white font-bold py-3 px-8 rounded-full w-full" style="background: linear-gradient(145deg, #3b82f6, #2563eb); box-shadow: 0 6px 0 #1d4ed8, 0 10px 10px rgba(0,0,0,0.3);">开始训练</button>
+            <h3 class="text-xl font-bold text-white mb-4">目标气球射击</h3>
+            <p class="text-slate-400 text-center text-sm mb-6 flex-grow">认准本轮目标颜色，只射中对应气球才得分！</p>
+            <button class="btn-game text-white font-bold py-3 px-8 rounded-full w-full" style="background: linear-gradient(145deg, #3b82f6, #2563eb); box-shadow: 0 6px 0 #1d4ed8, 0 10px 10px rgba(0,0,0,0.3);">开始射击</button>
         </div>
 
         <!-- 游戏3卡片 -->
         <div class="bg-slate-800 rounded-3xl p-6 flex flex-col items-center border-4 border-purple-500 hover:scale-105 transition transform cursor-pointer" onclick="startGame(3)">
             <div class="w-24 h-24 bg-purple-100 rounded-full flex items-center justify-center mb-4 text-5xl">🧪</div>
             <h2 class="text-2xl font-bold text-purple-400 mb-2">游戏 3</h2>
-            <h3 class="text-xl font-bold text-white mb-4">AI 创造实验室</h3>
-            <p class="text-slate-400 text-center text-sm mb-6 flex-grow">举一反三！创造一个鹦鹉没见过的图形，看看它能不能认出来 </p>
-            <button class="btn-game text-white font-bold py-3 px-8 rounded-full w-full" style="background: linear-gradient(145deg, #a855f7, #9333ea); box-shadow: 0 6px 0 #7e22ce, 0 10px 10px rgba(0,0,0,0.3);">进入实验室</button>
+            <h3 class="text-xl font-bold text-white mb-4">特征判别挑战</h3>
+            <p class="text-slate-400 text-center text-sm mb-6 flex-grow">面对陌生图形，按“特征”而不是外观做出判断。</p>
+            <button class="btn-game text-white font-bold py-3 px-8 rounded-full w-full" style="background: linear-gradient(145deg, #a855f7, #9333ea); box-shadow: 0 6px 0 #7e22ce, 0 10px 10px rgba(0,0,0,0.3);">进入挑战</button>
         </div>
     </div>
 </div>
@@ -91,19 +99,20 @@
 <div id="game-container-1" class="game-panel flex-col items-center w-full max-w-4xl">
     <div class="w-full flex justify-between items-center mb-4 bg-slate-800 p-4 rounded-xl border-2 border-slate-600">
         <button onclick="backToMenu()" class="text-white bg-slate-600 hover:bg-slate-500 px-4 py-2 rounded-lg font-bold">←返回大厅</button>
-        <h2 class="text-2xl font-bold text-red-400 arcade-font">鹦鹉分拣场(体验死记硬背)</h2>
-        <div class="text-xl text-yellow-400 font-bold">得分: <span id="score1">0</span></div>
+        <h2 class="text-2xl font-bold text-red-400 arcade-font">鹦鹉接图形</h2>
+        <div class="text-lg text-yellow-400 font-bold game-hud">得分 <strong id="score1">50</strong>　时间 <strong id="time1">60</strong>s</div>
     </div>
+    <div class="w-full mb-3 time-track"><div id="time-progress1" class="time-fill"></div></div>
     <div class="relative w-full aspect-[4/3] md:aspect-[21/9] bg-white rounded-xl overflow-hidden border-4 border-red-400">
         <canvas id="canvas1"></canvas>
         <!-- HTML覆盖层UI -->
         <div id="overlay1" class="absolute inset-0 bg-black/80 hidden flex-col items-center justify-center text-white z-10">
-            <h3 class="text-4xl font-bold mb-4 text-red-400" id="msg1-title">鹦鹉崩溃了！</h3>
-            <p class="text-xl mb-6 text-center px-4" id="msg1-text">它只死记硬背了"线色正方形"，<br>遇到没见过的就彻底不会了！这就是过拟合 </p>
-            <button onclick="startGame1()" class="btn-game px-8 py-3 rounded-full text-xl">再试一次</button>
+            <h3 class="text-4xl font-bold mb-4 text-red-400" id="msg1-title">挑战结束</h3>
+            <p class="text-xl mb-6 text-center px-4" id="msg1-text">再试一次，认准本关目标图形！</p>
+            <button onclick="startGame1()" class="btn-game px-8 py-3 rounded-full text-xl">重新挑战</button>
         </div>
         <div class="absolute top-2 left-1/2 transform -translate-x-1/2 bg-yellow-100 border-2 border-yellow-400 text-slate-800 px-4 py-2 rounded-full font-bold text-sm pointer-events-none">
-            任务：拖动图形给左侧的鹦鹉。鹦鹉只认识"线色正方形"！
+            <span id="g1-target-label">第 1 关：接住所有三角形</span>　·　移动鹦鹉接图形
         </div>
     </div>
 </div>
@@ -112,23 +121,20 @@
 <div id="game-container-2" class="game-panel flex-col items-center w-full max-w-4xl">
     <div class="w-full flex justify-between items-center mb-4 bg-slate-800 p-4 rounded-xl border-2 border-slate-600">
         <button onclick="backToMenu()" class="text-white bg-slate-600 hover:bg-slate-500 px-4 py-2 rounded-lg font-bold">←返回大厅</button>
-        <h2 class="text-2xl font-bold text-blue-400 arcade-font">特征抓捕大师 (训练规律)</h2>
-        <div class="text-xl text-yellow-400 font-bold">时间: <span id="time2">30</span>s</div>
+        <h2 class="text-2xl font-bold text-blue-400 arcade-font">目标气球射击</h2>
+        <div class="text-lg text-yellow-400 font-bold game-hud">得分 <strong id="score2">0</strong>　时间 <strong id="time2">40</strong>s</div>
     </div>
+    <div class="w-full mb-3 time-track"><div id="time-progress2" class="time-fill" style="background:linear-gradient(90deg,#60a5fa,#c084fc);"></div></div>
     <div class="relative w-full aspect-[4/3] md:aspect-[21/9] bg-white rounded-xl overflow-hidden border-4 border-blue-400">
         <canvas id="canvas2"></canvas>
-        <!-- 进度条-->
-        <div class="absolute bottom-4 left-1/2 transform -translate-x-1/2 w-3/4 bg-slate-200 rounded-full h-6 border-2 border-slate-800">
-            <div id="progress2" class="bg-blue-500 h-full rounded-full transition-all duration-300 w-0 flex items-center justify-end pr-2 text-xs text-white font-bold">训练进度</div>
-        </div>
         <!-- 结束覆盖层-->
         <div id="overlay2" class="absolute inset-0 bg-black/80 hidden flex-col items-center justify-center text-white z-10">
-            <h3 class="text-4xl font-bold mb-4 text-green-400">训练成功：</h3>
-            <p class="text-xl mb-6 text-center px-4">鹦鹉通过不同颜色、大小的三角形数据，<br>终于掌握了"三角形有三个角"的规律：</p>
-            <button onclick="backToMenu()" class="btn-game px-8 py-3 rounded-full text-xl" style="background: linear-gradient(145deg, #3b82f6, #2563eb); box-shadow: 0 6px 0 #1d4ed8;">返回大厅</button>
+            <h3 class="text-4xl font-bold mb-4 text-green-400" id="msg2-title">挑战完成！</h3>
+            <p class="text-xl mb-6 text-center px-4" id="msg2-text">认准目标颜色，才能拿到分数。</p>
+            <button onclick="startGame2()" class="btn-game px-8 py-3 rounded-full text-xl" style="background: linear-gradient(145deg, #3b82f6, #2563eb); box-shadow: 0 6px 0 #1d4ed8;">再玩一次</button>
         </div>
          <div class="absolute top-2 left-1/2 transform -translate-x-1/2 bg-blue-100 border-2 border-blue-400 text-slate-800 px-4 py-2 rounded-full font-bold text-sm pointer-events-none whitespace-nowrap">
-            任务：点击屏幕上所有飞行的【三角形】，忽略颜色和大小！
+            <span id="g2-target-label">本轮目标：红色气球</span>　·　射中其他气球不得分
         </div>
     </div>
 </div>
@@ -137,38 +143,29 @@
 <div id="game-container-3" class="game-panel flex-col items-center w-full max-w-4xl">
     <div class="w-full flex justify-between items-center mb-4 bg-slate-800 p-4 rounded-xl border-2 border-slate-600">
         <button onclick="backToMenu()" class="text-white bg-slate-600 hover:bg-slate-500 px-4 py-2 rounded-lg font-bold">←返回大厅</button>
-        <h2 class="text-2xl font-bold text-purple-400 arcade-font">AI创造实验室 (举一反三)</h2>
-        <div class="text-xl text-yellow-400 font-bold" id="status3">等待创建..</div>
+        <h2 class="text-2xl font-bold text-purple-400 arcade-font">特征判别挑战</h2>
+        <div class="text-lg text-yellow-400 font-bold game-hud" id="status3">连对 <strong>0</strong> / 8</div>
     </div>
     
     <div class="flex flex-col md:flex-row w-full gap-4">
         <!-- 画布区-->
         <div class="relative flex-grow aspect-square md:aspect-auto md:h-[500px] bg-slate-100 rounded-xl overflow-hidden border-4 border-purple-400 flex items-center justify-center">
              <canvas id="canvas3"></canvas>
-             <div id="scanner-line" class="absolute top-0 left-0 w-full h-2 bg-green-400 shadow-[0_0_15px_#4ade80] hidden"></div>
+             <div id="overlay3" class="absolute inset-0 bg-black/80 hidden flex-col items-center justify-center text-white z-10">
+                <h3 class="text-4xl font-bold mb-4 text-purple-300" id="msg3-title">挑战完成！</h3>
+                <p class="text-xl mb-6 text-center px-4" id="msg3-text">你已经掌握了用特征判断的方法。</p>
+                <button onclick="startGame3()" class="btn-game px-8 py-3 rounded-full text-xl" style="background: linear-gradient(145deg, #a855f7, #9333ea); box-shadow: 0 6px 0 #7e22ce;">再玩一次</button>
+             </div>
         </div>
         
-        <!-- 控制区-->
+        <!-- 判别区-->
         <div class="w-full md:w-80 bg-slate-800 p-6 rounded-xl border-4 border-slate-600 flex flex-col gap-6">
-            <h3 class="text-xl font-bold text-white mb-2 border-b border-slate-600 pb-2">自定义图形</h3>
-            
-            <div>
-                <label class="text-slate-300 block mb-2 font-bold">边数 (3-10): <span id="sides-val" class="text-yellow-400">5</span></label>
-                <input type="range" id="input-sides" min="3" max="10" value="5" class="w-full accent-purple-500">
-            </div>
-            
-            <div>
-                <label class="text-slate-300 block mb-2 font-bold">颜色:</label>
-                <input type="color" id="input-color" value="#a855f7" class="w-full h-12 rounded cursor-pointer">
-            </div>
-
-             <div>
-                <label class="text-slate-300 block mb-2 font-bold">缩放大小:</label>
-                <input type="range" id="input-size" min="50" max="150" value="100" class="w-full accent-purple-500">
-            </div>
-
-            <button onclick="scanShape()" id="btn-scan" class="btn-game mt-auto py-4 rounded-xl text-xl font-bold text-white" style="background: linear-gradient(145deg, #a855f7, #9333ea); box-shadow: 0 6px 0 #7e22ce;">
-                让鹦鹉识别            </button>
+            <h3 class="text-xl font-bold text-white mb-2 border-b border-slate-600 pb-2">鹦鹉的规则</h3>
+            <p id="g3-rule-text" class="text-slate-300 leading-relaxed">它已经学会：<strong class="text-yellow-300">有 3 条边</strong>的图形就是三角形。<br>请判断眼前的陌生图形是否符合规则。</p>
+            <div id="g3-question-label" class="target-chip justify-center">鹦鹉阿学认识这个图形吗？</div>
+            <button onclick="answerGame3(true)" id="g3-yes" class="answer-btn rounded-2xl text-xl font-bold text-white bg-emerald-500 shadow-[0_6px_0_#047857]">是，认识它</button>
+            <button onclick="answerGame3(false)" id="g3-no" class="answer-btn rounded-2xl text-xl font-bold text-white bg-rose-500 shadow-[0_6px_0_#be123c]">否，不是三角形</button>
+            <p id="g3-feedback" class="min-h-12 text-center text-sm text-slate-300">观察边数，不要被颜色和大小影响。</p>
         </div>
     </div>
 </div>
@@ -777,6 +774,351 @@ window.addEventListener('resize', () => {
         if(document.getElementById('game-container-3').classList.contains('active')) startGame3();
     });
 
+</script>
+
+<script>
+    // 第16课重构版：所有交互事件均使用 on* 覆盖绑定，避免重复开始后重复响应。
+    var arcadeAnimationId = null;
+    var arcadeG1 = null;
+    var arcadeG2 = null;
+    var arcadeG3 = null;
+
+    function arcadeCanvasPoint(canvas, event) {
+        var rect = canvas.getBoundingClientRect();
+        return {
+            x: (event.clientX - rect.left) * (canvas.width / rect.width),
+            y: (event.clientY - rect.top) * (canvas.height / rect.height)
+        };
+    }
+
+    function arcadeSetOverlay(id, visible) {
+        var overlay = document.getElementById(id);
+        overlay.classList.toggle('hidden', !visible);
+        overlay.classList.toggle('flex', visible);
+    }
+
+    function stopAllGames() {
+        if (arcadeAnimationId) cancelAnimationFrame(arcadeAnimationId);
+        arcadeAnimationId = null;
+        if (arcadeG1) arcadeG1.running = false;
+        if (arcadeG2) arcadeG2.running = false;
+    }
+
+    function showPanel(id) {
+        document.querySelectorAll('.game-panel').forEach(function(panel) { panel.classList.remove('active'); });
+        document.getElementById(id).classList.add('active');
+    }
+
+    function backToMenu() {
+        stopAllGames();
+        showPanel('main-menu');
+    }
+
+    function startGame(level) {
+        stopAllGames();
+        showPanel('game-container-' + level);
+        if (level === 1) setTimeout(startGame1, 80);
+        if (level === 2) setTimeout(startGame2, 80);
+        if (level === 3) setTimeout(startGame3, 80);
+    }
+
+    function arcadeDrawBalloon(ctx, balloon) {
+        ctx.save();
+        ctx.fillStyle = balloon.color;
+        ctx.beginPath();
+        ctx.ellipse(balloon.x, balloon.y, balloon.radius * .78, balloon.radius, 0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = 'rgba(255,255,255,.35)';
+        ctx.beginPath();
+        ctx.ellipse(balloon.x - balloon.radius * .25, balloon.y - balloon.radius * .3, balloon.radius * .18, balloon.radius * .28, .45, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = '#64748b';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(balloon.x, balloon.y + balloon.radius);
+        ctx.quadraticCurveTo(balloon.x + 10, balloon.y + balloon.radius + 25, balloon.x - 4, balloon.y + balloon.radius + 42);
+        ctx.stroke();
+        ctx.restore();
+    }
+
+    function arcadeAddEffect(game, x, y, text, color, smoky) {
+        game.effects.push({ x: x, y: y, text: text, color: color, smoky: smoky, createdAt: Date.now(), bits: Array.from({ length: smoky ? 7 : 14 }, function(_, index) {
+            var angle = Math.PI * 2 * index / (smoky ? 7 : 14);
+            var speed = smoky ? 8 + Math.random() * 10 : 18 + Math.random() * 22;
+            return { x: Math.cos(angle) * speed, y: Math.sin(angle) * speed };
+        }) });
+    }
+
+    function arcadeDrawEffects(ctx, game) {
+        var now = Date.now();
+        for (var i = game.effects.length - 1; i >= 0; i--) {
+            var effect = game.effects[i], age = (now - effect.createdAt) / 700;
+            if (age >= 1) { game.effects.splice(i, 1); continue; }
+            ctx.save();
+            ctx.globalAlpha = 1 - age;
+            ctx.fillStyle = effect.color;
+            effect.bits.forEach(function(bit) {
+                ctx.beginPath();
+                ctx.arc(effect.x + bit.x * age, effect.y + bit.y * age + (effect.smoky ? -age * 22 : age * 10), effect.smoky ? 8 + age * 9 : 4, 0, Math.PI * 2);
+                ctx.fill();
+            });
+            ctx.font = 'bold 25px Microsoft YaHei'; ctx.textAlign = 'center';
+            ctx.fillText(effect.text, effect.x, effect.y - 35 - age * 30);
+            ctx.restore();
+        }
+    }
+
+    // 游戏1：一分钟接图形。每20秒升级一次，目标图形改变。
+    function startGame1() {
+        stopAllGames();
+        var canvas = document.getElementById('canvas1');
+        canvas.width = canvas.offsetWidth;
+        canvas.height = canvas.offsetHeight;
+        arcadeG1 = {
+            canvas: canvas, ctx: canvas.getContext('2d'), score: 50, startedAt: Date.now(),
+            items: [], effects: [], lastSpawn: 0, parrotX: canvas.width / 2, running: true,
+            levels: [
+                { shape: 'triangle', label: '第 1 关：接住所有三角形' },
+                { shape: 'circle', label: '第 2 关：接住所有圆形' },
+                { shape: 'square', label: '第 3 关：接住所有正方形' }
+            ]
+        };
+        document.getElementById('score1').innerText = '50';
+        document.getElementById('time1').innerText = '60';
+        document.getElementById('time-progress1').style.width = '100%';
+        document.getElementById('g1-target-label').innerText = arcadeG1.levels[0].label;
+        arcadeSetOverlay('overlay1', false);
+        canvas.onpointermove = function(event) {
+            if (!arcadeG1 || !arcadeG1.running) return;
+            arcadeG1.parrotX = Math.max(65, Math.min(canvas.width - 65, arcadeCanvasPoint(canvas, event).x));
+        };
+        canvas.onpointerdown = canvas.onpointermove;
+        arcadeLoopGame1();
+    }
+
+    function arcadeEndGame1(won) {
+        arcadeG1.running = false;
+        document.getElementById('msg1-title').innerText = won ? '挑战成功！' : '能量耗尽！';
+        document.getElementById('msg1-title').className = 'text-4xl font-bold mb-4 ' + (won ? 'text-emerald-400' : 'text-red-400');
+        document.getElementById('msg1-text').innerHTML = won
+            ? '你坚持了整整 1 分钟，并在变化的目标中保持专注！'
+            : '接错图形会扣 15 分。认准当前关卡的目标再行动！';
+        arcadeSetOverlay('overlay1', true);
+    }
+
+    function arcadeLoopGame1() {
+        var game = arcadeG1;
+        if (!game || !game.running || !document.getElementById('game-container-1').classList.contains('active')) return;
+        var now = Date.now();
+        var elapsed = (now - game.startedAt) / 1000;
+        var secondsLeft = Math.max(0, Math.ceil(60 - elapsed));
+        var levelIndex = Math.min(2, Math.floor(elapsed / 20));
+        var target = game.levels[levelIndex];
+        document.getElementById('time1').innerText = secondsLeft;
+        document.getElementById('time-progress1').style.width = Math.max(0, (60 - elapsed) / 60 * 100) + '%';
+        document.getElementById('g1-target-label').innerText = target.label;
+        if (elapsed >= 60) { arcadeEndGame1(true); return; }
+
+        var ctx = game.ctx, width = game.canvas.width, height = game.canvas.height;
+        ctx.clearRect(0, 0, width, height);
+        var sky = ctx.createLinearGradient(0, 0, 0, height);
+        sky.addColorStop(0, '#bae6fd'); sky.addColorStop(1, '#f0fdf4');
+        ctx.fillStyle = sky; ctx.fillRect(0, 0, width, height);
+        ctx.fillStyle = 'rgba(255,255,255,.8)';
+        for (var cloud = 0; cloud < 4; cloud++) ctx.fillRect((cloud * 230 + 50) % width, 65 + (cloud % 2) * 52, 110, 18);
+
+        if (now - game.lastSpawn > 750) {
+            var shapes = ['triangle', 'circle', 'square', 'star'];
+            game.items.push({ shape: shapes[Math.floor(Math.random() * shapes.length)], color: ['#ef4444','#3b82f6','#eab308','#a855f7','#22c55e'][Math.floor(Math.random()*5)], x: 45 + Math.random() * (width - 90), y: -30, size: 44 + Math.random() * 16, speed: 1.7 + elapsed / 35 + Math.random() * 1.4 });
+            game.lastSpawn = now;
+        }
+
+        var parrotY = height - 86;
+        ctx.fillStyle = '#475569'; ctx.fillRect(0, height - 35, width, 35);
+        ctx.fillStyle = '#fbbf24'; ctx.fillRect(game.parrotX - 60, parrotY + 38, 120, 18);
+        drawParrot(ctx, game.parrotX, parrotY - 15, 1.05, true);
+        ctx.font = 'bold 16px Microsoft YaHei'; ctx.fillStyle = '#334155'; ctx.textAlign = 'center'; ctx.fillText('移动鹦鹉接住图形', game.parrotX, height - 10);
+
+        for (var i = game.items.length - 1; i >= 0; i--) {
+            var item = game.items[i];
+            item.y += item.speed;
+            ctx.fillStyle = item.color; drawShapePath(ctx, item.shape, item.x, item.y, item.size); ctx.fill();
+            ctx.strokeStyle = '#334155'; ctx.lineWidth = 2; ctx.stroke();
+            if (item.y + item.size / 2 >= parrotY && item.y < parrotY + 46 && Math.abs(item.x - game.parrotX) < 62) {
+                var isCorrect = item.shape === target.shape;
+                game.score += isCorrect ? 10 : -15;
+                arcadeAddEffect(game, item.x, parrotY - 18, isCorrect ? '+10' : '-15', isCorrect ? '#f59e0b' : '#64748b', !isCorrect);
+                document.getElementById('score1').innerText = game.score;
+                game.items.splice(i, 1);
+                if (game.score <= 0) { arcadeEndGame1(false); return; }
+            } else if (item.y > height + 50) game.items.splice(i, 1);
+        }
+        arcadeDrawEffects(ctx, game);
+        arcadeAnimationId = requestAnimationFrame(arcadeLoopGame1);
+    }
+
+    // 游戏2：目标颜色气球射击。每局只认一个目标颜色，其他气球不扣分也不得分。
+    function startGame2() {
+        stopAllGames();
+        var canvas = document.getElementById('canvas2');
+        canvas.width = canvas.offsetWidth;
+        canvas.height = canvas.offsetHeight;
+        var colors = [
+            { name: '红色', value: '#ef4444' }, { name: '蓝色', value: '#3b82f6' },
+            { name: '黄色', value: '#eab308' }, { name: '紫色', value: '#a855f7' }
+        ];
+        arcadeG2 = { canvas: canvas, ctx: canvas.getContext('2d'), colors: colors, target: colors[Math.floor(Math.random() * colors.length)], balloons: [], effects: [], score: 0, startedAt: Date.now(), lastSpawn: 0, running: true, notice: '' };
+        document.getElementById('score2').innerText = '0';
+        document.getElementById('time2').innerText = '40';
+        document.getElementById('time-progress2').style.width = '100%';
+        document.getElementById('g2-target-label').innerText = '本轮目标：' + arcadeG2.target.name + '气球';
+        arcadeSetOverlay('overlay2', false);
+        canvas.onpointerdown = function(event) {
+            var game = arcadeG2;
+            if (!game || !game.running) return;
+            var point = arcadeCanvasPoint(canvas, event);
+            for (var i = game.balloons.length - 1; i >= 0; i--) {
+                var balloon = game.balloons[i];
+                if (Math.hypot(point.x - balloon.x, point.y - balloon.y) < balloon.radius) {
+                    game.balloons.splice(i, 1);
+                    if (balloon.color === game.target.value) {
+                        game.score += 10;
+                        game.notice = '命中！' + game.target.name + '气球 +10';
+                        arcadeAddEffect(game, balloon.x, balloon.y, '+10', '#facc15', false);
+                    } else {
+                        game.notice = '本轮只射 ' + game.target.name + '气球，这个不得分。';
+                        arcadeAddEffect(game, balloon.x, balloon.y, '未得分', '#94a3b8', true);
+                    }
+                    document.getElementById('score2').innerText = game.score;
+                    break;
+                }
+            }
+        };
+        arcadeLoopGame2();
+    }
+
+    function arcadeEndGame2(won) {
+        arcadeG2.running = false;
+        document.getElementById('msg2-title').innerText = won ? '射击成功！' : '时间到！';
+        document.getElementById('msg2-title').className = 'text-4xl font-bold mb-4 ' + (won ? 'text-green-400' : 'text-red-400');
+        document.getElementById('msg2-text').innerText = won
+            ? '你始终认准了“' + arcadeG2.target.name + '色”这个固定目标！'
+            : '本局得到 ' + arcadeG2.score + ' 分，再试一次吧。';
+        arcadeSetOverlay('overlay2', true);
+    }
+
+    function arcadeLoopGame2() {
+        var game = arcadeG2;
+        if (!game || !game.running || !document.getElementById('game-container-2').classList.contains('active')) return;
+        var now = Date.now(), elapsed = (now - game.startedAt) / 1000;
+        document.getElementById('time2').innerText = Math.max(0, Math.ceil(40 - elapsed));
+        document.getElementById('time-progress2').style.width = Math.max(0, (40 - elapsed) / 40 * 100) + '%';
+        if (game.score >= 60) { arcadeEndGame2(true); return; }
+        if (elapsed >= 40) { arcadeEndGame2(false); return; }
+        if (now - game.lastSpawn > 620) {
+            var color = game.colors[Math.floor(Math.random() * game.colors.length)];
+            game.balloons.push({ color: color.value, x: 38 + Math.random() * (game.canvas.width - 76), y: game.canvas.height + 45, radius: 27 + Math.random() * 14, speed: .8 + Math.random() * 1.25 });
+            game.lastSpawn = now;
+        }
+        var ctx = game.ctx, width = game.canvas.width, height = game.canvas.height;
+        ctx.clearRect(0, 0, width, height);
+        var bg = ctx.createLinearGradient(0, 0, 0, height); bg.addColorStop(0, '#dbeafe'); bg.addColorStop(1, '#fdf2f8'); ctx.fillStyle = bg; ctx.fillRect(0, 0, width, height);
+        ctx.font = 'bold 17px Microsoft YaHei'; ctx.fillStyle = '#1e3a8a'; ctx.textAlign = 'center'; ctx.fillText(game.notice || '认准 ' + game.target.name + '色气球，射中 6 个就获胜！', width / 2, height - 20);
+        for (var i = game.balloons.length - 1; i >= 0; i--) {
+            var balloon = game.balloons[i]; balloon.y -= balloon.speed; arcadeDrawBalloon(ctx, balloon);
+            if (balloon.y < -70) game.balloons.splice(i, 1);
+        }
+        arcadeDrawEffects(ctx, game);
+        arcadeAnimationId = requestAnimationFrame(arcadeLoopGame2);
+    }
+
+    // 游戏3：连续答题，判断陌生图形是否具有“三条边”这个核心特征。
+    function startGame3() {
+        stopAllGames();
+        var canvas = document.getElementById('canvas3');
+        var rect = canvas.parentElement.getBoundingClientRect();
+        canvas.width = rect.width; canvas.height = rect.height;
+        arcadeG3 = { canvas: canvas, ctx: canvas.getContext('2d'), correct: 0, mistakes: 0, round: 0, ruleSides: 3, question: null, effects: [], ended: false };
+        arcadeSetOverlay('overlay3', false);
+        arcadeNextGame3Question();
+    }
+
+    function arcadeDrawPolygonQuestion(question) {
+        var game = arcadeG3, ctx = game.ctx, canvas = game.canvas;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        var bg = ctx.createLinearGradient(0, 0, 0, canvas.height); bg.addColorStop(0, '#ede9fe'); bg.addColorStop(1, '#fdf4ff'); ctx.fillStyle = bg; ctx.fillRect(0, 0, canvas.width, canvas.height);
+        var radius = Math.min(canvas.width, canvas.height) * question.scale;
+        var cx = canvas.width / 2, cy = canvas.height / 2;
+        ctx.save(); ctx.translate(cx, cy); ctx.rotate(question.rotation); ctx.beginPath();
+        for (var i = 0; i < question.sides; i++) {
+            var angle = i * Math.PI * 2 / question.sides - Math.PI / 2;
+            var x = Math.cos(angle) * radius, y = Math.sin(angle) * radius;
+            if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+        }
+        ctx.closePath(); ctx.fillStyle = question.color; ctx.fill(); ctx.lineWidth = 7; ctx.strokeStyle = '#312e81'; ctx.stroke(); ctx.restore();
+        ctx.font = 'bold 20px Microsoft YaHei'; ctx.fillStyle = '#4c1d95'; ctx.textAlign = 'center'; ctx.fillText('第 ' + (game.round + 1) + ' 题：鹦鹉阿学认识这个图形吗？', cx, 45);
+    }
+
+    function arcadeRenderGame3Effects() {
+        var game = arcadeG3;
+        if (!game || game.ended || !game.question) return;
+        arcadeDrawPolygonQuestion(game.question);
+        arcadeDrawEffects(game.ctx, game);
+        if (game.effects.length) arcadeAnimationId = requestAnimationFrame(arcadeRenderGame3Effects);
+    }
+
+    function arcadeShapeName(sides) {
+        var names = { 3: '三角形', 4: '四边形', 5: '五边形', 6: '六边形', 7: '七边形' };
+        return names[sides] || sides + '边形';
+    }
+
+    function arcadeNextGame3Question() {
+        var game = arcadeG3;
+        if (!game || game.ended) return;
+        var nonTargetSides = [3, 4, 5, 6, 7].filter(function(sides) { return sides !== game.ruleSides; });
+        var questionSides = Math.random() < .5 ? game.ruleSides : nonTargetSides[Math.floor(Math.random() * nonTargetSides.length)];
+        game.question = { sides: questionSides, color: ['#f43f5e','#3b82f6','#f59e0b','#10b981','#a855f7'][Math.floor(Math.random() * 5)], scale: .25 + Math.random() * .12, rotation: (Math.random() - .5) * 1.2 };
+        arcadeDrawPolygonQuestion(game.question);
+        document.getElementById('status3').innerHTML = '正确 <strong>' + game.correct + '</strong> / 8　失误 <strong>' + game.mistakes + '</strong> / 3';
+        var ruleName = arcadeShapeName(game.ruleSides);
+        document.getElementById('g3-rule-text').innerHTML = '阿学当前只认识：<strong class="text-yellow-300">有 ' + game.ruleSides + ' 条边</strong>的图形，也就是' + ruleName + '。';
+        document.getElementById('g3-question-label').innerText = '鹦鹉阿学认识这个图形吗？';
+        document.getElementById('g3-yes').innerText = '是，认识，是（' + ruleName + '）';
+        document.getElementById('g3-no').innerText = '否，不认识，不是（' + ruleName + '）';
+        document.getElementById('g3-feedback').innerText = '观察边数，不要被颜色、大小或旋转方向影响。';
+        document.getElementById('g3-yes').disabled = false; document.getElementById('g3-no').disabled = false;
+    }
+
+    function answerGame3(answer) {
+        var game = arcadeG3;
+        if (!game || game.ended) return;
+        document.getElementById('g3-yes').disabled = true; document.getElementById('g3-no').disabled = true;
+        var correct = (game.question.sides === game.ruleSides) === answer;
+        if (correct) {
+            game.correct++;
+            var previousRule = arcadeShapeName(game.ruleSides);
+            var ruleChoices = [3, 4, 5, 6, 7].filter(function(sides) { return sides !== game.ruleSides; });
+            game.ruleSides = ruleChoices[Math.floor(Math.random() * ruleChoices.length)];
+            document.getElementById('g3-feedback').innerText = '答对了！阿学认识的是' + previousRule + '。下一题它将学习新的图形规则。';
+            arcadeAddEffect(game, game.canvas.width / 2, game.canvas.height / 2, '正确！', '#f59e0b', false);
+        } else {
+            game.mistakes++;
+            document.getElementById('g3-feedback').innerText = '再看一眼边数：这题是 ' + game.question.sides + ' 条边；阿学本题认识的是' + arcadeShapeName(game.ruleSides) + '。';
+            arcadeAddEffect(game, game.canvas.width / 2, game.canvas.height / 2, '失误', '#64748b', true);
+        }
+        arcadeRenderGame3Effects();
+        game.round++;
+        document.getElementById('status3').innerHTML = '正确 <strong>' + game.correct + '</strong> / 8　失误 <strong>' + game.mistakes + '</strong> / 3';
+        setTimeout(function() {
+            if (game.correct >= 8 || game.mistakes >= 3) {
+                game.ended = true;
+                var won = game.correct >= 8;
+                document.getElementById('msg3-title').innerText = won ? '判别大师！' : '本轮结束';
+                document.getElementById('msg3-text').innerText = won ? '你能跟着阿学不断切换规则，并抓住每种图形的边数特征！' : '你答对了 ' + game.correct + ' 题。下一轮继续专注观察当前规则！';
+                arcadeSetOverlay('overlay3', true);
+            } else arcadeNextGame3Question();
+        }, 700);
+    }
 </script>
 </body>
 </html>

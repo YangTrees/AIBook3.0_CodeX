@@ -52,7 +52,7 @@
                     <animateTransform attributeName="transform" type="rotate" from="0 50 50" to="360 50 50" dur="1s" repeatCount="indefinite" />
                 </circle>
             </svg>
-            <h2 style="font-size: 24px; font-weight: bold; margin-bottom: 10px;">正在加载小侦探游成..</h2>
+            <h2 style="font-size: 24px; font-weight: bold; margin-bottom: 10px;">正在加载小侦探游戏...</h2>
             <p style="color: #92400e;">(首次加载可能需要几秒钟，请稍候🔍)</p>
         </div>
     </div>
@@ -322,7 +322,7 @@ const App = () => {
                                 </div>
                                 <h1 className="text-5xl font-black text-amber-800 mb-6 tracking-wider" style={{ textShadow: '2px 2px 0px #fef3c7' }}>小侦探训练营</h1>
                                 <p className="text-2xl text-gray-700 mb-10 leading-relaxed font-medium">
-                                    欢迎来到第31课！我是小侦探<strong className="text-amber-700">团团</strong>，旁边是我的助手<strong className="text-blue-500">点点</strong><br/>
+                                    欢迎来到第1课！我是小侦探<strong className="text-amber-700">团团</strong>，旁边是我的助手<strong className="text-blue-500">点点</strong><br/>
                                     今天我们要学习：<span className="bg-amber-200 px-3 py-1 rounded-xl text-amber-900 font-bold mx-1 shadow-sm">用线索做决定：</span><br/>
                                     请选择你的战战任务吧：
                                 </p>
@@ -386,7 +386,7 @@ const App = () => {
             root.render(<App />);
         } catch (error) {
             console.error("React 渲染失败:", error);
-            document.getElementById('root').innerHTML = '<div style="color:red; text-align:center; margin-top:20vh;"><h3>游成加载失败</h3><p>可能是由于您的浏览器不支持某些特性。请尝试使用有新版的Chrome 成Edge 浏览器 </p></div>';
+            document.getElementById('root').innerHTML = '<div style="color:red; text-align:center; margin-top:20vh;"><h3>游戏加载失败</h3><p>可能是由于您的浏览器不支持某些特性。请尝试使用最新版 Chrome 或 Edge 浏览器。</p></div>';
         }
     </script>
 </body>

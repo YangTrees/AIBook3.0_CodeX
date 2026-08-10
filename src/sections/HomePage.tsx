@@ -1,5 +1,7 @@
+import { Fragment } from 'react';
 import COURSE_DATA from '../data/courseData.ts';
-import { BookOpen, Target, Brain, Layers, Gamepad2, Award } from 'lucide-react';
+import { BookOpen, Target, Brain, Layers, Gamepad2, Award, PlayCircle, CheckCircle2, Flame } from 'lucide-react';
+import { useStorage } from '../hooks/useStorage';
 
 interface HomePageProps {
   onSelectCourse: (id: number) => void;
@@ -13,6 +15,13 @@ const MODULE_COLORS: Record<string, { bg: string; text: string; dot: string }> =
   'D': { bg: '#edfaf4', text: '#1a8c5c', dot: '#4dc494' },
 };
 
+const CHAPTERS = [
+  { title: '第一章 · 认识信息与计算', desc: '从线索、编码到图像，让计算机看懂世界', color: '#2185d0' },
+  { title: '第二章 · 学会算法与数据', desc: '学习步骤、分类与预测，建立计算思维', color: '#6244c8' },
+  { title: '第三章 · 探索机器学习', desc: '理解机器如何学习、识别语言和发现规律', color: '#1a8c5c' },
+  { title: '第四章 · 创造负责任的 AI', desc: '体验生成式 AI，学习安全、伦理与协作', color: '#d05c10' },
+];
+
 function getModuleColor(module: string) {
   const letter = module.match(/模块([A-Z])/)?.[1] || 'A';
   return MODULE_COLORS[letter] || MODULE_COLORS['A'];
@@ -23,11 +32,16 @@ function getModuleShort(module: string) {
 }
 
 export default function HomePage({ onSelectCourse }: HomePageProps) {
+  const { storage, getStats } = useStorage();
+  const stats = getStats();
+  const currentCourse = COURSE_DATA.find(course => course.id === storage.currentLessonId);
+  const currentRecord = currentCourse ? storage.lessons[currentCourse.id] : undefined;
+
   return (
-    <div style={{ width: 1920, paddingBottom: 48 }}>
+    <div className="responsive-page home-page" style={{ width: 1920, paddingBottom: 48 }}>
       {/* ===== Hero Banner ===== */}
       <div
-        className="kid-float-in"
+        className="kid-float-in home-hero"
         style={{
           margin: '36px 48px 0',
           borderRadius: 32,
@@ -70,7 +84,7 @@ export default function HomePage({ onSelectCourse }: HomePageProps) {
               boxShadow: '0 4px 14px rgba(255,107,107,0.35)',
               letterSpacing: '0.04em',
             }}>
-              ✨ 32节完整课程
+              32节完整课程
             </span>
             <span style={{
               background: 'rgba(255,255,255,0.2)',
@@ -82,7 +96,7 @@ export default function HomePage({ onSelectCourse }: HomePageProps) {
               backdropFilter: 'blur(8px)',
               border: '1px solid rgba(255,255,255,0.3)',
             }}>
-              7大模块 · 系统学习
+              6大模块 · 系统学习
             </span>
           </div>
 
@@ -115,7 +129,7 @@ export default function HomePage({ onSelectCourse }: HomePageProps) {
           <div style={{ display: 'flex', gap: 18 }}>
             {[
               { n: '32', label: '节课程', Icon: BookOpen, color: '#feca57' },
-              { n: '7',  label: '大模块', Icon: Target, color: '#48dbfb' },
+              { n: '6',  label: '大模块', Icon: Target, color: '#48dbfb' },
               { n: '320', label: '道题目', Icon: Brain, color: '#ff6b6b' },
             ].map((stat) => (
               <div
@@ -140,9 +154,38 @@ export default function HomePage({ onSelectCourse }: HomePageProps) {
         </div>
       </div>
 
+      {/* ===== 继续学习 ===== */}
+      <div className="home-continue-grid" style={{ margin: '28px 48px 0', display: 'grid', gridTemplateColumns: '2fr 1fr', gap: 24 }}>
+        <div className="kid-card" style={{ padding: '26px 32px', display: 'flex', alignItems: 'center', gap: 24 }}>
+          <div style={{ width: 64, height: 64, borderRadius: 20, background: 'var(--kid-blue-50)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <PlayCircle size={36} color="var(--kid-blue-500)" />
+          </div>
+          <div style={{ flex: 1 }}>
+            <div style={{ color: 'var(--kid-blue-500)', fontWeight: 800, fontSize: 14, marginBottom: 5 }}>继续学习</div>
+            <h2 style={{ fontSize: 24, fontWeight: 900, color: 'var(--kid-gray-900)', marginBottom: 6 }}>
+              {currentCourse ? `第${currentCourse.id}课 · ${currentCourse.title}` : '从第1课开始 AI 探索之旅'}
+            </h2>
+            <p style={{ color: 'var(--kid-gray-400)', fontSize: 15 }}>
+              {currentRecord ? `已完成 ${currentRecord.completedModules.filter(id => id >= 2 && id <= 7).length}/6 个学习环节，下一个是第 ${Math.max(1, currentRecord.currentModule - 1)} 环节` : '每节课包含核心知识、绘本视频、问答和互动游戏'}
+            </p>
+          </div>
+          <button className="kid-btn kid-btn-primary" onClick={() => onSelectCourse(currentCourse?.id || 1)} style={{ padding: '14px 26px' }}>
+            {currentCourse ? '继续学习 →' : '开始第一课 →'}
+          </button>
+        </div>
+        <div className="kid-card" style={{ padding: '26px 30px', display: 'flex', alignItems: 'center', gap: 20 }}>
+          <CheckCircle2 size={44} color="var(--kid-green-500)" />
+          <div>
+            <div style={{ fontSize: 14, color: 'var(--kid-gray-400)', marginBottom: 4 }}>课程总进度</div>
+            <div style={{ fontSize: 30, fontWeight: 900, color: 'var(--kid-gray-900)' }}>{stats.completedCount}<span style={{ fontSize: 16, color: 'var(--kid-gray-400)' }}> / 32 课</span></div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 5, marginTop: 5, color: 'var(--kid-orange-500)', fontSize: 13, fontWeight: 800 }}><Flame size={16} /> 连续学习 {stats.currentStreak} 天</div>
+          </div>
+        </div>
+      </div>
+
       {/* ===== 特色三栏 ===== */}
       <div
-        className="kid-float-in delay-100"
+        className="kid-float-in delay-100 home-feature-grid"
         style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(3, 1fr)',
@@ -151,7 +194,7 @@ export default function HomePage({ onSelectCourse }: HomePageProps) {
         }}
       >
         {[
-          { Icon: Layers, title: '7大学习模块', desc: '科普视频·知识讲解·绘本动画·知识问答·互动游戏·动手实践·课程总结', color: 'var(--kid-blue-400)' },
+          { Icon: Layers, title: '6大学习模块', desc: '核心知识·绘本视频·知识问答·互动游戏·动手实践·课程总结', color: 'var(--kid-blue-400)' },
           { Icon: Gamepad2, title: '互动游戏体验', desc: '每节课专属游戏，团团&点点陪玩，寓教于乐巩固知识', color: 'var(--kid-green-400)' },
           { Icon: Award, title: '勋章成就激励', desc: '答题获得金银铜勋章，32节全部完成解锁毕业认证', color: 'var(--kid-orange-400)' },
         ].map((f) => (
@@ -189,7 +232,7 @@ export default function HomePage({ onSelectCourse }: HomePageProps) {
             全部课程
           </h2>
           <p style={{ fontSize: 17, color: 'var(--kid-gray-400)', fontWeight: 500 }}>
-            点击课程卡片，开始探索AI世界 ✨
+            点击课程卡片，开始探索AI世界
           </p>
         </div>
         <div style={{
@@ -208,7 +251,7 @@ export default function HomePage({ onSelectCourse }: HomePageProps) {
 
       {/* ===== 课程卡片网格 - 调整为6列更有呼吸感 ===== */}
       <div
-        className="kid-float-in delay-300"
+        className="kid-float-in delay-300 home-course-grid"
         style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(6, 1fr)',
@@ -218,7 +261,23 @@ export default function HomePage({ onSelectCourse }: HomePageProps) {
       >
         {COURSE_DATA.map((course, idx) => {
           const mc = getModuleColor(course.module);
+          const record = storage.lessons[course.id];
+          const progress = record?.completedModules.filter(id => id >= 2 && id <= 7).length || 0;
+          const chapterIndex = Math.floor(idx / 8);
+          const chapter = CHAPTERS[chapterIndex];
+          const chapterCourses = COURSE_DATA.slice(chapterIndex * 8, chapterIndex * 8 + 8);
+          const chapterCompleted = chapterCourses.filter(item => storage.lessons[item.id]?.completed).length;
           return (
+            <Fragment key={course.id}>
+            {idx % 8 === 0 && (
+              <div style={{ gridColumn: '1 / -1', display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: idx === 0 ? 0 : 20, padding: '16px 22px', borderRadius: 18, background: `${chapter.color}0d`, borderLeft: `6px solid ${chapter.color}` }}>
+                <div>
+                  <h3 style={{ fontSize: 23, fontWeight: 900, color: chapter.color, marginBottom: 4 }}>{chapter.title}</h3>
+                  <p style={{ fontSize: 14, color: 'var(--kid-gray-400)' }}>{chapter.desc}</p>
+                </div>
+                <div style={{ color: chapter.color, fontSize: 14, fontWeight: 800 }}>{chapterCompleted} / 8 课完成</div>
+              </div>
+            )}
             <button
               key={course.id}
               onClick={() => onSelectCourse(course.id)}
@@ -255,7 +314,7 @@ export default function HomePage({ onSelectCourse }: HomePageProps) {
                     const target = e.target as HTMLImageElement;
                     target.style.display = 'none';
                     const parent = target.parentElement!;
-                    parent.innerHTML = `<div style="width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(135deg,${mc.bg},#fff);padding:8px"><div style="font-size:2.8rem">📖</div><div style="font-size:12px;color:${mc.text};font-weight:700;margin-top:6px">第${String(course.lessonNum).padStart(2,'0')}课</div></div>`;
+                    parent.innerHTML = `<div style="width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(135deg,${mc.bg},#fff);padding:8px"><div style="width:44px;height:44px;border:3px solid ${mc.text};border-radius:12px;display:flex;align-items:center;justify-content:center;color:${mc.text};font-weight:900">AI</div><div style="font-size:12px;color:${mc.text};font-weight:700;margin-top:6px">第${String(course.lessonNum).padStart(2,'0')}课</div></div>`;
                   }}
                 />
 
@@ -273,6 +332,12 @@ export default function HomePage({ onSelectCourse }: HomePageProps) {
                 }}>
                   第{String(course.lessonNum).padStart(2, '0')}课
                 </div>
+
+                {progress > 0 && (
+                  <div style={{ position: 'absolute', right: 10, top: 10, background: record?.completed ? '#27a872' : 'rgba(20,34,54,.78)', color: '#fff', padding: '4px 10px', borderRadius: 999, fontSize: 12, fontWeight: 800 }}>
+                    {record?.completed ? '已完成' : `${progress}/6`}
+                  </div>
+                )}
 
                 {/* Hover 遮罩 */}
                 <div
@@ -318,8 +383,14 @@ export default function HomePage({ onSelectCourse }: HomePageProps) {
                 }}>
                   {getModuleShort(course.module)}
                 </div>
+                {progress > 0 && !record?.completed && (
+                  <div style={{ height: 5, background: 'var(--kid-gray-100)', borderRadius: 999, overflow: 'hidden', marginTop: 8 }}>
+                    <div style={{ width: `${(progress / 6) * 100}%`, height: '100%', background: mc.dot, borderRadius: 999 }} />
+                  </div>
+                )}
               </div>
             </button>
+            </Fragment>
           );
         })}
       </div>

@@ -1,4 +1,4 @@
-import { useState, useLayoutEffect, useCallback } from 'react';
+import { useState, useLayoutEffect, useCallback, useEffect } from 'react';
 import HomePage from './sections/HomePage';
 import CoursePage from './sections/CoursePage';
 import BottomNav from './sections/BottomNav';
@@ -6,19 +6,49 @@ import CinemaPage from './sections/CinemaPage';
 import GamePage from './sections/GamePage';
 import ArchivePage from './sections/ArchivePage';
 import ParentPage from './sections/ParentPage';
+import AppErrorBoundary from './components/AppErrorBoundary';
 import './App.css';
 
 export type TabType = 'home' | 'cinema' | 'game' | 'archive' | 'parent';
 
+function readRoute(): { tab: TabType; courseId: number | null } {
+  const route = window.location.hash.replace(/^#\/?/, '');
+  const courseMatch = route.match(/^course\/(\d+)$/);
+  if (courseMatch) {
+    const courseId = Number(courseMatch[1]);
+    if (courseId >= 1 && courseId <= 32) return { tab: 'home', courseId };
+  }
+  const tab = route as TabType;
+  return { tab: ['home', 'cinema', 'game', 'archive', 'parent'].includes(tab) ? tab : 'home', courseId: null };
+}
+
+function pushRoute(path: string) {
+  window.location.hash = `/${path}`;
+}
+
 function useAppScale() {
-  const [scale, setScale] = useState(1);
-  const [offset, setOffset] = useState({ x: 0, y: 0 });
+  const getLayout = () => {
+    if (window.innerWidth <= 900) return { scale: 1, offset: { x: 0, y: 0 } };
+    const s = Math.min(window.innerWidth / 1920, window.innerHeight / 1080);
+    return { scale: Math.round(s * 1000) / 1000, offset: { x: Math.round(((window.innerWidth - 1920 * s) / 2) * 100) / 100, y: Math.round(((window.innerHeight - 1080 * s) / 2) * 100) / 100 } };
+  };
+  const initial = getLayout();
+  const [scale, setScale] = useState(initial.scale);
+  const [offset, setOffset] = useState(initial.offset);
+  const [compact, setCompact] = useState(() => window.innerWidth <= 900);
 
   const calculate = useCallback(() => {
     const targetW = 1920;
     const targetH = 1080;
     const vw = window.innerWidth;
     const vh = window.innerHeight;
+    const isCompact = vw <= 900;
+    setCompact(isCompact);
+    if (isCompact) {
+      setScale(1);
+      setOffset({ x: 0, y: 0 });
+      return;
+    }
     const s = Math.min(vw / targetW, vh / targetH);
     const ox = (vw - targetW * s) / 2;
     const oy = (vh - targetH * s) / 2;
@@ -27,29 +57,46 @@ function useAppScale() {
   }, []);
 
   useLayoutEffect(() => {
-    calculate();
     window.addEventListener('resize', calculate);
     return () => window.removeEventListener('resize', calculate);
   }, [calculate]);
 
-  return { scale, offset };
+  return { scale, offset, compact };
 }
 
 export default function App() {
-  const [currentTab, setCurrentTab] = useState<TabType>('home');
-  const [currentCourseId, setCurrentCourseId] = useState<number | null>(null);
-  const { scale, offset } = useAppScale();
+  const initialRoute = readRoute();
+  const [currentTab, setCurrentTab] = useState<TabType>(initialRoute.tab);
+  const [currentCourseId, setCurrentCourseId] = useState<number | null>(initialRoute.courseId);
+  const { scale, offset, compact } = useAppScale();
+
+  useEffect(() => {
+    const restoreRoute = () => {
+      const route = readRoute();
+      setCurrentTab(route.tab);
+      setCurrentCourseId(route.courseId);
+    };
+    window.addEventListener('popstate', restoreRoute);
+    window.addEventListener('hashchange', restoreRoute);
+    return () => {
+      window.removeEventListener('popstate', restoreRoute);
+      window.removeEventListener('hashchange', restoreRoute);
+    };
+  }, []);
 
   const handleSelectCourse = (id: number) => {
+    pushRoute(`course/${id}`);
     setCurrentCourseId(id);
   };
 
   const handleBackToHome = () => {
+    pushRoute('home');
     setCurrentCourseId(null);
     setCurrentTab('home');
   };
 
   const handleTabChange = (tab: TabType) => {
+    pushRoute(tab);
     setCurrentCourseId(null);
     setCurrentTab(tab);
   };
@@ -66,7 +113,7 @@ export default function App() {
       case 'game':
         return <GamePage />;
       case 'archive':
-        return <ArchivePage />;
+        return <ArchivePage onSelectCourse={handleSelectCourse} />;
       case 'parent':
         return <ParentPage />;
       default:
@@ -75,15 +122,15 @@ export default function App() {
   };
 
   return (
-    <div className="fixed inset-0 overflow-hidden" style={{ backgroundColor: '#b8d4f0' }}>
+    <div className={`fixed inset-0 overflow-hidden app-shell ${compact ? 'is-compact' : ''}`} style={{ backgroundColor: '#b8d4f0' }}>
       {/* 1920×1080 固定画布 */}
       <div
-        className="absolute"
+        className="absolute app-canvas"
         style={{
           top: offset.y,
           left: offset.x,
-          width: 1920,
-          height: 1080,
+          width: compact ? '100%' : 1920,
+          height: compact ? '100%' : 1080,
           transform: `scale(${scale})`,
           transformOrigin: 'top left',
           overflow: 'hidden',
@@ -106,16 +153,18 @@ export default function App() {
 
         {/* 主内容区 */}
         <div
-          className="relative z-10 overflow-y-auto overflow-x-hidden scrollbar-kid"
-          style={{ width: 1920, height: 1000 }}
+          className="relative z-10 overflow-y-auto overflow-x-hidden scrollbar-kid app-content"
+          style={{ width: compact ? '100%' : 1920, height: compact ? 'calc(100% - 72px)' : 1000 }}
         >
-          {renderContent()}
+          <AppErrorBoundary key={currentCourseId === null ? currentTab : `course-${currentCourseId}`}>
+            {renderContent()}
+          </AppErrorBoundary>
         </div>
 
         {/* 底部导航 */}
         <div
-          className="absolute z-50"
-          style={{ bottom: 0, left: 0, width: 1920, height: 80 }}
+          className="absolute z-50 app-bottom-nav"
+          style={{ bottom: 0, left: 0, width: compact ? '100%' : 1920, height: compact ? 72 : 80 }}
         >
           <BottomNav currentTab={currentTab} onTabChange={handleTabChange} />
         </div>

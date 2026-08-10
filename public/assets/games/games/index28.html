@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="../../libs/libs/animate.min.css"/>
     <!-- 引入 FontAwesome 图标 -->
     <link rel="stylesheet" href="../../libs/libs/font-awesome.all.min.css">
+    <link rel="stylesheet" href="../../libs/libs/game-icon-fallback.css">
     <!-- 引入 Tone.js 用于生成游戏音效 -->
     <script src="../../libs/libs/Tone.js"></script>
 
@@ -112,7 +113,7 @@
         <div class="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
             <div class="flex items-center gap-3">
                 <div class="w-14 h-14 bg-primary rounded-full flex items-center justify-center text-white text-3xl shadow-lg character-float border-2 border-white">
-                    <img src="../../characters/characters/tuantuan.png" alt="团团" style="width:50px;height:60px;" />
+                    <img src="../../characters/characters/tuantuan.png" alt="团团" style="width:50px;height:auto;object-fit:contain;" />
                 </div>
                 <div>
                     <h1 class="text-xl md:text-2xl font-bold text-gray-800 tracking-wide">会编故事的机器人</h1>
@@ -154,7 +155,7 @@
 
             <div class="bg-blue-50 rounded-2xl p-6 md:p-12 text-center relative mt-10 border-4 border-blue-200 shadow-inner">
                 <div class="absolute -top-12 left-1/2 transform -translate-x-1/2 w-24 h-24 bg-gray-200 rounded-full border-4 border-white shadow-lg flex items-center justify-center text-5xl character-float">
-                    <img src="../../characters/characters/tuantuan.png" alt="团团" style="width:70px;height:85px;" />
+                    <img src="../../characters/characters/tuantuan.png" alt="团团" style="width:70px;height:auto;object-fit:contain;" />
                 </div>
                 
                 <div class="mt-6 bg-white p-6 rounded-2xl shadow-sm min-h-[140px] flex items-center justify-center border-2 border-dashed border-blue-300 relative overflow-hidden">
@@ -191,7 +192,7 @@
 
             <div class="bg-gray-50 rounded-3xl p-6 md:p-8 border-4 border-gray-200 relative mt-8">
                  <div class="flex flex-col md:flex-row items-center justify-center gap-4 mb-10 bg-white p-5 rounded-2xl shadow-sm max-w-3xl mx-auto border-2 border-dashed border-gray-300">
-                    <span class="text-5xl character-float"><img src="../../characters/characters/tuantuan.png" alt="团团" style="width:60px;height:75px;" /></span>
+                    <span class="text-5xl character-float"><img src="../../characters/characters/tuantuan.png" alt="团团" style="width:60px;height:auto;object-fit:contain;" /></span>
                     <span id="g2-statement" class="text-xl md:text-2xl font-bold text-gray-700 font-mono bg-blue-50 px-6 py-4 rounded-xl text-center w-full shadow-inner border border-blue-100 transition-opacity duration-300">
                         加载中..
                     </span>
@@ -269,27 +270,27 @@
                 </div>
                 <div class="bg-purple-50 rounded-3xl p-6 md:p-10 border-4 border-purple-200">
                     <div class="flex flex-col md:flex-row items-center justify-center gap-4 mb-8 bg-white p-6 rounded-2xl shadow-sm border-2 border-purple-100">
-                        <span class="text-5xl character-float"><img src="../../characters/characters/tuantuan.png" alt="团团" style="width:60px;height:75px;" /></span>
+                        <span class="text-5xl character-float"><img src="../../characters/characters/tuantuan.png" alt="团团" style="width:60px;height:auto;object-fit:contain;" /></span>
                         <p class="text-xl md:text-2xl font-bold text-gray-700 bg-gray-50 p-4 rounded-xl">"听我说！把盐倒进水里，盐会变成白云飞到天上！ </p>
                     </div>
                     
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
-                        <!-- 3-5页-->
+                        <!-- 难度：基础 -->
                         <button onclick="completeChallenge('level1', event)" class="btn-bounce bg-white border-4 border-green-400 rounded-2xl p-6 flex flex-col items-center gap-4 shadow-md hover:bg-green-50">
-                            <span class="bg-green-100 text-green-700 px-4 py-1 rounded-full text-sm font-bold border border-green-300">👶 3-5页</span>
+                            <span class="bg-green-100 text-green-700 px-4 py-1 rounded-full text-sm font-bold border border-green-300">难度：基础</span>
                             <span class="text-5xl">🤷</span>
                             <span class="text-xl font-bold text-gray-800 text-center">说："我不确定！ <br><span class="text-base text-gray-500 font-normal mt-2 block">去问爸爸妈妈</span></span>
                         </button>
-                        <!-- 6-7页-->
+                        <!-- 难度：进阶 -->
                         <button onclick="completeChallenge('level2', event)" class="btn-bounce bg-white border-4 border-blue-400 rounded-2xl p-6 flex flex-col items-center gap-4 shadow-md hover:bg-blue-50 relative">
                             <span class="absolute -top-4 -right-2 bg-accent text-xs font-bold px-3 py-1 rounded-full shadow-sm transform rotate-12">推荐</span>
-                            <span class="bg-blue-100 text-blue-700 px-4 py-1 rounded-full text-sm font-bold border border-blue-300">👦 6-7页</span>
+                            <span class="bg-blue-100 text-blue-700 px-4 py-1 rounded-full text-sm font-bold border border-blue-300">难度：进阶</span>
                             <span class="text-5xl">🕵︀</span>
                             <span class="text-xl font-bold text-gray-800 text-center">问："这是谁说的？ <br><span class="text-base text-gray-500 font-normal mt-2 block">找出说话的人</span></span>
                         </button>
-                        <!-- 8-9页-->
+                        <!-- 难度：挑战 -->
                         <button onclick="completeChallenge('level3', event)" class="btn-bounce bg-white border-4 border-orange-400 rounded-2xl p-6 flex flex-col items-center gap-4 shadow-md hover:bg-orange-50">
-                            <span class="bg-orange-100 text-orange-700 px-4 py-1 rounded-full text-sm font-bold border border-orange-300">🧑 8-9页</span>
+                            <span class="bg-orange-100 text-orange-700 px-4 py-1 rounded-full text-sm font-bold border border-orange-300">难度：挑战</span>
                             <span class="text-5xl">🧪</span>
                             <span class="text-xl font-bold text-gray-800 text-center">查资料做实验<br><span class="text-base text-gray-500 font-normal mt-2 block">盐会溶解在水里！</span></span>
                         </button>
@@ -575,7 +576,7 @@ let badge = '';
         }
 
 
-        /* ================= 游戏 3：拼装核对卡 & 分龄挑战 ================= */
+        /* ================= 游戏 3：拼装核对卡与难度挑战 ================= */
         const puzzleData = [
             { id: 'step1', text: '👂 1.先听别说', order: 0, color: 'bg-blue-500' },
             { id: 'step2', text: '🔍 2.找证据', order: 1, color: 'bg-orange-500' },
@@ -687,15 +688,15 @@ document.getElementById('g3-puzzle-area').style.display = 'none';
             let feedbackText = '';
             
             if(level === 'level1') {
-                feedbackTitle = "太棒啦！(适合3-5页";
+                feedbackTitle = "太棒啦！难度：基础";
                 feedbackText = "点点说：遇到不懂的事，承认自己不知道，跑去问信任的大人，这是非常棒的第一步！";
             }
             if(level === 'level2') {
-                feedbackTitle = "真聪明！(适合6-7页";
+                feedbackTitle = "真聪明！难度：进阶";
                 feedbackText = "团团说：太聪明了！知道问一句'是谁说的'，看看那个人靠不靠谱，这是很厉害的觉察力！";
             }
             if(level === 'level3') {
-                feedbackTitle = "小科学家：适合8-9页";
+                feedbackTitle = "小科学家：难度：挑战";
                 feedbackText = "点点胸口亮起小星星：哇，你已经像科学家一样，会自己动手做实验找证据了！";
             }
 
@@ -714,7 +715,7 @@ document.getElementById('g3-puzzle-area').style.display = 'none';
                             3. 拿到证据后【再确认】✅
                         </div>
                         <p class="mt-6 text-gray-600 text-lg">点点胸口亮起了一颗小星星：今天你学会了新本领：</p>
-                        <p class="mt-2 text-sm text-gray-400">（下一课预告：第9课《不要随便给陌生人 ..下次见！：</p>
+                        <p class="mt-2 text-sm text-gray-400">（下一课预告：第29课《不要随便给陌生人》……下次见！）</p>
                     </div>
                 `,
                 icon: 'success',

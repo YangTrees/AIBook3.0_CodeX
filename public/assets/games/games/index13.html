@@ -66,23 +66,23 @@
         
         <div class="flex justify-center items-end mb-8 space-x-4">
             <!-- 团团 SVG -->
-            <img src="../../characters/characters/tuantuan.png" alt="团团" class="w-32 h-40 object-contain animate-float-delay" />
+            <img src="../../characters/characters/tuantuan.png" alt="团团" class="w-32 h-auto object-contain animate-float-delay" />
             <!-- 点点 SVG -->
-            <img src="../../characters/characters/diandian.png" alt="点点" class="w-32 h-40 object-contain animate-float" />
+            <img src="../../characters/characters/diandian.png" alt="点点" class="w-32 h-auto object-contain animate-float" />
         </div>
 
         <div class="flex flex-col md:flex-row gap-4 w-full max-w-3xl px-6">
             <button onclick="startGame(1)" class="flex-1 bg-red-400 hover:bg-red-500 text-white rounded-2xl p-4 shadow-lg border-b-4 border-red-600 transition transform hover:-translate-y-1">
                 <div class="text-2xl mb-1">颜色大本营</div>
-                <div class="text-sm opacity-90">难度：⭐ (3-5岁)</div>
+                <div class="text-sm opacity-90">难度：基础 ⭐</div>
             </button>
             <button onclick="startGame(2)" class="flex-1 bg-yellow-400 hover:bg-yellow-500 text-yellow-900 rounded-2xl p-4 shadow-lg border-b-4 border-yellow-600 transition transform hover:-translate-y-1">
                 <div class="text-2xl mb-1">规则大侦探</div>
-                <div class="text-sm opacity-90">难度：⭐⭕(6-7岁)</div>
+                <div class="text-sm opacity-90">难度：进阶 ⭐⭐</div>
             </button>
             <button onclick="startGame(3)" class="flex-1 bg-blue-400 hover:bg-blue-500 text-white rounded-2xl p-4 shadow-lg border-b-4 border-blue-600 transition transform hover:-translate-y-1">
                 <div class="text-2xl mb-1">物品分类层</div>
-                <div class="text-sm opacity-90">难度：⭐⭐⭐ (8-9岁)</div>
+                <div class="text-sm opacity-90">难度：挑战 ⭐⭐⭐</div>
             </button>
         </div>
     </div>
@@ -114,7 +114,7 @@
         </div>
         
         <!-- 装饰点点 -->
-        <img src="../../characters/characters/diandian.png" alt="点点" class="absolute bottom-4 right-4 w-20 h-24 object-contain opacity-80 pointer-events-none" />
+        <img src="../../characters/characters/diandian.png" alt="点点" class="absolute bottom-4 right-4 w-20 h-auto object-contain opacity-80 pointer-events-none" />
     </div>
 
     <!-- 成功弹窗 -->
@@ -272,7 +272,7 @@ function shadeColor(color, percent) {
 const LEVELS = {
         1: {
             title: "颜色大本营",
-            desc: "3-5岁：把相同颜色的袜子放到对应的箱子里！",
+            desc: "把相同颜色的袜子放到对应的箱子里！",
             bins: [
                 { id: 'red', label: '红色袜子', color: '#FCA5A5' },
                 { id: 'blue', label: '蓝色袜子', color: '#93C5FD' }
@@ -287,7 +287,7 @@ for(let i=0; i<4; i++) items.push({ id:`r${i}`, matchId: 'red', svg: SVGs.sock('
         },
         2: {
             title: "规则大侦探",
-            desc: "6-7岁：按花纹分类！条纹去一边，波点去另一边" ,
+            desc: "按花纹分类！条纹去一边，波点去另一边" ,
             bins: [
                 { id: 'stripe', label: '条纹袜子', color: '#FCD34D' },
                 { id: 'dot', label: '波点袜子', color: '#6EE7B7' }
@@ -303,7 +303,7 @@ const colors = ['#EF4444', '#3B82F6', '#F59E0B', '#8B5CF6'];
         },
         3: {
             title: "物品分类层",
-            desc: "8-9岁：不仅是袜子，把不同种类的物品分开吧！",
+            desc: "不仅是袜子，把不同种类的物品分开吧！",
             bins: [
                 { id: 'sock', label: '袜子', color: '#FDBA74' },
                 { id: 'toy', label: '玩具车', color: '#A7F3D0' }

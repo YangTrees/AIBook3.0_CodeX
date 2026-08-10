@@ -42,11 +42,11 @@
         <p class="text-slate-600 text-sm md:text-lg">亲自操作，体验AI 的"逐层抽象"！</p>
     </header>
 
-    <!-- 年龄段切换卡片-->
+    <!-- 难度切换卡片-->
     <div class="flex flex-wrap justify-center gap-2 md:gap-3 mb-6 w-full max-w-3xl">
-        <button onclick="switchGame(1)" id="btn-tab-1" class="tab-btn px-4 md:px-6 py-2 rounded-full font-bold transition-colors bg-orange-500 text-white shadow-md hover:bg-orange-600 text-sm md:text-base flex-1 min-w-[120px]">👶 3-5页</button>
-        <button onclick="switchGame(2)" id="btn-tab-2" class="tab-btn px-4 md:px-6 py-2 rounded-full font-bold transition-colors bg-orange-100 text-orange-700 hover:bg-orange-200 text-sm md:text-base flex-1 min-w-[120px]">🧒 6-7页</button>
-        <button onclick="switchGame(3)" id="btn-tab-3" class="tab-btn px-4 md:px-6 py-2 rounded-full font-bold transition-colors bg-orange-100 text-orange-700 hover:bg-orange-200 text-sm md:text-base flex-1 min-w-[120px]">👦 8-9页</button>
+        <button onclick="switchGame(1)" id="btn-tab-1" class="tab-btn px-4 md:px-6 py-2 rounded-full font-bold transition-colors bg-orange-500 text-white shadow-md hover:bg-orange-600 text-sm md:text-base flex-1 min-w-[120px]">难度：基础</button>
+        <button onclick="switchGame(2)" id="btn-tab-2" class="tab-btn px-4 md:px-6 py-2 rounded-full font-bold transition-colors bg-orange-100 text-orange-700 hover:bg-orange-200 text-sm md:text-base flex-1 min-w-[120px]">难度：进阶</button>
+        <button onclick="switchGame(3)" id="btn-tab-3" class="tab-btn px-4 md:px-6 py-2 rounded-full font-bold transition-colors bg-orange-100 text-orange-700 hover:bg-orange-200 text-sm md:text-base flex-1 min-w-[120px]">难度：挑战</button>
     </div>
 
     <!-- 主展示区 -->
@@ -98,7 +98,7 @@ const g1FaceList = [
         let g2WordIndex = 0;
 
         const g3WordList = [
-            { level1: ['丨', '𠃌', '一', '一', '丿', '𠃌', '一', '一'], level2: ['日', '月'], level3: '明' },
+        { level1: ['丨', '乛', '一', '一', '丿', '乛', '一', '一'], level2: ['日', '月'], level3: '明' },
             { level1: ['一', '丨', '丿', '㇏', '一', '丨', '丿', '㇏'], level2: ['木', '木'], level3: '林' },
             { level1: ['丶', 'ノ', 'ノ', '㇏', '丶', 'ノ', 'ノ', '㇏'], level2: ['火', '火'], level3: '炎' }
         ];

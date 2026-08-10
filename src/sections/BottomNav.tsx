@@ -61,7 +61,7 @@ const TABS: TabItem[] = [
 export default function BottomNav({ currentTab, onTabChange }: BottomNavProps) {
   return (
     <nav
-      className="flex items-stretch"
+      className="flex items-stretch kid-bottom-nav"
       style={{
         height: 80,
         background: 'rgba(255, 255, 255, 0.96)',
@@ -85,6 +85,7 @@ export default function BottomNav({ currentTab, onTabChange }: BottomNavProps) {
             {/* 顶部激活指示条 */}
             {isActive && (
               <div
+                className="kid-nav-indicator"
                 style={{
                   position: 'absolute',
                   top: 0,
