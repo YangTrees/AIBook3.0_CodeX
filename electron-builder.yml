@@ -1,0 +1,38 @@
+appId: com.yangtrees.aibook
+productName: AI启蒙绘本客户端
+copyright: Copyright © 2026 YangTrees
+
+directories:
+  output: release/installer-build
+
+files:
+  - dist-desktop/**/*
+  - electron/**/*
+  - package.json
+
+asar: true
+
+win:
+  icon: build/icon.ico
+  target:
+    - target: nsis
+      arch:
+        - x64
+  artifactName: AIBook-Setup-${version}-${arch}.${ext}
+
+nsis:
+  include: build/installer.nsh
+  installerIcon: build/icon.ico
+  installerHeaderIcon: build/icon.ico
+  uninstallerIcon: build/icon.ico
+  oneClick: false
+  perMachine: false
+  allowElevation: true
+  allowToChangeInstallationDirectory: true
+  createDesktopShortcut: always
+  createStartMenuShortcut: true
+  shortcutName: AI启蒙绘本客户端
+  deleteAppDataOnUninstall: false
+  displayLanguageSelector: false
+  installerLanguages:
+    - zh_CN
