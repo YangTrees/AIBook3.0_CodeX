@@ -6,6 +6,7 @@ import QuizModule from './modules/QuizModule';
 import GameModule from './modules/GameModule';
 import SummaryModule from './modules/SummaryModule';
 import { useStorage } from '../hooks/useStorage';
+import { getExplanationAudioForPages } from '../data/audioMapping';
 import { BookOpen, BookImage, Brain, Gamepad2, Wrench, Trophy } from 'lucide-react';
 
 interface CoursePageProps {
@@ -50,7 +51,10 @@ export default function CoursePage({ courseId, onBack }: CoursePageProps) {
   const course = COURSE_DATA.find((c) => c.id === courseId);
   const { storage, saveQuizResult, markGameCompleted, markLessonCompleted, setCurrentPosition, markModuleCompleted, updateVideoProgress, addStudyTime } = useStorage();
   const savedRecord = storage.lessons[courseId];
-  const [activeModule, setActiveModule] = useState(() => Math.max(2, savedRecord?.currentModule || 2));
+  const [activeModule, setActiveModule] = useState(() => {
+    const savedModule = savedRecord?.currentModule || 2;
+    return MODULES.some(module => module.id === savedModule) ? savedModule : 2;
+  });
   const [completedModules, setCompletedModules] = useState<Set<number>>(() => new Set((savedRecord?.completedModules || []).filter(id => id >= 2 && id <= 7)));
   const [videoError, setVideoError] = useState(false);
   const [quizRecord, setQuizRecord] = useState<QuizRecord>({
@@ -58,12 +62,6 @@ export default function CoursePage({ courseId, onBack }: CoursePageProps) {
   });
   const lastSavedVideoSecond = useRef(0);
   const videoCompletionSaved = useRef(false);
-
-  useEffect(() => {
-    if (!MODULES.some(module => module.id === activeModule)) {
-      setActiveModule(2);
-    }
-  }, [activeModule]);
 
   useEffect(() => {
     window.scrollTo({ top: 0 });
@@ -159,6 +157,7 @@ export default function CoursePage({ courseId, onBack }: CoursePageProps) {
             images={course.knowledgeImages}
             knowledgePoints={course.keyPoints}
             courseId={courseId}
+            explanationAudio={getExplanationAudioForPages(courseId, course.knowledgeImages.length)}
             onComplete={() => completeModule(2)}
           />
         );
@@ -255,6 +254,7 @@ export default function CoursePage({ courseId, onBack }: CoursePageProps) {
           <QuizModule
             quiz={course.quiz}
             courseTitle={course.title}
+            courseId={courseId}
             onComplete={(record) => {
               setQuizRecord(record);
               // 保存到localStorage

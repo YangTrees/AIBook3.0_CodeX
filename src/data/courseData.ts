@@ -7627,7 +7627,7 @@ const courseCatalog: Course[] = [
     "intro": "第31课「超级搭档」的AI启蒙故事",
     "keyPoints": ["AI是人类的超级搭档", "人类和AI各有优势", "协作能完成单独完成不了的任务", "未来是人机协作的时代"],
     "coverImage": "./assets/covers/covers/AI启蒙绘本_第31课_封面海报_3x4.jpeg",
-    "knowledgeImages": ["./assets/knowledge/knowledge/31/01.jpg", "./assets/knowledge/knowledge/31/02.jpg", "./assets/knowledge/knowledge/31/03.jpg", "./assets/knowledge/knowledge/31/04.jpg", "./assets/knowledge/knowledge/31/05.jpg", "./assets/knowledge/knowledge/31/06.jpg", "./assets/knowledge/knowledge/31/07.jpg", "./assets/knowledge/knowledge/31/08.jpg", "./assets/knowledge/knowledge/31/09.jpg", "./assets/knowledge/knowledge/31/10.jpg"],
+    "knowledgeImages": ["./assets/knowledge/knowledge/31/01.jpg", "./assets/knowledge/knowledge/31/02.jpg", "./assets/knowledge/knowledge/31/03.jpg", "./assets/knowledge/knowledge/31/04.jpg", "./assets/knowledge/knowledge/31/05.jpg"],
     "picturebookVideos": ["assets/videos/videos/31/AI启蒙绘本_第31课_超级搭档_横版视频.mp4"],
     "scienceVideos": [
       {

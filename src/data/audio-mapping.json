@@ -1,0 +1,5585 @@
+{
+  "generated_from": "public/assets/sounds/audio/overview.json + Lxx/units.json",
+  "audio_base_path": "assets/sounds/audio/",
+  "lessons": [
+    {
+      "lesson_id": "L01",
+      "lesson_num": 1,
+      "title": "《小侦探找线索》",
+      "core_knowledge": [
+        "信息就是能帮助我们做决定的线索",
+        "学会观察、收集信息，用证据来判断",
+        "AI也靠信息输入来\"思考\"，没有信息就无法做决定"
+      ],
+      "explanation_segments": [
+        {
+          "audio": "L01/L01_P1.mp3",
+          "source_text": "你有没有玩过\"猜猜我是谁\"的游戏？你蒙着眼睛，小伙伴让你摸一个东西——圆圆的、滑滑的、还凉凉的……你猜：\"是苹果！\"你猜对了！你是怎么猜到的呢？因为你收集到了\"圆圆的、滑滑的、凉凉的\"这些线索，这些线索就是\"信息\"。",
+          "order": 1
+        },
+        {
+          "audio": "L01/L01_P2.mp3",
+          "source_text": "信息就像小侦探的放大镜。没有线索，福尔摩斯也破不了案；没有信息，AI也做不了决定。比如说，妈妈问你\"今天出门要不要带伞？\"你怎么办？你会去看看窗外——如果天黑黑的、云厚厚的，这就是信息，告诉你\"可能会下雨，带上伞吧！\"",
+          "order": 2
+        },
+        {
+          "audio": "L01/L01_P3.mp3",
+          "source_text": "AI也是这样工作的！AI就像一个特别勤快的小侦探，它到处收集线索（这些线索就是\"数据\"），然后根据线索做出判断。如果你告诉AI\"我喜欢看恐龙的书\"，AI就记住了这条线索，下次就会给你推荐更多恐龙的故事。但如果什么线索都不给它，它就什么都不知道啦！",
+          "order": 3
+        },
+        {
+          "audio": "L01/L01_P4.mp3",
+          "source_text": "所以记住：做决定之前，先像小侦探一样找线索——信息越多，决定越靠谱！",
+          "order": 4
+        }
+      ],
+      "quiz": [
+        {
+          "question_no": 1,
+          "question_audio": "L01/L01_Q1.mp3",
+          "answer_audio": "L01/L01_A1.mp3",
+          "title": "信息对我们做决定有什么帮助？",
+          "options": [
+            "信息是帮助我们做决定的线索。",
+            "信息只会让我们更困惑。",
+            "没什么帮助，我们靠猜就行。",
+            "信息只能大人用，小孩用不了。"
+          ],
+          "correct_answer": "A",
+          "explanation": "信息就像线索，帮我们做出更好的决定。"
+        },
+        {
+          "question_no": 2,
+          "question_audio": "L01/L01_Q2.mp3",
+          "answer_audio": "L01/L01_A2.mp3",
+          "title": "如果AI没有收到任何信息，它能做出决定吗？",
+          "options": [
+            "能，AI不需要信息。",
+            "不能，没有信息AI就无法做决定。",
+            "能，AI可以自己猜。",
+            "能，AI什么都知道。"
+          ],
+          "correct_answer": "B",
+          "explanation": "AI就像小侦探，没有线索就破不了案。"
+        },
+        {
+          "question_no": 3,
+          "question_audio": "L01/L01_Q3.mp3",
+          "answer_audio": "L01/L01_A3.mp3",
+          "title": "妈妈问要不要带伞，你会怎么做？",
+          "options": [
+            "不管天气怎样都带伞。",
+            "问AI，但不用看外面。",
+            "去看看窗外天色和云层再决定。",
+            "什么都不看，直接说不带。"
+          ],
+          "correct_answer": "C",
+          "explanation": "去看窗外的天气，就是在收集信息。"
+        },
+        {
+          "question_no": 4,
+          "question_audio": "L01/L01_Q4.mp3",
+          "answer_audio": "L01/L01_A4.mp3",
+          "title": "下面哪个不是信息？",
+          "options": [
+            "温度计显示30度。",
+            "看到路上的人都穿着雨衣。",
+            "天上乌云密布。",
+            "闭着眼睛乱猜。"
+          ],
+          "correct_answer": "D",
+          "explanation": "闭着眼睛乱猜，没有收集任何线索，不是信息。"
+        },
+        {
+          "question_no": 5,
+          "question_audio": "L01/L01_Q5.mp3",
+          "answer_audio": "L01/L01_A5.mp3",
+          "title": "你告诉AI你喜欢恐龙的书，AI下次推荐恐龙故事，这说明什么？",
+          "options": [
+            "AI靠收集的信息来做推荐。",
+            "AI只认识恐龙。",
+            "AI会自己发明故事。",
+            "AI在偷看你的日记。"
+          ],
+          "correct_answer": "A",
+          "explanation": "AI记住了你喜欢恐龙这条信息，然后做出推荐。"
+        },
+        {
+          "question_no": 6,
+          "question_audio": "L01/L01_Q6.mp3",
+          "answer_audio": "L01/L01_A6.mp3",
+          "title": "蒙眼摸东西猜是什么？你摸到的圆圆的、滑滑的是什么？",
+          "options": [
+            "答案。",
+            "信息（线索）。",
+            "感觉。",
+            "幻觉。"
+          ],
+          "correct_answer": "B",
+          "explanation": "你摸到的感觉，就是帮助你判断的线索，也就是信息。"
+        },
+        {
+          "question_no": 7,
+          "question_audio": "L01/L01_Q7.mp3",
+          "answer_audio": "L01/L01_A7.mp3",
+          "title": "为什么信息越多，决定越靠谱？",
+          "options": [
+            "因为信息多，可以随便选。",
+            "其实信息多少跟决定没关系。",
+            "因为更多线索，帮助你更准确地判断。",
+            "因为信息多，看起来厉害。"
+          ],
+          "correct_answer": "C",
+          "explanation": "就像小侦探收集更多线索，破案就越准确。"
+        },
+        {
+          "question_no": 8,
+          "question_audio": "L01/L01_Q8.mp3",
+          "answer_audio": "L01/L01_A8.mp3",
+          "title": "如果只摸了1秒就猜袋子里是什么，猜错的可能性会怎样？",
+          "options": [
+            "会变小，因为更快。",
+            "跟摸10秒一样。",
+            "不会变，1秒够了。",
+            "会变大，因为信息不够。"
+          ],
+          "correct_answer": "D",
+          "explanation": "信息不足时，判断就容易出错。"
+        },
+        {
+          "question_no": 9,
+          "question_audio": "L01/L01_Q9.mp3",
+          "answer_audio": "L01/L01_A9.mp3",
+          "title": "下面哪种做法是在收集信息？",
+          "options": [
+            "看天气预报，决定穿什么衣服。",
+            "不看路就过马路。",
+            "把书扔了不看。",
+            "闭着耳朵不听别人说话。"
+          ],
+          "correct_answer": "A",
+          "explanation": "看天气预报，就是在收集天气信息。"
+        },
+        {
+          "question_no": 10,
+          "question_audio": "L01/L01_Q10.mp3",
+          "answer_audio": "L01/L01_A10.mp3",
+          "title": "没有信息就无法做决定这句话，对吗？",
+          "options": [
+            "不对，人可以凭空做决定。",
+            "对，就像没有线索就破不了案。",
+            "不对，AI不需要信息。",
+            "只对，大人不对小孩。"
+          ],
+          "correct_answer": "B",
+          "explanation": "不管是人还是AI，做决定都需要信息作为依据。"
+        }
+      ]
+    },
+    {
+      "lesson_id": "L02",
+      "lesson_num": 2,
+      "title": "《开关城的两兄弟》",
+      "core_knowledge": [
+        "0和1可以表示两种状态——关和开",
+        "用0和1的组合可以表示各种信息",
+        "电脑内部就是用0和1来\"说话\"的"
+      ],
+      "explanation_segments": [
+        {
+          "audio": "L02/L02_P1.mp3",
+          "source_text": "想象有一座神奇的城市，叫\"开关城\"。城里只有两种居民——一个叫\"关关\"，一个叫\"开开\"。关关总是安安静静地闭着眼，开开总是精神满满地睁着眼。虽然只有两种居民，但他们手拉手站在一起，就能变成好多好多不同的信号！",
+          "order": 1
+        },
+        {
+          "audio": "L02/L02_P2.mp3",
+          "source_text": "比如，关关站在左边、开开站在右边，就像\"关-开\"；开开站左边、关关站右边，就像\"开-关\"。你看看，虽然只有两个人，但排法不同，意思就不一样！",
+          "order": 2
+        },
+        {
+          "audio": "L02/L02_P3.mp3",
+          "source_text": "这就是电脑的秘密语言！电脑不像我们一样会说\"你好\"\"再见\"，它只认识两个符号：0和1。0就是\"关\"，1就是\"开\"。你可以把0想象成灯关了（黑黑的），1想象成灯开了（亮亮的）。虽然只有0和1，但是把它们排成一长串，比如\"01100001\"，电脑就知道这是字母\"A\"！就像开关城的居民排成不同的队形，就能代表不同的意思。",
+          "order": 3
+        },
+        {
+          "audio": "L02/L02_P4.mp3",
+          "source_text": "别小看这两个简单的符号哦！你玩的游戏、看的动画、听的音乐，在电脑里面全都是0和1变成的。是不是很神奇？",
+          "order": 4
+        }
+      ],
+      "quiz": [
+        {
+          "question_no": 1,
+          "question_audio": "L02/L02_Q1.mp3",
+          "answer_audio": "L02/L02_A1.mp3",
+          "title": "电脑用什么来说话？",
+          "options": [
+            "画画。",
+            "0和1。",
+            "中文和英文。",
+            "手势和表情。"
+          ],
+          "correct_answer": "B",
+          "explanation": "电脑只认识0和1两个符号。"
+        },
+        {
+          "question_no": 2,
+          "question_audio": "L02/L02_Q2.mp3",
+          "answer_audio": "L02/L02_A2.mp3",
+          "title": "在开关城的故事里，0代表什么？",
+          "options": [
+            "大。",
+            "亮。",
+            "关。",
+            "开。"
+          ],
+          "correct_answer": "C",
+          "explanation": "0代表关，1代表开。"
+        },
+        {
+          "question_no": 3,
+          "question_audio": "L02/L02_Q3.mp3",
+          "answer_audio": "L02/L02_A3.mp3",
+          "title": "01100001在电脑里，可以代表什么？",
+          "options": [
+            "什么都不能代表。",
+            "一个数字1。",
+            "一首歌。",
+            "字母A。"
+          ],
+          "correct_answer": "D",
+          "explanation": "0和1按不同方式排列，就能代表不同信息。"
+        },
+        {
+          "question_no": 4,
+          "question_audio": "L02/L02_Q4.mp3",
+          "answer_audio": "L02/L02_A4.mp3",
+          "title": "为什么0和1能表示那么多不同的信息？",
+          "options": [
+            "因为0和1排列方式不同，意思就不同。",
+            "因为0和1很大。",
+            "因为0和1会变魔术。",
+            "其实0和1只能表示两种信息。"
+          ],
+          "correct_answer": "A",
+          "explanation": "排列不同，表示的信息就不同。"
+        },
+        {
+          "question_no": 5,
+          "question_audio": "L02/L02_Q5.mp3",
+          "answer_audio": "L02/L02_A5.mp3",
+          "title": "5个0和1排在一起，最多能组合出多少种排列？",
+          "options": [
+            "5种。",
+            "32种。",
+            "10种。",
+            "100种。"
+          ],
+          "correct_answer": "B",
+          "explanation": "2×2×2×2×2=32种。"
+        },
+        {
+          "question_no": 6,
+          "question_audio": "L02/L02_Q6.mp3",
+          "answer_audio": "L02/L02_A6.mp3",
+          "title": "你玩的游戏，在电脑里面实际上是什么？",
+          "options": [
+            "真实的小人。",
+            "彩色的颜料。",
+            "0和1的组合。",
+            "纸上的画。"
+          ],
+          "correct_answer": "C",
+          "explanation": "游戏里的画面、声音，在电脑里面全都是0和1变成的。"
+        },
+        {
+          "question_no": 7,
+          "question_audio": "L02/L02_Q7.mp3",
+          "answer_audio": "L02/L02_A7.mp3",
+          "title": "1在电脑里就像什么？",
+          "options": [
+            "门锁上了。",
+            "眼睛闭上了。",
+            "灯关了。",
+            "灯开了，亮亮的。"
+          ],
+          "correct_answer": "D",
+          "explanation": "1代表开，就像灯开了，亮亮的。"
+        },
+        {
+          "question_no": 8,
+          "question_audio": "L02/L02_Q8.mp3",
+          "answer_audio": "L02/L02_A8.mp3",
+          "title": "如果用2张卡片摆0和1，最多能摆出几种组合？",
+          "options": [
+            "4种。",
+            "2种。",
+            "3种。",
+            "8种。"
+          ],
+          "correct_answer": "A",
+          "explanation": "2张卡片每张有2种可能，2×2=4种。"
+        },
+        {
+          "question_no": 9,
+          "question_audio": "L02/L02_Q9.mp3",
+          "answer_audio": "L02/L02_A9.mp3",
+          "title": "下面哪个说法是对的？",
+          "options": [
+            "电脑不需要0和1也能工作。",
+            "电脑只认识0和1，其他信息都变成0和1来处理。",
+            "电脑能看懂所有语言。",
+            "电脑能用中文直接思考。"
+          ],
+          "correct_answer": "B",
+          "explanation": "电脑内部只认识0和1。"
+        },
+        {
+          "question_no": 10,
+          "question_audio": "L02/L02_Q10.mp3",
+          "answer_audio": "L02/L02_A10.mp3",
+          "title": "\"关关-开开\"和\"开开-关关\"意思不一样，说明什么？",
+          "options": [
+            "关关比开开重要。",
+            "开开比关关重要。",
+            "排列方式不同，代表的信息就不同。",
+            "0和1没有用。"
+          ],
+          "correct_answer": "C",
+          "explanation": "同样的0和1，排列顺序不同，意思就不一样。"
+        }
+      ]
+    },
+    {
+      "lesson_id": "L03",
+      "lesson_num": 3,
+      "title": "《小邮差的密码信》",
+      "core_knowledge": [
+        "同一条信息可以用不同的方式表示（编码）",
+        "编码和解码必须用同一套规则，否则会误解",
+        "生活中到处都有编码——文字、手势、旗语都是"
+      ],
+      "explanation_segments": [
+        {
+          "audio": "L03/L03_P1.mp3",
+          "source_text": "你有没有和好朋友发明过\"秘密暗号\"？比如拉一下耳朵代表\"我同意\"，眨两下眼代表\"快跑\"！你们俩都知道这个暗号的意思，所以一看就懂。但如果换一个不知道暗号的人来看，他就完全猜不出你在干嘛——这就是\"编码\"和\"解码\"的秘密！",
+          "order": 1
+        },
+        {
+          "audio": "L03/L03_P2.mp3",
+          "source_text": "编码就是把信息变成另一种样子。比如\"苹果\"这两个字，用英文写就是\"apple\"，用手语比就是一个握拳再张开的手势。信息还是那条信息——苹果，但表示的方法变了。解码就是反过来，把密码翻译回原来的意思。",
+          "order": 2
+        },
+        {
+          "audio": "L03/L03_P3.mp3",
+          "source_text": "这里最关键的一点是：写信的人和读信的人必须用同一套规则！就像你跟好朋友约好\"眨两下眼=快跑\"，如果你眨了两下眼，但朋友以为那表示\"我困了\"，那可就闹笑话啦！在电脑的世界里也是一样——发送方和接收方必须用同一种编码规则，信息才能正确传达，不然就会出现乱码和误解。",
+          "order": 3
+        }
+      ],
+      "quiz": [
+        {
+          "question_no": 1,
+          "question_audio": "L03/L03_Q1.mp3",
+          "answer_audio": "L03/L03_A1.mp3",
+          "title": "把信息变成另一种样子来表示，这叫什么？",
+          "options": [
+            "丢掉信息。",
+            "忘记信息。",
+            "编码。",
+            "删掉信息。"
+          ],
+          "correct_answer": "C",
+          "explanation": "编码就是把信息用另一种方式表示。"
+        },
+        {
+          "question_no": 2,
+          "question_audio": "L03/L03_Q2.mp3",
+          "answer_audio": "L03/L03_A2.mp3",
+          "title": "编码和解码必须满足什么条件，才能正确传达信息？",
+          "options": [
+            "只需要一个人记住规则。",
+            "不需要规则。",
+            "用不同的规则。",
+            "用同一套规则。"
+          ],
+          "correct_answer": "D",
+          "explanation": "写信人和读信人必须用同一套规则。"
+        },
+        {
+          "question_no": 3,
+          "question_audio": "L03/L03_Q3.mp3",
+          "answer_audio": "L03/L03_A3.mp3",
+          "title": "苹果用英文写是apple，这属于什么过程？",
+          "options": [
+            "编码。",
+            "压缩。",
+            "删除。",
+            "加密。"
+          ],
+          "correct_answer": "A",
+          "explanation": "把苹果用英文表示，就是一种编码。"
+        },
+        {
+          "question_no": 4,
+          "question_audio": "L03/L03_Q4.mp3",
+          "answer_audio": "L03/L03_A4.mp3",
+          "title": "你和朋友约定\"眨两下眼=快跑\"，但朋友以为那是\"我困了\"，该怎么办？",
+          "options": [
+            "没关系，朋友会猜对。",
+            "信息传达错误，需要记住约定。",
+            "朋友会更开心。",
+            "你会更开心。"
+          ],
+          "correct_answer": "B",
+          "explanation": "规则不一样，就会误解。"
+        },
+        {
+          "question_no": 5,
+          "question_audio": "L03/L03_Q5.mp3",
+          "answer_audio": "L03/L03_A5.mp3",
+          "title": "下面哪个是生活中的编码？",
+          "options": [
+            "睡觉。",
+            "吃饭。",
+            "手语。",
+            "跑步。"
+          ],
+          "correct_answer": "C",
+          "explanation": "手语用特定的手势来表示词语，是一种编码方式。"
+        },
+        {
+          "question_no": 6,
+          "question_audio": "L03/L03_Q6.mp3",
+          "answer_audio": "L03/L03_A6.mp3",
+          "title": "如果不给密码本，对方能看懂密码信吗？",
+          "options": [
+            "能，大家都懂密码。",
+            "能，猜猜就行。",
+            "能，密码信很简单。",
+            "很难看懂，因为没有规则。"
+          ],
+          "correct_answer": "D",
+          "explanation": "没有规则就猜不准。"
+        },
+        {
+          "question_no": 7,
+          "question_audio": "L03/L03_Q7.mp3",
+          "answer_audio": "L03/L03_A7.mp3",
+          "title": "解码是什么意思？",
+          "options": [
+            "把密码翻译回原来的意思。",
+            "把信息变乱。",
+            "把信息藏起来。",
+            "把信息删掉。"
+          ],
+          "correct_answer": "A",
+          "explanation": "解码就是编码的反过程。"
+        },
+        {
+          "question_no": 8,
+          "question_audio": "L03/L03_Q8.mp3",
+          "answer_audio": "L03/L03_A8.mp3",
+          "title": "A=1，B=2，C=3，这属于什么？",
+          "options": [
+            "一种颜色。",
+            "一种编码规则。",
+            "一种游戏。",
+            "一种数学公式。"
+          ],
+          "correct_answer": "B",
+          "explanation": "用数字替代字母，就是一种编码规则。"
+        },
+        {
+          "question_no": 9,
+          "question_audio": "L03/L03_Q9.mp3",
+          "answer_audio": "L03/L03_A9.mp3",
+          "title": "电脑发送信息时出现乱码，最可能是什么原因？",
+          "options": [
+            "电脑坏了。",
+            "信息太长了。",
+            "发送方和接收方用了不同的编码规则。",
+            "信息太短了。"
+          ],
+          "correct_answer": "C",
+          "explanation": "编码和解码规则不一致，信息就会变成乱码。"
+        },
+        {
+          "question_no": 10,
+          "question_audio": "L03/L03_Q10.mp3",
+          "answer_audio": "L03/L03_A10.mp3",
+          "title": "同一条信息，可以用几种不同的方式表示？",
+          "options": [
+            "只能一种。",
+            "不能用不同方式表示。",
+            "最多两种。",
+            "可以很多种。"
+          ],
+          "correct_answer": "D",
+          "explanation": "比如苹果可以用中文、英文、手语等不同方式表示。"
+        }
+      ]
+    },
+    {
+      "lesson_id": "L04",
+      "lesson_num": 4,
+      "title": "《仓库管理员机器人》",
+      "core_knowledge": [
+        "信息需要\"格子\"来存储",
+        "容量就是能装多少格子",
+        "容量不够就会\"装不下\"，需要更大的仓库"
+      ],
+      "explanation_segments": [
+        {
+          "audio": "L04/L04_P1.mp3",
+          "source_text": "想象你有一个特别整齐的玩具柜，每个格子只能放一个玩具。小汽车放一格，积木放一格，橡皮鸭放一格……格子越多，能放的玩具就越多。如果格子全放满了，再来一个新玩具怎么办？要么把旧玩具拿出来，要么换一个更大的柜子！",
+          "order": 1
+        },
+        {
+          "audio": "L04/L04_P2.mp3",
+          "source_text": "电脑里面也有这样的\"格子柜\"，它叫\"存储器\"。每一个小格子可以存一小条信息（还记得吗？就是0和1！）。格子越多，能存的信息就越多。能存多少，就叫\"容量\"。",
+          "order": 2
+        },
+        {
+          "audio": "L04/L04_P3.mp3",
+          "source_text": "你的平板电脑能存很多很多照片和游戏，因为它的\"柜子\"特别大。但如果你拍了太多视频，它也会说\"装不下啦！\"——就像玩具柜满了塞不进去一样。这时候你就得删掉一些不用的，或者买一个更大的存储空间。",
+          "order": 3
+        },
+        {
+          "audio": "L04/L04_P4.mp3",
+          "source_text": "所以，信息不是凭空待着的，它需要\"住\"在格子里。格子越多=容量越大=能住的信息越多。记住这个简单的道理，你就理解了电脑存储的秘密！",
+          "order": 4
+        }
+      ],
+      "quiz": [
+        {
+          "question_no": 1,
+          "question_audio": "L04/L04_Q1.mp3",
+          "answer_audio": "L04/L04_A1.mp3",
+          "title": "信息在电脑里住在哪里？",
+          "options": [
+            "人的脑子里。",
+            "水里。",
+            "空气中。",
+            "格子（存储器）里。"
+          ],
+          "correct_answer": "D",
+          "explanation": "信息需要格子来存储。"
+        },
+        {
+          "question_no": 2,
+          "question_audio": "L04/L04_Q2.mp3",
+          "answer_audio": "L04/L04_A2.mp3",
+          "title": "容量是什么意思？",
+          "options": [
+            "能装多少格子。",
+            "柜子的颜色。",
+            "柜子的重量。",
+            "柜子的形状。"
+          ],
+          "correct_answer": "A",
+          "explanation": "容量就是能装多少格子。"
+        },
+        {
+          "question_no": 3,
+          "question_audio": "L04/L04_Q3.mp3",
+          "answer_audio": "L04/L04_A3.mp3",
+          "title": "手机提示\"存储空间不足\"，最像下面哪种情况？",
+          "options": [
+            "玩具太小了。",
+            "玩具柜塞满，新玩具放不进去。",
+            "玩具太少了。",
+            "玩具柜太轻了。"
+          ],
+          "correct_answer": "B",
+          "explanation": "存储空间不足，就像玩具柜满了。"
+        },
+        {
+          "question_no": 4,
+          "question_audio": "L04/L04_Q4.mp3",
+          "answer_audio": "L04/L04_A4.mp3",
+          "title": "当格子全满时，想要存新信息可以怎么办？",
+          "options": [
+            "新信息就不能存了，永远没办法。",
+            "什么都不做。",
+            "删掉一些旧信息，或者升级更大的存储。",
+            "把旧信息全部删除。"
+          ],
+          "correct_answer": "C",
+          "explanation": "格子满了，可以拿出一些不用的，或者换更大的柜子。"
+        },
+        {
+          "question_no": 5,
+          "question_audio": "L04/L04_Q5.mp3",
+          "answer_audio": "L04/L04_A5.mp3",
+          "title": "格子越多，能存的信息会怎样？",
+          "options": [
+            "不变。",
+            "跟格子数量没关系。",
+            "越少。",
+            "越多。"
+          ],
+          "correct_answer": "D",
+          "explanation": "格子越多=容量越大=能住的信息越多。"
+        },
+        {
+          "question_no": 6,
+          "question_audio": "L04/L04_Q6.mp3",
+          "answer_audio": "L04/L04_A6.mp3",
+          "title": "平板电脑能存很多照片和游戏，是因为什么？",
+          "options": [
+            "它的柜子（存储器）特别大。",
+            "它有手。",
+            "它的照片很小。",
+            "它会变魔术。"
+          ],
+          "correct_answer": "A",
+          "explanation": "平板的存储容量大，就像有一个特别大的柜子。"
+        },
+        {
+          "question_no": 7,
+          "question_audio": "L04/L04_Q7.mp3",
+          "answer_audio": "L04/L04_A7.mp3",
+          "title": "每个小格子可以存什么？",
+          "options": [
+            "一个游戏。",
+            "一小条信息（0或1）。",
+            "一首歌。",
+            "一整张照片。"
+          ],
+          "correct_answer": "B",
+          "explanation": "每个小格子只能存一小条信息。"
+        },
+        {
+          "question_no": 8,
+          "question_audio": "L04/L04_Q8.mp3",
+          "answer_audio": "L04/L04_A8.mp3",
+          "title": "下面哪个说法是对的？",
+          "options": [
+            "信息只会自己待着。",
+            "信息不需要地方存放。",
+            "信息需要住在格子里。",
+            "信息只存在于纸上。"
+          ],
+          "correct_answer": "C",
+          "explanation": "信息需要住在格子里。"
+        },
+        {
+          "question_no": 9,
+          "question_audio": "L04/L04_Q9.mp3",
+          "answer_audio": "L04/L04_A9.mp3",
+          "title": "删掉手机里不用的视频，是为了什么？",
+          "options": [
+            "让手机变快。",
+            "让手机更好看。",
+            "让手机变轻。",
+            "腾出格子，存新的东西。"
+          ],
+          "correct_answer": "D",
+          "explanation": "删掉不用的信息，可以腾出格子。"
+        },
+        {
+          "question_no": 10,
+          "question_audio": "L04/L04_Q10.mp3",
+          "answer_audio": "L04/L04_A10.mp3",
+          "title": "买一个更大存储空间的手机，就像什么？",
+          "options": [
+            "给玩具柜换更多的格子。",
+            "不买新玩具。",
+            "把玩具变小。",
+            "把玩具扔掉。"
+          ],
+          "correct_answer": "A",
+          "explanation": "升级存储空间，就像换一个格子更多的大柜子。\n\n---\n\n## 模块B｜看见像素世界（第5–8课）"
+        }
+      ]
+    },
+    {
+      "lesson_id": "L05",
+      "lesson_num": 5,
+      "title": "《小方块拼出大世界》",
+      "core_knowledge": [
+        "图片是由许许多多小方块（像素）拼出来的",
+        "像素越多，图片越清晰",
+        "放大图片不等于变清晰，只是把小方块放大了"
+      ],
+      "explanation_segments": [
+        {
+          "audio": "L05/L05_P1.mp3",
+          "source_text": "你有没有用乐高积木拼过一幅画？每一块小积木就是一个颜色的小方块，远远看去是一幅漂亮的画，走近一看，原来全是一个一个小方块拼成的！这些小方块，在电脑里有一个名字，叫\"像素\"。",
+          "order": 1
+        },
+        {
+          "audio": "L05/L05_P2.mp3",
+          "source_text": "你手机里的每一张照片、动画片里的每一帧画面，其实都是几百万、几千万个像素方块排在一起组成的。就像马赛克拼图一样！当像素特别特别多、特别特别小的时候，我们的眼睛就看不出方块了，觉得画面好清晰好真实。但如果像素很少，你就能看到一块一块的，画面就会模模糊糊的——就像用很少的乐高拼画，怎么看都像一堆方块。",
+          "order": 2
+        },
+        {
+          "audio": "L05/L05_P3.mp3",
+          "source_text": "有人以为把一张模糊的照片放大就会变清楚，其实不是的！放大就像把乐高积木变大块——方块更大了，但数量还是那么多，画面反而更\"方块\"了。想要更清楚，就得有更多更小的像素，而不是把原来的像素放大哦！",
+          "order": 3
+        }
+      ],
+      "quiz": [
+        {
+          "question_no": 1,
+          "question_audio": "L05/L05_Q1.mp3",
+          "answer_audio": "L05/L05_A1.mp3",
+          "title": "图片在电脑里，是由什么拼出来的？",
+          "options": [
+            "许许多多小方块（像素）。",
+            "光线。",
+            "颜料。",
+            "线条。"
+          ],
+          "correct_answer": "A",
+          "explanation": "电脑里的图片，是由许多像素拼成的。"
+        },
+        {
+          "question_no": 2,
+          "question_audio": "L05/L05_Q2.mp3",
+          "answer_audio": "L05/L05_A2.mp3",
+          "title": "像素越多，图片会怎样？",
+          "options": [
+            "越模糊。",
+            "越清晰。",
+            "越大。",
+            "越暗。"
+          ],
+          "correct_answer": "B",
+          "explanation": "像素越多、越小，画面就越清晰。"
+        },
+        {
+          "question_no": 3,
+          "question_audio": "L05/L05_Q3.mp3",
+          "answer_audio": "L05/L05_A3.mp3",
+          "title": "把模糊的照片放大，就会变清楚吗？",
+          "options": [
+            "会的，放大就更清楚了。",
+            "会的，放大就有更多像素了。",
+            "不会，放大只是把小方块变大了。",
+            "看运气。"
+          ],
+          "correct_answer": "C",
+          "explanation": "放大只是把像素变大了，数量还是那么多。"
+        },
+        {
+          "question_no": 4,
+          "question_audio": "L05/L05_Q4.mp3",
+          "answer_audio": "L05/L05_A4.mp3",
+          "title": "用乐高拼画，走近看能看到什么？",
+          "options": [
+            "什么都没有。",
+            "一整幅完美的画。",
+            "只有颜色。",
+            "一块一块的小积木。"
+          ],
+          "correct_answer": "D",
+          "explanation": "近看就能看到每一块小积木。"
+        },
+        {
+          "question_no": 5,
+          "question_audio": "L05/L05_Q5.mp3",
+          "answer_audio": "L05/L05_A5.mp3",
+          "title": "为什么有时候照片看起来模模糊糊的？",
+          "options": [
+            "因为像素太少了。",
+            "因为光线太亮。",
+            "因为手机坏了。",
+            "因为照片太大。"
+          ],
+          "correct_answer": "A",
+          "explanation": "像素少的时候，画面就会模糊。"
+        },
+        {
+          "question_no": 6,
+          "question_audio": "L05/L05_Q6.mp3",
+          "answer_audio": "L05/L05_A6.mp3",
+          "title": "想让照片更清晰，应该怎么做？",
+          "options": [
+            "把照片放大。",
+            "增加更多、更小的像素。",
+            "把照片缩小。",
+            "把手机摇晃一下。"
+          ],
+          "correct_answer": "B",
+          "explanation": "想要更清楚，就得有更多、更小的像素。"
+        },
+        {
+          "question_no": 7,
+          "question_audio": "L05/L05_Q7.mp3",
+          "answer_audio": "L05/L05_A7.mp3",
+          "title": "手机上的每张照片，实际上是由什么组成的？",
+          "options": [
+            "十个像素。",
+            "一百个像素。",
+            "几百万到几千万个像素。",
+            "只有一个像素。"
+          ],
+          "correct_answer": "C",
+          "explanation": "手机照片由几百万、甚至几千万个像素组成。"
+        },
+        {
+          "question_no": 8,
+          "question_audio": "L05/L05_Q8.mp3",
+          "answer_audio": "L05/L05_A8.mp3",
+          "title": "像素就像什么？",
+          "options": [
+            "空气。",
+            "沙子。",
+            "水滴。",
+            "乐高积木的小方块。"
+          ],
+          "correct_answer": "D",
+          "explanation": "像素就像乐高积木的小方块。"
+        },
+        {
+          "question_no": 9,
+          "question_audio": "L05/L05_Q9.mp3",
+          "answer_audio": "L05/L05_A9.mp3",
+          "title": "用4×4的方格和8×8的方格画同一朵花，哪个更清晰？",
+          "options": [
+            "8×8的更清晰。",
+            "4×4的更清晰。",
+            "都不清晰。",
+            "一样清晰。"
+          ],
+          "correct_answer": "A",
+          "explanation": "格子越多、越小，画面越清晰。"
+        },
+        {
+          "question_no": 10,
+          "question_audio": "L05/L05_Q10.mp3",
+          "answer_audio": "L05/L05_A10.mp3",
+          "title": "用放大镜看手机屏幕，你会看到什么？",
+          "options": [
+            "完美的画面。",
+            "一个个彩色的小点（像素）。",
+            "什么都没有。",
+            "只有白色。"
+          ],
+          "correct_answer": "B",
+          "explanation": "放大看手机屏幕，就能看到一个个彩色的小像素点。"
+        }
+      ]
+    },
+    {
+      "lesson_id": "L06",
+      "lesson_num": 6,
+      "title": "《红绿蓝灯的合唱团》",
+      "core_knowledge": [
+        "红、绿、蓝三种颜色的光可以混合出几乎所有颜色",
+        "调整每种光的亮度，就能配出不同的颜色",
+        "颜色可以被\"配方化\"——用数字精确描述"
+      ],
+      "explanation_segments": [
+        {
+          "audio": "L06/L06_P1.mp3",
+          "source_text": "你见过彩虹吗？彩虹有好多好多种颜色。但你可能不知道，这么多颜色，居然可以用三种光\"变\"出来！它们就是——红色、绿色和蓝色，简称RGB三兄弟。",
+          "order": 1
+        },
+        {
+          "audio": "L06/L06_P2.mp3",
+          "source_text": "想象三个台灯：一个红灯、一个绿灯、一个蓝灯。当你只开红灯，看到的就是红色；只开绿灯，看到的就是绿色。那如果同时开红灯和绿灯呢？你会看到黄色！三个灯全开呢？就是白色！是不是像变魔术一样？",
+          "order": 2
+        },
+        {
+          "audio": "L06/L06_P3.mp3",
+          "source_text": "更好玩的是，你可以调节每个灯的亮度。红灯亮一点、绿灯暗一点、蓝灯中等——就能配出橙色、粉色、浅紫色……每种颜色都有自己的\"配方\"，就像做蛋糕一样——多加点红光就偏红，少加点蓝光就不那么紫。电脑和电视屏幕上每一个小像素点，里面都藏着这三个小灯，靠调节亮度来变出千千万万种颜色。你看到的每一张彩色照片，都是这三兄弟\"合唱\"出来的！",
+          "order": 3
+        }
+      ],
+      "quiz": [
+        {
+          "question_no": 1,
+          "question_audio": "L06/L06_Q1.mp3",
+          "answer_audio": "L06/L06_A1.mp3",
+          "title": "哪三种颜色的光，可以混合出几乎所有的颜色？",
+          "options": [
+            "红、橙、紫。",
+            "红、绿、蓝。",
+            "黄、绿、蓝。",
+            "红、黄、蓝。"
+          ],
+          "correct_answer": "B",
+          "explanation": "红、绿、蓝（RGB）三种光混合，可以变出几乎所有颜色。"
+        },
+        {
+          "question_no": 2,
+          "question_audio": "L06/L06_Q2.mp3",
+          "answer_audio": "L06/L06_A2.mp3",
+          "title": "红灯和绿灯同时打开，你会看到什么颜色？",
+          "options": [
+            "白色。",
+            "橙色。",
+            "黄色。",
+            "紫色。"
+          ],
+          "correct_answer": "C",
+          "explanation": "红光和绿光混合在一起，就是黄色。"
+        },
+        {
+          "question_no": 3,
+          "question_audio": "L06/L06_Q3.mp3",
+          "answer_audio": "L06/L06_A3.mp3",
+          "title": "红、绿、蓝三个灯全开，会变成什么颜色？",
+          "options": [
+            "黑色。",
+            "彩虹色。",
+            "灰色。",
+            "白色。"
+          ],
+          "correct_answer": "D",
+          "explanation": "三个灯全开，就是白色。"
+        },
+        {
+          "question_no": 4,
+          "question_audio": "L06/L06_Q4.mp3",
+          "answer_audio": "L06/L06_A4.mp3",
+          "title": "每种颜色，都可以用什么来精确描述？",
+          "options": [
+            "数字配方。",
+            "味道。",
+            "温度。",
+            "声音。"
+          ],
+          "correct_answer": "A",
+          "explanation": "颜色可以用RGB数字来精确描述。"
+        },
+        {
+          "question_no": 5,
+          "question_audio": "L06/L06_Q5.mp3",
+          "answer_audio": "L06/L06_A5.mp3",
+          "title": "电脑屏幕上，每个像素点里面藏着什么？",
+          "options": [
+            "一幅小画。",
+            "三个小灯（红、绿、蓝）。",
+            "一块小石头。",
+            "一面小镜子。"
+          ],
+          "correct_answer": "B",
+          "explanation": "每个像素点里，都有红、绿、蓝三个小灯。"
+        },
+        {
+          "question_no": 6,
+          "question_audio": "L06/L06_Q6.mp3",
+          "answer_audio": "L06/L06_A6.mp3",
+          "title": "调节每个灯的亮度，就能配出不同颜色，这像什么？",
+          "options": [
+            "像跑步。",
+            "像睡觉。",
+            "像做蛋糕的配方。",
+            "像调音乐。"
+          ],
+          "correct_answer": "C",
+          "explanation": "调节亮度，就像调整配方中各成分的多少。"
+        },
+        {
+          "question_no": 7,
+          "question_audio": "L06/L06_Q7.mp3",
+          "answer_audio": "L06/L06_A7.mp3",
+          "title": "只开蓝灯，你会看到什么颜色？",
+          "options": [
+            "紫色。",
+            "白色。",
+            "绿色。",
+            "蓝色。"
+          ],
+          "correct_answer": "D",
+          "explanation": "只开蓝灯，就只看到蓝色。"
+        },
+        {
+          "question_no": 8,
+          "question_audio": "L06/L06_Q8.mp3",
+          "answer_audio": "L06/L06_A8.mp3",
+          "title": "RGB中的R、G、B，分别代表什么？",
+          "options": [
+            "红、绿、蓝。",
+            "红、黄、蓝。",
+            "红、灰、黑。",
+            "橙、绿、紫。"
+          ],
+          "correct_answer": "A",
+          "explanation": "R=Red（红），G=Green（绿），B=Blue（蓝）。"
+        },
+        {
+          "question_no": 9,
+          "question_audio": "L06/L06_Q9.mp3",
+          "answer_audio": "L06/L06_A9.mp3",
+          "title": "你看到的彩色照片，是怎么变出来的？",
+          "options": [
+            "用颜料画的。",
+            "RGB三兄弟合唱出来的。",
+            "天然就有的。",
+            "用蜡笔涂的。"
+          ],
+          "correct_answer": "B",
+          "explanation": "彩色照片是RGB三个小灯调节亮度\"合唱\"出来的。"
+        },
+        {
+          "question_no": 10,
+          "question_audio": "L06/L06_Q10.mp3",
+          "answer_audio": "L06/L06_A10.mp3",
+          "title": "在画图软件里改RGB数值，颜色会怎样？",
+          "options": [
+            "只会变亮。",
+            "只会变暗。",
+            "会跟着变化。",
+            "不会变化。"
+          ],
+          "correct_answer": "C",
+          "explanation": "改变RGB数值，就像调整配方，数值变了，颜色就跟着变。"
+        }
+      ]
+    },
+    {
+      "lesson_id": "L07",
+      "lesson_num": 7,
+      "title": "《行李箱装不下啦》",
+      "core_knowledge": [
+        "压缩就是让文件变小，节省存储空间",
+        "有些压缩会丢掉一些细节，但主要内容还能看懂",
+        "压缩是一种信息取舍——保留重要的，去掉不那么重要的"
+      ],
+      "explanation_segments": [
+        {
+          "audio": "L07/L07_P1.mp3",
+          "source_text": "你出门旅行的时候，行李箱是不是总装不下想带的东西？怎么办呢？你会把衣服卷一卷、叠一叠，让它占更少的地方。如果还装不下，你就得想想：哪件衣服最需要带？哪件可以不带？把最重要的留下，不太重要的就不带了——这就是\"压缩\"！",
+          "order": 1
+        },
+        {
+          "audio": "L07/L07_P2.mp3",
+          "source_text": "电脑也经常遇到\"行李箱装不下\"的问题。照片、视频、游戏……太多东西要存在电脑里，放不下怎么办？电脑也会像你整理行李箱一样，把文件\"压缩\"一下，让它变小。",
+          "order": 2
+        },
+        {
+          "audio": "L07/L07_P3.mp3",
+          "source_text": "压缩有两种方式。一种叫\"无损压缩\"，就像把衣服卷紧了放，东西一件没少，打开行李箱衣服还是原来的样子。另一种叫\"有损压缩\"，就像你决定不带那件\"也许用得上\"的外套——少带了一些东西，但最重要的都在。比如一张照片，压缩后可能少了一些细微的颜色变化，但看起来还是那只小猫，你照样认得出来。",
+          "order": 3
+        },
+        {
+          "audio": "L07/L07_P4.mp3",
+          "source_text": "不过要记住：压缩太多，重要的细节可能就丢了。就像行李箱塞太紧，打开时衣服都皱了。所以压缩也要适可而止哦！",
+          "order": 4
+        }
+      ],
+      "quiz": [
+        {
+          "question_no": 1,
+          "question_audio": "L07/L07_Q1.mp3",
+          "answer_audio": "L07/L07_A1.mp3",
+          "title": "压缩是什么意思？",
+          "options": [
+            "把文件删掉。",
+            "把文件变大。",
+            "让文件变小，节省存储空间。",
+            "把文件复制一份。"
+          ],
+          "correct_answer": "C",
+          "explanation": "压缩就是让文件变小，节省存储空间。"
+        },
+        {
+          "question_no": 2,
+          "question_audio": "L07/L07_Q2.mp3",
+          "answer_audio": "L07/L07_A2.mp3",
+          "title": "无损压缩像什么？",
+          "options": [
+            "把衣服扔掉一些。",
+            "把衣服剪短。",
+            "换个大行李箱。",
+            "把衣服卷紧放，东西一件没少。"
+          ],
+          "correct_answer": "D",
+          "explanation": "无损压缩就像把衣服卷紧了放，打开后还是原来的样子。"
+        },
+        {
+          "question_no": 3,
+          "question_audio": "L07/L07_Q3.mp3",
+          "answer_audio": "L07/L07_A3.mp3",
+          "title": "有损压缩会怎样？",
+          "options": [
+            "会丢掉一些细节，但主要内容还能看懂。",
+            "什么都不会丢。",
+            "会让文件变大。",
+            "会丢掉所有内容。"
+          ],
+          "correct_answer": "A",
+          "explanation": "有损压缩会丢掉一些不太重要的细节。"
+        },
+        {
+          "question_no": 4,
+          "question_audio": "L07/L07_Q4.mp3",
+          "answer_audio": "L07/L07_A4.mp3",
+          "title": "一只橘色的猫坐在绿色的草地上，压缩成\"橘猫草地\"，丢了什么？",
+          "options": [
+            "什么都没丢。",
+            "猫的动作（坐着）和草地的颜色（绿色）。",
+            "猫的颜色丢了。",
+            "所有信息都丢了。"
+          ],
+          "correct_answer": "B",
+          "explanation": "压缩后，\"坐着\"和\"绿色\"这些细节丢了。"
+        },
+        {
+          "question_no": 5,
+          "question_audio": "L07/L07_Q5.mp3",
+          "answer_audio": "L07/L07_A5.mp3",
+          "title": "压缩太多会怎样？",
+          "options": [
+            "文件会变大。",
+            "没关系，越多越好。",
+            "重要的细节可能就丢了。",
+            "文件会消失。"
+          ],
+          "correct_answer": "C",
+          "explanation": "压缩太多，重要的细节可能丢失。"
+        },
+        {
+          "question_no": 6,
+          "question_audio": "L07/L07_Q6.mp3",
+          "answer_audio": "L07/L07_A6.mp3",
+          "title": "下面哪个是压缩的例子？",
+          "options": [
+            "把衣服挂在衣架上。",
+            "把衣服放在地上。",
+            "买一个更大的箱子。",
+            "把衣服卷紧放进箱子。"
+          ],
+          "correct_answer": "D",
+          "explanation": "把衣服卷紧放，就是在做\"压缩\"。"
+        },
+        {
+          "question_no": 7,
+          "question_audio": "L07/L07_Q7.mp3",
+          "answer_audio": "L07/L07_A7.mp3",
+          "title": "照片压缩后少了细微颜色变化，但还能认出小猫，这是什么压缩？",
+          "options": [
+            "有损压缩。",
+            "无损压缩。",
+            "超级压缩。",
+            "不压缩。"
+          ],
+          "correct_answer": "A",
+          "explanation": "有损压缩丢掉了一些细节，但主要内容还能看懂。"
+        },
+        {
+          "question_no": 8,
+          "question_audio": "L07/L07_Q8.mp3",
+          "answer_audio": "L07/L07_A8.mp3",
+          "title": "为什么电脑需要压缩文件？",
+          "options": [
+            "因为压缩好玩。",
+            "因为存储空间有限，太多东西放不下。",
+            "因为电脑喜欢小文件。",
+            "因为文件太少了。"
+          ],
+          "correct_answer": "B",
+          "explanation": "存储空间有限，需要压缩节省空间。"
+        },
+        {
+          "question_no": 9,
+          "question_audio": "L07/L07_Q9.mp3",
+          "answer_audio": "L07/L07_A9.mp3",
+          "title": "压缩是一种什么样的信息取舍？",
+          "options": [
+            "随机丢弃。",
+            "全部丢弃。",
+            "保留重要的，去掉不那么重要的。",
+            "全部保留。"
+          ],
+          "correct_answer": "C",
+          "explanation": "压缩就是保留重要的信息，去掉不那么重要的。"
+        },
+        {
+          "question_no": 10,
+          "question_audio": "L07/L07_Q10.mp3",
+          "answer_audio": "L07/L07_A10.mp3",
+          "title": "\"橘猫草地\"还能让人看懂，说明什么？",
+          "options": [
+            "压缩没有任何损失。",
+            "压缩后信息更多了。",
+            "压缩后完全看不懂了。",
+            "压缩虽然丢了细节，但主要信息还在。"
+          ],
+          "correct_answer": "D",
+          "explanation": "压缩后虽然丢了一些细节，但核心信息还在。"
+        }
+      ]
+    },
+    {
+      "lesson_id": "L08",
+      "lesson_num": 8,
+      "title": "《雾气里的照片》",
+      "core_knowledge": [
+        "信息不清晰会导致判断不确定甚至出错",
+        "\"噪声\"就是混在信息里的干扰，让信息变模糊",
+        "AI也会被\"坏数据\"影响，做出错误的判断"
+      ],
+      "explanation_segments": [
+        {
+          "audio": "L08/L08_P1.mp3",
+          "source_text": "想象一下，大雾天你在窗外看远处——有个人影走过来，可你完全看不清是谁！你猜是小明，结果走近一看，原来是小红！雾就像给画面蒙了一层纱，让你看不清真相，结果就认错人了。",
+          "order": 1
+        },
+        {
+          "audio": "L08/L08_P2.mp3",
+          "source_text": "在电脑和AI的世界里，也有这样的\"雾\"，它叫\"噪声\"。噪声就是混在信息里的乱七八糟的干扰。比如你录了一段话，但旁边一直在放音乐，那音乐就是噪声，让人听不清你说什么。照片拍糊了、录音有杂音、数据写错了……这些都是\"噪声\"。",
+          "order": 2
+        },
+        {
+          "audio": "L08/L08_P3.mp3",
+          "source_text": "AI虽然很聪明，但它也怕噪声！如果给AI看一张模模糊糊的照片，让它判断\"这是什么动物\"，它也可能搞错——就像你在雾里认错人一样。如果给AI学的是乱七八糟的错误数据，它学出来的结果也是错的。这就像你用一本写满错别字的课本学习，考试肯定考不好！",
+          "order": 3
+        },
+        {
+          "audio": "L08/L08_P4.mp3",
+          "source_text": "所以，信息越清晰、越准确，AI的判断就越靠谱。就像天气越晴朗，你看得越清楚，就越不会认错人。",
+          "order": 4
+        }
+      ],
+      "quiz": [
+        {
+          "question_no": 1,
+          "question_audio": "L08/L08_Q1.mp3",
+          "answer_audio": "L08/L08_A1.mp3",
+          "title": "在电脑和AI的世界里，噪声是什么？",
+          "options": [
+            "小鸟的叫声。",
+            "音乐。",
+            "很大的声音。",
+            "混在信息里的干扰，让信息变模糊。"
+          ],
+          "correct_answer": "D",
+          "explanation": "噪声就是混在信息里的乱七八糟的干扰。"
+        },
+        {
+          "question_no": 2,
+          "question_audio": "L08/L08_Q2.mp3",
+          "answer_audio": "L08/L08_A2.mp3",
+          "title": "大雾天你认错了人，这说明什么？",
+          "options": [
+            "信息不清晰，会导致判断出错。",
+            "你眼睛不好。",
+            "大雾让你变聪明了。",
+            "那个人长得不对。"
+          ],
+          "correct_answer": "A",
+          "explanation": "雾就像噪声，让信息不清晰，导致判断出错。"
+        },
+        {
+          "question_no": 3,
+          "question_audio": "L08/L08_Q3.mp3",
+          "answer_audio": "L08/L08_A3.mp3",
+          "title": "你录音时旁边在放音乐，那音乐对录音来说是什么？",
+          "options": [
+            "回声。",
+            "噪声。",
+            "背景音乐。",
+            "伴奏。"
+          ],
+          "correct_answer": "B",
+          "explanation": "录音时不需要的声音，就是噪声。"
+        },
+        {
+          "question_no": 4,
+          "question_audio": "L08/L08_Q4.mp3",
+          "answer_audio": "L08/L08_A4.mp3",
+          "title": "AI会用坏数据学习，结果会怎样？",
+          "options": [
+            "AI会更聪明。",
+            "AI会自动纠正。",
+            "学出来的结果也是错的。",
+            "不影响AI的学习。"
+          ],
+          "correct_answer": "C",
+          "explanation": "用错误的数据学习，学出来的结果也是错的。"
+        },
+        {
+          "question_no": 5,
+          "question_audio": "L08/L08_Q5.mp3",
+          "answer_audio": "L08/L08_A5.mp3",
+          "title": "\"垃圾进，垃圾出\"是什么意思？",
+          "options": [
+            "垃圾桶满了要倒。",
+            "电脑会自动清理垃圾。",
+            "倒垃圾要分类。",
+            "输入错误的数据，输出的结果也是错误的。"
+          ],
+          "correct_answer": "D",
+          "explanation": "给AI输入不好的数据，AI输出的结果也不好。"
+        },
+        {
+          "question_no": 6,
+          "question_audio": "L08/L08_Q6.mp3",
+          "answer_audio": "L08/L08_A6.mp3",
+          "title": "怎样才能让AI的判断更靠谱？",
+          "options": [
+            "给AI更清晰、更准确的信息。",
+            "给AI更多的钱。",
+            "让AI多休息。",
+            "让AI多说话。"
+          ],
+          "correct_answer": "A",
+          "explanation": "信息越清晰、越准确，AI的判断就越靠谱。"
+        },
+        {
+          "question_no": 7,
+          "question_audio": "L08/L08_Q7.mp3",
+          "answer_audio": "L08/L08_A7.mp3",
+          "title": "下面哪个是噪声的例子？",
+          "options": [
+            "一张清晰的照片。",
+            "一段有杂音的录音。",
+            "一本正确的课本。",
+            "一条准确的消息。"
+          ],
+          "correct_answer": "B",
+          "explanation": "录音有杂音，就是噪声。"
+        },
+        {
+          "question_no": 8,
+          "question_audio": "L08/L08_Q8.mp3",
+          "answer_audio": "L08/L08_A8.mp3",
+          "title": "信息越清晰，AI的判断会怎样？",
+          "options": [
+            "越慢。",
+            "不变。",
+            "越靠谱。",
+            "越差。"
+          ],
+          "correct_answer": "C",
+          "explanation": "信息越清晰，AI的判断越准确。"
+        },
+        {
+          "question_no": 9,
+          "question_audio": "L08/L08_Q9.mp3",
+          "answer_audio": "L08/L08_A9.mp3",
+          "title": "照片拍糊了，属于什么问题？",
+          "options": [
+            "存储问题。",
+            "编码问题。",
+            "压缩问题。",
+            "噪声干扰。"
+          ],
+          "correct_answer": "D",
+          "explanation": "照片模糊，就是信息不清晰，属于噪声干扰。"
+        },
+        {
+          "question_no": 10,
+          "question_audio": "L08/L08_Q10.mp3",
+          "answer_audio": "L08/L08_A10.mp3",
+          "title": "给AI看一张模模糊糊的动物照片，AI可能会怎样？",
+          "options": [
+            "可能会认错。",
+            "会拒绝回答。",
+            "不受影响。",
+            "一定能认对。"
+          ],
+          "correct_answer": "A",
+          "explanation": "模糊的照片就像有雾，AI也看不清，可能会认错。\n\n---\n\n## 模块C｜机器按规则做事（第9–12课）"
+        }
+      ]
+    },
+    {
+      "lesson_id": "L09",
+      "lesson_num": 9,
+      "title": "《红灯停绿灯行》",
+      "core_knowledge": [
+        "\"如果……就……\"是条件判断，用规则做决定",
+        "条件可以叠加，多条件让规则更复杂",
+        "电脑就是靠无数个\"如果……就……\"来运行的"
+      ],
+      "explanation_segments": [
+        {
+          "audio": "L09/L09_P1.mp3",
+          "source_text": "你一定知道过马路的规则吧？\"如果是红灯，就停下；如果是绿灯，就走。\"这就是一个最简单的\"条件判断\"——看条件是什么，然后决定做什么。",
+          "order": 1
+        },
+        {
+          "audio": "L09/L09_P2.mp3",
+          "source_text": "生活中到处都是\"如果……就……\"！比如妈妈说：\"如果你吃完饭，就可以吃冰淇淋。\"老师也常说：\"如果下雨，体育课就在教室上。\"你每天都在用条件判断做决定，只是你没注意到！",
+          "order": 2
+        },
+        {
+          "audio": "L09/L09_P3.mp3",
+          "source_text": "电脑也是这样工作的！电脑里面装了好多好多\"如果……就……\"的规则。比如自动门：\"如果有人靠近，就打开。\"红绿灯：\"如果倒计时到0，就变灯。\"甚至你的智能音箱：\"如果听到'你好小爱'，就回答'我在呢'。\"",
+          "order": 3
+        },
+        {
+          "audio": "L09/L09_P4.mp3",
+          "source_text": "有时候规则会更复杂，不止一个条件。比如：\"如果是红灯，就停下；如果是绿灯，而且没有车闯红灯，就走。\"加了\"而且\"，就是两个条件都要满足才行。条件越多，规则越复杂，但电脑不怕复杂——它最擅长的就是一条一条地执行规则！",
+          "order": 4
+        }
+      ],
+      "quiz": [
+        {
+          "question_no": 1,
+          "question_audio": "L09/L09_Q1.mp3",
+          "answer_audio": "L09/L09_A1.mp3",
+          "title": "\"如果……就……\"是什么？",
+          "options": [
+            "条件判断，用规则做决定。",
+            "一种颜色。",
+            "一种游戏。",
+            "一种动物。"
+          ],
+          "correct_answer": "A",
+          "explanation": "\"如果……就……\"就是条件判断，根据条件来决定做什么。"
+        },
+        {
+          "question_no": 2,
+          "question_audio": "L09/L09_Q2.mp3",
+          "answer_audio": "L09/L09_A2.mp3",
+          "title": "\"如果是绿灯，就走\"，这属于什么？",
+          "options": [
+            "循环。",
+            "条件判断。",
+            "分类。",
+            "压缩。"
+          ],
+          "correct_answer": "B",
+          "explanation": "根据条件做出决定，这就是条件判断。"
+        },
+        {
+          "question_no": 3,
+          "question_audio": "L09/L09_Q3.mp3",
+          "answer_audio": "L09/L09_A3.mp3",
+          "title": "电脑靠什么来运行的？",
+          "options": [
+            "魔法。",
+            "说话。",
+            "无数个\"如果……就……\"的规则。",
+            "电池。"
+          ],
+          "correct_answer": "C",
+          "explanation": "电脑里面装了好多\"如果……就……\"的规则。"
+        },
+        {
+          "question_no": 4,
+          "question_audio": "L09/L09_Q4.mp3",
+          "answer_audio": "L09/L09_A4.mp3",
+          "title": "\"如果是绿灯，而且没有车闯红灯，就走\"，这里有几个条件？",
+          "options": [
+            "1个。",
+            "3个。",
+            "0个。",
+            "2个。"
+          ],
+          "correct_answer": "D",
+          "explanation": "\"绿灯\"和\"没有车闯红灯\"是两个条件。"
+        },
+        {
+          "question_no": 5,
+          "question_audio": "L09/L09_Q5.mp3",
+          "answer_audio": "L09/L09_A5.mp3",
+          "title": "下面哪个是生活中的条件判断？",
+          "options": [
+            "吃完饭就吃冰淇淋。",
+            "今天很热。",
+            "我喜欢红色。",
+            "门口有一棵树。"
+          ],
+          "correct_answer": "A",
+          "explanation": "\"吃完饭就吃冰淇淋\"就是\"如果……就……\"的格式。"
+        },
+        {
+          "question_no": 6,
+          "question_audio": "L09/L09_Q6.mp3",
+          "answer_audio": "L09/L09_A6.mp3",
+          "title": "智能音箱听到\"你好小爱\"就回答，这属于什么？",
+          "options": [
+            "循环。",
+            "条件判断。",
+            "分类。",
+            "压缩。"
+          ],
+          "correct_answer": "B",
+          "explanation": "智能音箱的工作，就是条件判断。"
+        },
+        {
+          "question_no": 7,
+          "question_audio": "L09/L09_Q7.mp3",
+          "answer_audio": "L09/L09_A7.mp3",
+          "title": "条件越多，规则会怎样？",
+          "options": [
+            "越简单。",
+            "不变。",
+            "越复杂。",
+            "消失。"
+          ],
+          "correct_answer": "C",
+          "explanation": "条件越多，规则越复杂。"
+        },
+        {
+          "question_no": 8,
+          "question_audio": "L09/L09_Q8.mp3",
+          "answer_audio": "L09/L09_A8.mp3",
+          "title": "\"自动门如果有人靠近就打开\"，这是电脑的什么能力？",
+          "options": [
+            "唱歌能力。",
+            "画画能力。",
+            "飞行能力。",
+            "条件判断能力。"
+          ],
+          "correct_answer": "D",
+          "explanation": "自动门根据条件做出决定，是条件判断的应用。"
+        },
+        {
+          "question_no": 9,
+          "question_audio": "L09/L09_Q9.mp3",
+          "answer_audio": "L09/L09_A9.mp3",
+          "title": "\"如果下雨，体育课就在教室上\"，\"下雨\"是什么？",
+          "options": [
+            "条件。",
+            "循环。",
+            "结果。",
+            "噪声。"
+          ],
+          "correct_answer": "A",
+          "explanation": "\"下雨\"是条件，\"体育课在教室上\"是根据条件做出的决定。"
+        },
+        {
+          "question_no": 10,
+          "question_audio": "L09/L09_Q10.mp3",
+          "answer_audio": "L09/L09_A10.mp3",
+          "title": "电脑最擅长做什么？",
+          "options": [
+            "画画。",
+            "一条一条地执行规则。",
+            "唱歌。",
+            "做饭。"
+          ],
+          "correct_answer": "B",
+          "explanation": "电脑最擅长的，就是按照规则一条一条地执行。"
+        }
+      ]
+    },
+    {
+      "lesson_id": "L10",
+      "lesson_num": 10,
+      "title": "《会数数的刷牙机器人》",
+      "core_knowledge": [
+        "循环就是重复做同一个步骤",
+        "循环让任务稳定、可靠地完成",
+        "循环可以规定\"重复几次\"或\"直到……为止\""
+      ],
+      "explanation_segments": [
+        {
+          "audio": "L10/L10_P1.mp3",
+          "source_text": "你刷牙的时候，是不是左边刷刷、右边刷刷、上面刷刷、下面刷刷？每个地方都重复\"刷一刷\"这个动作，直到把所有牙齿都刷干净。如果让你只刷一下就不刷了，牙齿肯定刷不干净对吧？重复做同一件事，直到做好为止——这就叫\"循环\"！",
+          "order": 1
+        },
+        {
+          "audio": "L10/L10_P2.mp3",
+          "source_text": "想象有一个刷牙小机器人，它的程序很简单：\"拿起牙刷→刷一下→挪到下一颗牙→再刷一下→再挪……\"这个\"刷一下、挪一下\"的动作重复了20次，就把所有牙齿都刷干净了。如果不重复呢？它刷一颗牙就停了，那可不行！",
+          "order": 2
+        },
+        {
+          "audio": "L10/L10_P3.mp3",
+          "source_text": "循环在电脑里超级重要！电脑最厉害的本事就是不嫌烦、不偷懒地重复做一件事。比如游戏里的角色走路——\"迈左脚、迈右脚、迈左脚、迈右脚……\"一直重复，角色就一直在走。打印机的\"打印一页、再打印一页、再打印一页……\"也是循环。",
+          "order": 3
+        },
+        {
+          "audio": "L10/L10_P4.mp3",
+          "source_text": "循环有两种说法：一种是\"做10次\"（数着次数），一种是\"做到……为止\"（比如刷到牙齿干净为止）。不管哪种，核心都是——重复，把一件事做好做完整！",
+          "order": 4
+        }
+      ],
+      "quiz": [
+        {
+          "question_no": 1,
+          "question_audio": "L10/L10_Q1.mp3",
+          "answer_audio": "L10/L10_A1.mp3",
+          "title": "循环是什么意思？",
+          "options": [
+            "只做最难的步骤。",
+            "重复做同一个步骤。",
+            "随便做做什么。",
+            "做一次就够了。"
+          ],
+          "correct_answer": "B",
+          "explanation": "循环就是重复做同一个步骤，直到把事情做好做完整。"
+        },
+        {
+          "question_no": 2,
+          "question_audio": "L10/L10_Q2.mp3",
+          "answer_audio": "L10/L10_A2.mp3",
+          "title": "刷牙时左边刷刷、右边刷刷、上面刷刷，这属于什么？",
+          "options": [
+            "条件判断。",
+            "编码。",
+            "循环。",
+            "分类。"
+          ],
+          "correct_answer": "C",
+          "explanation": "每个地方都重复\"刷一刷\"这个动作，这就是循环。"
+        },
+        {
+          "question_no": 3,
+          "question_audio": "L10/L10_Q3.mp3",
+          "answer_audio": "L10/L10_A3.mp3",
+          "title": "循环可以怎么规定？",
+          "options": [
+            "不能规定，随便做。",
+            "只能规定做到为止。",
+            "只能规定重复几次。",
+            "可以规定重复几次，或做到为止。"
+          ],
+          "correct_answer": "D",
+          "explanation": "循环有两种方式：数着次数，和做到目标为止。"
+        },
+        {
+          "question_no": 4,
+          "question_audio": "L10/L10_Q4.mp3",
+          "answer_audio": "L10/L10_A4.mp3",
+          "title": "游戏角色迈左脚、迈右脚，一直重复，这是什么？",
+          "options": [
+            "循环。",
+            "分类。",
+            "压缩。",
+            "编码。"
+          ],
+          "correct_answer": "A",
+          "explanation": "重复\"迈左脚、迈右脚\"让角色一直走，这就是循环。"
+        },
+        {
+          "question_no": 5,
+          "question_audio": "L10/L10_Q5.mp3",
+          "answer_audio": "L10/L10_A5.mp3",
+          "title": "如果刷牙只刷一下就不刷了，会怎样？",
+          "options": [
+            "没关系。",
+            "牙齿刷不干净。",
+            "牙齿很干净。",
+            "更好了。"
+          ],
+          "correct_answer": "B",
+          "explanation": "不重复做就做不好，循环让任务完整地完成。"
+        },
+        {
+          "question_no": 6,
+          "question_audio": "L10/L10_Q6.mp3",
+          "answer_audio": "L10/L10_A6.mp3",
+          "title": "打印机\"打印一页、再打印一页\"，是什么？",
+          "options": [
+            "编码。",
+            "条件判断。",
+            "循环。",
+            "分类。"
+          ],
+          "correct_answer": "C",
+          "explanation": "打印机重复\"打印一页\"这个动作，是循环的典型应用。"
+        },
+        {
+          "question_no": 7,
+          "question_audio": "L10/L10_Q7.mp3",
+          "answer_audio": "L10/L10_A7.mp3",
+          "title": "电脑最厉害的本事是什么？",
+          "options": [
+            "画画。",
+            "唱歌。",
+            "睡觉。",
+            "不嫌烦、不偷懒地重复做一件事。"
+          ],
+          "correct_answer": "D",
+          "explanation": "电脑最厉害的就是不怕重复，可以不知疲倦地循环做同一件事。"
+        },
+        {
+          "question_no": 8,
+          "question_audio": "L10/L10_Q8.mp3",
+          "answer_audio": "L10/L10_A8.mp3",
+          "title": "\"做到牙齿干净为止\"，属于哪种循环方式？",
+          "options": [
+            "做到目标为止。",
+            "只做一次。",
+            "随便做做。",
+            "数着次数。"
+          ],
+          "correct_answer": "A",
+          "explanation": "\"做到为止\"是有目标地循环。"
+        },
+        {
+          "question_no": 9,
+          "question_audio": "L10/L10_Q9.mp3",
+          "answer_audio": "L10/L10_A9.mp3",
+          "title": "\"做10次\"属于哪种循环方式？",
+          "options": [
+            "无限循环。",
+            "数着次数。",
+            "做到目标为止。",
+            "随机循环。"
+          ],
+          "correct_answer": "B",
+          "explanation": "\"做10次\"就是数着次数的循环。"
+        },
+        {
+          "question_no": 10,
+          "question_audio": "L10/L10_Q10.mp3",
+          "answer_audio": "L10/L10_A10.mp3",
+          "title": "死循环是什么意思？",
+          "options": [
+            "只做一次的循环。",
+            "很危险的循环。",
+            "永远不停下来的循环。",
+            "很慢的循环。"
+          ],
+          "correct_answer": "C",
+          "explanation": "死循环是永远不停下来的循环，程序就会卡住。"
+        }
+      ]
+    },
+    {
+      "lesson_id": "L11",
+      "lesson_num": 11,
+      "title": "《做披萨的流水线》",
+      "core_knowledge": [
+        "大任务可以分解成小步骤",
+        "步骤有先后顺序，有的可以同时做（并行）",
+        "合理分解和协作能让事情做得更快更好"
+      ],
+      "explanation_segments": [
+        {
+          "audio": "L11/L11_P1.mp3",
+          "source_text": "想象你要做一张披萨。如果一个人从和面、擀面、涂酱、撒芝士、放配料到烤制全自己来，可能要花好长时间。但如果你和朋友们一起做呢？你擀面饼的时候，小伙伴同时涂酱，另一个朋友撒芝士——大家同时做不同的事情，披萨就快好多了！",
+          "order": 1
+        },
+        {
+          "audio": "L11/L11_P2.mp3",
+          "source_text": "这就叫\"任务分解\"——把一个大的任务切成一个个小步骤，一步一步来。做披萨的大任务，可以分成：第一步和面、第二步擀面、第三步涂酱……每一步都不难，但串起来就做成了一张香喷喷的披萨！",
+          "order": 2
+        },
+        {
+          "audio": "L11/L11_P3.mp3",
+          "source_text": "更有趣的是，有些步骤可以同时做！比如一个人烤披萨的时候，另一个人可以同时准备饮料——这叫\"并行\"，就像两条路同时走，速度更快。但有些步骤必须按顺序来——你总不能先放芝士再擀面吧？那就乱套了！",
+          "order": 3
+        },
+        {
+          "audio": "L11/L11_P4.mp3",
+          "source_text": "电脑也是这样工作的！电脑把复杂的任务分解成很多小步骤，能同时做的就同时做，必须按顺序的就排好队。这样就能又快又好地完成任务。所以记住：遇到大任务别怕，拆成小块一步一步来！",
+          "order": 4
+        }
+      ],
+      "quiz": [
+        {
+          "question_no": 1,
+          "question_audio": "L11/L11_Q1.mp3",
+          "answer_audio": "L11/L11_A1.mp3",
+          "title": "把大任务切成小步骤，这叫什么？",
+          "options": [
+            "编码。",
+            "循环。",
+            "任务分解。",
+            "压缩。"
+          ],
+          "correct_answer": "C",
+          "explanation": "把一个大的任务分成一个个小步骤，就叫任务分解。"
+        },
+        {
+          "question_no": 2,
+          "question_audio": "L11/L11_Q2.mp3",
+          "answer_audio": "L11/L11_A2.mp3",
+          "title": "做披萨时，两个人同时做不同的事，这叫什么？",
+          "options": [
+            "串行。",
+            "循环。",
+            "分类。",
+            "并行。"
+          ],
+          "correct_answer": "D",
+          "explanation": "同时做不同的事情，叫并行。"
+        },
+        {
+          "question_no": 3,
+          "question_audio": "L11/L11_Q3.mp3",
+          "answer_audio": "L11/L11_A3.mp3",
+          "title": "\"先擀面，再涂酱\"，这两个步骤能同时做吗？",
+          "options": [
+            "不能，必须按顺序来。",
+            "看心情。",
+            "能，因为都很简单。",
+            "能，因为它们没关系。"
+          ],
+          "correct_answer": "A",
+          "explanation": "有些步骤必须按顺序来。"
+        },
+        {
+          "question_no": 4,
+          "question_audio": "L11/L11_Q4.mp3",
+          "answer_audio": "L11/L11_A4.mp3",
+          "title": "一个人做披萨全部步骤，和朋友们分工同时做，哪个更快？",
+          "options": [
+            "一个人更快。",
+            "朋友们分工同时做更快。",
+            "不确定。",
+            "一样快。"
+          ],
+          "correct_answer": "B",
+          "explanation": "分工同时做就是并行，速度更快。"
+        },
+        {
+          "question_no": 5,
+          "question_audio": "L11/L11_Q5.mp3",
+          "answer_audio": "L11/L11_A5.mp3",
+          "title": "下面哪个步骤必须按顺序来？",
+          "options": [
+            "切披萨和倒饮料。",
+            "烤披萨和准备饮料。",
+            "和面和擀面。",
+            "涂酱和撒芝士。"
+          ],
+          "correct_answer": "C",
+          "explanation": "必须先和面才能擀面，有先后顺序。"
+        },
+        {
+          "question_no": 6,
+          "question_audio": "L11/L11_Q6.mp3",
+          "answer_audio": "L11/L11_A6.mp3",
+          "title": "电脑处理复杂任务的方式是什么？",
+          "options": [
+            "只做最简单的部分。",
+            "一次性全部做完。",
+            "随便做做。",
+            "分解成小步骤，能同时做的就同时做。"
+          ],
+          "correct_answer": "D",
+          "explanation": "电脑把复杂任务分解成小步骤，能并行的就同时做。"
+        },
+        {
+          "question_no": 7,
+          "question_audio": "L11/L11_Q7.mp3",
+          "answer_audio": "L11/L11_A7.mp3",
+          "title": "并行和串行的区别是什么？",
+          "options": [
+            "并行是同时做，串行是按顺序做。",
+            "没区别。",
+            "并行更慢。",
+            "并行是按顺序做，串行是同时做。"
+          ],
+          "correct_answer": "A",
+          "explanation": "并行是多个步骤同时做，串行是按先后顺序一个一个做。"
+        },
+        {
+          "question_no": 8,
+          "question_audio": "L11/L11_Q8.mp3",
+          "answer_audio": "L11/L11_A8.mp3",
+          "title": "收拾书包时，把书本和文具分别放进不同格子，这属于什么？",
+          "options": [
+            "编码。",
+            "任务分解。",
+            "压缩。",
+            "循环。"
+          ],
+          "correct_answer": "B",
+          "explanation": "把收拾书包分成\"放书本\"和\"放文具\"等小步骤，是任务分解。"
+        },
+        {
+          "question_no": 9,
+          "question_audio": "L11/L11_Q9.mp3",
+          "answer_audio": "L11/L11_A9.mp3",
+          "title": "为什么合理分解任务能让事情做得更好？",
+          "options": [
+            "因为分解后更难了。",
+            "因为分解后可以偷懒。",
+            "因为分解后每个步骤更简单。",
+            "因为分解后不用做了。"
+          ],
+          "correct_answer": "C",
+          "explanation": "大任务拆成小步骤后，每一步都不难。"
+        },
+        {
+          "question_no": 10,
+          "question_audio": "L11/L11_Q10.mp3",
+          "answer_audio": "L11/L11_A10.mp3",
+          "title": "一个人烤披萨的同时，另一个人准备饮料，利用了什么？",
+          "options": [
+            "循环的优点。",
+            "串行的优点。",
+            "编码的优点。",
+            "并行的优点。"
+          ],
+          "correct_answer": "D",
+          "explanation": "两个人同时做不同的事，是并行，可以节省时间。"
+        }
+      ]
+    },
+    {
+      "lesson_id": "L12",
+      "lesson_num": 12,
+      "title": "《找bug的小修理工》",
+      "core_knowledge": [
+        "Bug就是程序中的错误，会导致结果不对",
+        "调试的步骤：发现问题→找到原因→修改→再试",
+        "记录每一步能帮助更快地定位问题"
+      ],
+      "explanation_segments": [
+        {
+          "audio": "L12/L12_P1.mp3",
+          "source_text": "你有没有做过一道数学题，算出来的答案不对？你肯定不会把试卷扔掉，而是重新算一遍——先看看哪里出了错，找到算错的那一步，改过来，再算一次。这个\"找错→改错→重试\"的过程，在电脑世界里有一个专门的名字，叫\"调试\"，而那个错误就叫\"Bug\"！",
+          "order": 1
+        },
+        {
+          "audio": "L12/L12_P2.mp3",
+          "source_text": "Bug原本是\"小虫子\"的意思。传说很久以前，一台大电脑出了故障，人们打开一看，里面居然有一只真的飞蛾卡在了零件里！从那以后，程序里的错误就被叫做\"Bug\"了。",
+          "order": 2
+        },
+        {
+          "audio": "L12/L12_P3.mp3",
+          "source_text": "找Bug就像当一个小修理工。你按照说明书拼乐高，拼完发现轮子转不动——怎么办？你要回头一步一步检查：是不是某个零件装反了？是不是少了一个小齿轮？找到问题后改过来，再转一转试试。修好了，Bug就消灭了！",
+          "order": 3
+        },
+        {
+          "audio": "L12/L12_P4.mp3",
+          "source_text": "最厉害的修理工有一个秘诀：每做一步都记下来！这样出了问题，翻翻记录就能快速找到是哪一步出了错。写程序的人也是这样——记录每一步，出了Bug就能很快找到原因。",
+          "order": 4
+        },
+        {
+          "audio": "L12/L12_P5.mp3",
+          "source_text": "记住：犯错不可怕，找到错误、改正它，你就会变得更厉害！",
+          "order": 5
+        }
+      ],
+      "quiz": [
+        {
+          "question_no": 1,
+          "question_audio": "L12/L12_Q1.mp3",
+          "answer_audio": "L12/L12_A1.mp3",
+          "title": "Bug在电脑世界里是什么意思？",
+          "options": [
+            "一种食物。",
+            "真的虫子。",
+            "一种游戏。",
+            "程序中的错误。"
+          ],
+          "correct_answer": "D",
+          "explanation": "Bug就是程序中的错误，会导致结果不对。"
+        },
+        {
+          "question_no": 2,
+          "question_audio": "L12/L12_Q2.mp3",
+          "answer_audio": "L12/L12_A2.mp3",
+          "title": "调试的步骤是什么？",
+          "options": [
+            "发现问题，找到原因，修改，再试。",
+            "发现问题不管它，继续做。",
+            "发现问题哭一下就好了。",
+            "发现问题扔掉重来。"
+          ],
+          "correct_answer": "A",
+          "explanation": "调试就是发现问题、找到原因、修改、再试。"
+        },
+        {
+          "question_no": 3,
+          "question_audio": "L12/L12_Q3.mp3",
+          "answer_audio": "L12/L12_A3.mp3",
+          "title": "Bug这个词是怎么来的？",
+          "options": [
+            "因为程序像虫子一样爬。",
+            "一只真的飞蛾卡在了电脑零件里。",
+            "程序员起的随便名字。",
+            "因为虫子会咬电脑。"
+          ],
+          "correct_answer": "B",
+          "explanation": "传说一只飞蛾卡在电脑零件里导致故障，从此错误就叫Bug。"
+        },
+        {
+          "question_no": 4,
+          "question_audio": "L12/L12_Q4.mp3",
+          "answer_audio": "L12/L12_A4.mp3",
+          "title": "找Bug就像做什么？",
+          "options": [
+            "像睡觉。",
+            "像做饭。",
+            "像当小修理工，回头检查找到问题改正。",
+            "像画画。"
+          ],
+          "correct_answer": "C",
+          "explanation": "找Bug就像当小修理工，回头检查哪里出错了。"
+        },
+        {
+          "question_no": 5,
+          "question_audio": "L12/L12_Q5.mp3",
+          "answer_audio": "L12/L12_A5.mp3",
+          "title": "最厉害的修理工有什么秘诀？",
+          "options": [
+            "跑得快。",
+            "力气大。",
+            "不需要秘诀。",
+            "每做一步都记下来。"
+          ],
+          "correct_answer": "D",
+          "explanation": "每做一步都记下来，出了问题翻翻记录就能快速定位。"
+        },
+        {
+          "question_no": 6,
+          "question_audio": "L12/L12_Q6.mp3",
+          "answer_audio": "L12/L12_A6.mp3",
+          "title": "按说明书拼乐高，拼完轮子不转，你应该怎么做？",
+          "options": [
+            "回头一步一步检查，找到问题再改正。",
+            "扔掉重买。",
+            "不管它。",
+            "用力掰。"
+          ],
+          "correct_answer": "A",
+          "explanation": "找Bug要回头检查每一步，找到哪里错了改过来。"
+        },
+        {
+          "question_no": 7,
+          "question_audio": "L12/L12_Q7.mp3",
+          "answer_audio": "L12/L12_A7.mp3",
+          "title": "记录每一步有什么好处？",
+          "options": [
+            "只是为了好看。",
+            "出了问题能快速定位是哪一步出错。",
+            "没什么好处。",
+            "看起来很专业。"
+          ],
+          "correct_answer": "B",
+          "explanation": "记录每一步，能帮助快速定位问题。"
+        },
+        {
+          "question_no": 8,
+          "question_audio": "L12/L12_Q8.mp3",
+          "answer_audio": "L12/L12_A8.mp3",
+          "title": "有bug的食谱，最可能有什么问题？",
+          "options": [
+            "图画不好看。",
+            "食材太多。",
+            "步骤顺序写错，或漏了一步。",
+            "菜不好吃。"
+          ],
+          "correct_answer": "C",
+          "explanation": "食谱的Bug，可能是步骤顺序错了，或者漏了一步。"
+        },
+        {
+          "question_no": 9,
+          "question_audio": "L12/L12_Q9.mp3",
+          "answer_audio": "L12/L12_A9.mp3",
+          "title": "犯错可怕吗？",
+          "options": [
+            "犯错就放弃了。",
+            "不犯错了就不用学了。",
+            "很可怕，不能犯错。",
+            "不可怕，找到错误改正它，就会变得更厉害。"
+          ],
+          "correct_answer": "D",
+          "explanation": "犯错不可怕，找错、改错、重试让我们变得更好。"
+        },
+        {
+          "question_no": 10,
+          "question_audio": "L12/L12_Q10.mp3",
+          "answer_audio": "L12/L12_A10.mp3",
+          "title": "写程序的人为什么也要记录每一步？",
+          "options": [
+            "出了Bug就能很快找到原因。",
+            "没什么用。",
+            "因为字写得多。",
+            "因为老板要求。"
+          ],
+          "correct_answer": "A",
+          "explanation": "记录每一步，让程序员在出现Bug时能快速定位问题。\n\n---\n\n## 模块D｜机器如何\"思考\"（第13–16课）"
+        }
+      ]
+    },
+    {
+      "lesson_id": "L13",
+      "lesson_num": 13,
+      "title": "《袜子大整理》",
+      "core_knowledge": [
+        "分类就是按特征把相似的东西放在一起",
+        "分类的规则不同，结果就不同",
+        "AI也是靠分类来认识世界的"
+      ],
+      "explanation_segments": [
+        {
+          "audio": "L13/L13_P1.mp3",
+          "source_text": "你的袜子是怎么放的？是不是颜色一样的放一起，或者冬天的厚袜子放一摞、夏天的薄袜子放一摞？这就是\"分类\"——按照某种特征，把相似的东西归到一起。",
+          "order": 1
+        },
+        {
+          "audio": "L13/L13_P2.mp3",
+          "source_text": "但你有没有想过，同样一堆袜子，可以有好几种分法？按颜色分：白的、黑的、彩色的。按厚薄分：厚的、薄的。按长短分：长筒的、短筒的。你看，东西还是那些袜子，但分法不一样，结果就不一样！",
+          "order": 2
+        },
+        {
+          "audio": "L13/L13_P3.mp3",
+          "source_text": "AI也是这样认识世界的！它要把看到的东西分门别类：这是猫、那是狗、这个是花、那个是树……AI根据不同的特征来分类。但关键是，用什么特征来分？如果按\"有没有毛\"来分，猫和毛绒玩具就分到一起了——好像不太对！所以选对分类标准很重要。",
+          "order": 3
+        },
+        {
+          "audio": "L13/L13_P4.mp3",
+          "source_text": "分类让世界变得井井有条。想象一下，如果超市不分类，牛奶和拖把摆在一起，饼干和洗衣液混在一起，那买东西可就太痛苦了！分类让我们快速找到需要的东西，AI也一样——分好类，才能更快更准地做判断。",
+          "order": 4
+        }
+      ],
+      "quiz": [
+        {
+          "question_no": 1,
+          "question_audio": "L13/L13_Q1.mp3",
+          "answer_audio": "L13/L13_A1.mp3",
+          "title": "分类是什么意思？",
+          "options": [
+            "按特征把相似的东西放在一起。",
+            "把东西随便放。",
+            "把东西排成一排。",
+            "把东西都扔掉。"
+          ],
+          "correct_answer": "A",
+          "explanation": "分类就是按照某种特征，把相似的东西归到一起。"
+        },
+        {
+          "question_no": 2,
+          "question_audio": "L13/L13_Q2.mp3",
+          "answer_audio": "L13/L13_A2.mp3",
+          "title": "同样一堆袜子，按颜色分和按厚薄分，结果一样吗？",
+          "options": [
+            "一样。",
+            "不一样，分类规则不同，结果就不同。",
+            "只有颜色分法对。",
+            "只有厚薄分法对。"
+          ],
+          "correct_answer": "B",
+          "explanation": "分法不一样，结果就不一样。"
+        },
+        {
+          "question_no": 3,
+          "question_audio": "L13/L13_Q3.mp3",
+          "answer_audio": "L13/L13_A3.mp3",
+          "title": "AI靠什么来认识世界？",
+          "options": [
+            "靠做梦。",
+            "靠魔法。",
+            "靠分类。",
+            "靠猜测。"
+          ],
+          "correct_answer": "C",
+          "explanation": "AI也是靠分类来认识世界的。"
+        },
+        {
+          "question_no": 4,
+          "question_audio": "L13/L13_Q4.mp3",
+          "answer_audio": "L13/L13_A4.mp3",
+          "title": "如果按\"有没有毛\"来分类，猫和毛绒玩具会怎样？",
+          "options": [
+            "不能分类。",
+            "分到不同的组。",
+            "只能猫分到一组。",
+            "分到同一组，但这样不太对。"
+          ],
+          "correct_answer": "D",
+          "explanation": "猫和毛绒玩具都有毛，只按\"有没有毛\"分，就分到一起了。"
+        },
+        {
+          "question_no": 5,
+          "question_audio": "L13/L13_Q5.mp3",
+          "answer_audio": "L13/L13_A5.mp3",
+          "title": "分类有什么好处？",
+          "options": [
+            "让世界井井有条，快速找到需要的东西。",
+            "让东西更乱。",
+            "没有好处。",
+            "让东西变少。"
+          ],
+          "correct_answer": "A",
+          "explanation": "分类让世界井井有条，方便快速找到需要的东西。"
+        },
+        {
+          "question_no": 6,
+          "question_audio": "L13/L13_Q6.mp3",
+          "answer_audio": "L13/L13_A6.mp3",
+          "title": "选对分类标准为什么重要？",
+          "options": [
+            "不重要，随便分就行。",
+            "选对标准，才能分得正确和有用。",
+            "只有一种标准是对的。",
+            "分类标准无所谓。"
+          ],
+          "correct_answer": "B",
+          "explanation": "选对标准，才能分得正确。"
+        },
+        {
+          "question_no": 7,
+          "question_audio": "L13/L13_Q7.mp3",
+          "answer_audio": "L13/L13_A7.mp3",
+          "title": "超市如果不分类，会怎样？",
+          "options": [
+            "东西会更便宜。",
+            "东西会更好找。",
+            "买东西会很痛苦，牛奶和拖把混在一起。",
+            "没有影响。"
+          ],
+          "correct_answer": "C",
+          "explanation": "超市不分类的话，买东西就像大海捞针。"
+        },
+        {
+          "question_no": 8,
+          "question_audio": "L13/L13_Q8.mp3",
+          "answer_audio": "L13/L13_A8.mp3",
+          "title": "袜子可以按哪些方式分类？",
+          "options": [
+            "只能按颜色。",
+            "只能按厚薄。",
+            "不能分类。",
+            "可以按颜色、厚薄、长短等多种方式。"
+          ],
+          "correct_answer": "D",
+          "explanation": "同一堆袜子，可以按不同方式分类。"
+        },
+        {
+          "question_no": 9,
+          "question_audio": "L13/L13_Q9.mp3",
+          "answer_audio": "L13/L13_A9.mp3",
+          "title": "\"分类标准取决于目的\"是什么意思？",
+          "options": [
+            "找红袜子按颜色分方便，找冬袜按厚薄分方便。",
+            "不管什么目的，都用同一种分法。",
+            "目的不重要。",
+            "只有一种分法有用。"
+          ],
+          "correct_answer": "A",
+          "explanation": "不同的目的，需要不同的分类方式。"
+        },
+        {
+          "question_no": 10,
+          "question_audio": "L13/L13_Q10.mp3",
+          "answer_audio": "L13/L13_A10.mp3",
+          "title": "AI要学会区分猫和狗，最重要的是什么？",
+          "options": [
+            "颜色。",
+            "选择有用的分类特征。",
+            "大小。",
+            "重量。"
+          ],
+          "correct_answer": "B",
+          "explanation": "AI要选对分类特征，才能正确区分事物。"
+        }
+      ]
+    },
+    {
+      "lesson_id": "L14",
+      "lesson_num": 14,
+      "title": "《特征放大镜》",
+      "core_knowledge": [
+        "特征就是能区分不同事物的线索",
+        "有些特征更能帮助识别（比如形状比颜色更能区分猫和狗）",
+        "\"找相同\"和\"找不同\"是识别事物的基本方法"
+      ],
+      "explanation_segments": [
+        {
+          "audio": "L14/L14_P1.mp3",
+          "source_text": "你是怎么区分猫和狗的呢？你可能会说：猫有长长的胡须，狗喜欢摇尾巴；猫\"喵喵\"叫，狗\"汪汪\"叫。这些能帮你分辨的线索，就叫\"特征\"！",
+          "order": 1
+        },
+        {
+          "audio": "L14/L14_P2.mp3",
+          "source_text": "特征就像一个超级放大镜，帮你看到事物之间最关键的不同。想想看，如果只看颜色，一只黑猫和一只黑狗都是黑色的，你分不出来。但如果看耳朵的形状、尾巴的样子、叫声的不同——这些就是更好的特征，能帮你一下子分出来！",
+          "order": 2
+        },
+        {
+          "audio": "L14/L14_P3.mp3",
+          "source_text": "AI也是这样工作的！它要学会区分东西，就要找到最有用的特征。比如区分苹果和橘子，最好的特征是\"表皮光滑vs粗糙\"——这个特征一看就能分出来。而\"都是圆的\"这个特征就没什么用，因为两者都是圆的，分不出来。",
+          "order": 3
+        },
+        {
+          "audio": "L14/L14_P4.mp3",
+          "source_text": "找特征就像玩\"找不同\"游戏！两幅画放在一起，有的地方一样，有的地方不一样。那些\"不一样\"的地方，就是最重要的特征。AI就是通过大量地\"找相同\"和\"找不同\"，慢慢学会认东西的。",
+          "order": 4
+        }
+      ],
+      "quiz": [
+        {
+          "question_no": 1,
+          "question_audio": "L14/L14_Q1.mp3",
+          "answer_audio": "L14/L14_A1.mp3",
+          "title": "特征是什么？",
+          "options": [
+            "一种颜色。",
+            "能区分不同事物的线索。",
+            "一种食物。",
+            "动物的名字。"
+          ],
+          "correct_answer": "B",
+          "explanation": "特征就是能帮你分辨不同事物的线索。"
+        },
+        {
+          "question_no": 2,
+          "question_audio": "L14/L14_Q2.mp3",
+          "answer_audio": "L14/L14_A2.mp3",
+          "title": "区分猫和狗，下面哪个特征最有用？",
+          "options": [
+            "都有四条腿。",
+            "都是圆的。",
+            "叫声不同（喵喵vs汪汪）。",
+            "都有尾巴。"
+          ],
+          "correct_answer": "C",
+          "explanation": "叫声不同是很能区分的特征。"
+        },
+        {
+          "question_no": 3,
+          "question_audio": "L14/L14_Q3.mp3",
+          "answer_audio": "L14/L14_A3.mp3",
+          "title": "区分苹果和橘子，最好的特征是什么？",
+          "options": [
+            "都是圆的。",
+            "都能吃。",
+            "都有皮。",
+            "表皮光滑vs粗糙。"
+          ],
+          "correct_answer": "D",
+          "explanation": "\"表皮光滑vs粗糙\"一看就能分出来。"
+        },
+        {
+          "question_no": 4,
+          "question_audio": "L14/L14_Q4.mp3",
+          "answer_audio": "L14/L14_A4.mp3",
+          "title": "\"都是圆的\"为什么不是区分苹果和橘子的好特征？",
+          "options": [
+            "因为两者都是圆的，区分不了。",
+            "因为没人喜欢圆形。",
+            "因为圆形不好看。",
+            "因为圆不是特征。"
+          ],
+          "correct_answer": "A",
+          "explanation": "两个事物都有某个特征时，这个特征就没办法帮助区分。"
+        },
+        {
+          "question_no": 5,
+          "question_audio": "L14/L14_Q5.mp3",
+          "answer_audio": "L14/L14_A5.mp3",
+          "title": "找特征就像玩什么游戏？",
+          "options": [
+            "捉迷藏。",
+            "\"找不同\"游戏。",
+            "跳绳。",
+            "踢球。"
+          ],
+          "correct_answer": "B",
+          "explanation": "找特征就像\"找不同\"游戏。"
+        },
+        {
+          "question_no": 6,
+          "question_audio": "L14/L14_Q6.mp3",
+          "answer_audio": "L14/L14_A6.mp3",
+          "title": "一只黑猫和一只黑狗都是黑色的，只看颜色能分出来吗？",
+          "options": [
+            "能，黑猫更黑。",
+            "不能，它们是一样的。",
+            "不能，需要看其他特征，如耳朵形状、叫声。",
+            "能。"
+          ],
+          "correct_answer": "C",
+          "explanation": "只看颜色分不出来，需要更好的特征。"
+        },
+        {
+          "question_no": 7,
+          "question_audio": "L14/L14_Q7.mp3",
+          "answer_audio": "L14/L14_A7.mp3",
+          "title": "AI要学会认东西，最重要的是什么？",
+          "options": [
+            "看颜色。",
+            "看名字。",
+            "看大小。",
+            "找到最有用的特征。"
+          ],
+          "correct_answer": "D",
+          "explanation": "AI要学会区分东西，就要找到最有区分度的特征。"
+        },
+        {
+          "question_no": 8,
+          "question_audio": "L14/L14_Q8.mp3",
+          "answer_audio": "L14/L14_A8.mp3",
+          "title": "\"找相同\"和\"找不同\"对识别事物有什么帮助？",
+          "options": [
+            "帮我们发现哪些特征能区分事物。",
+            "只能用来画画。",
+            "只好玩。",
+            "没帮助。"
+          ],
+          "correct_answer": "A",
+          "explanation": "\"找相同\"和\"找不同\"能帮我们发现事物的特征。"
+        },
+        {
+          "question_no": 9,
+          "question_audio": "L14/L14_Q9.mp3",
+          "answer_audio": "L14/L14_A9.mp3",
+          "title": "铅笔和钢笔的不同可能包括什么？",
+          "options": [
+            "都能写字。",
+            "铅笔用铅芯，钢笔用墨水。",
+            "都有笔帽。",
+            "都是长的。"
+          ],
+          "correct_answer": "B",
+          "explanation": "使用的材料不同，是有区分度的特征。"
+        },
+        {
+          "question_no": 10,
+          "question_audio": "L14/L14_Q10.mp3",
+          "answer_audio": "L14/L14_A10.mp3",
+          "title": "好的特征应该具备什么特点？",
+          "options": [
+            "越简单越好。",
+            "越复杂越好。",
+            "能区分开不同事物的。",
+            "两个事物都有的。"
+          ],
+          "correct_answer": "C",
+          "explanation": "好的特征是有区分度的，能帮我们一眼分出不同的事物。"
+        }
+      ]
+    },
+    {
+      "lesson_id": "L15",
+      "lesson_num": 15,
+      "title": "《猜一猜明天带伞吗》",
+      "core_knowledge": [
+        "预测是根据过去的规律来猜未来",
+        "预测不是100%确定，有不确定性",
+        "规律越明显、信息越多，预测越靠谱"
+      ],
+      "explanation_segments": [
+        {
+          "audio": "L15/L15_P1.mp3",
+          "source_text": "每天早上出门前，妈妈是不是会看看天气，然后说\"今天可能会下雨，带上伞吧\"？妈妈是怎么知道的呢？她看了天气预报！天气预报就是根据过去很多很多天的数据，找到规律，然后猜明天会怎样——这就是\"预测\"。",
+          "order": 1
+        },
+        {
+          "audio": "L15/L15_P2.mp3",
+          "source_text": "预测就像猜谜游戏。如果你观察到\"每次天上乌云密布，过一会儿就下雨\"，那你下次看到乌云，就会猜\"可能要下雨了\"。你根据以前的经验来猜未来，这就是预测。但预测不是百分百对的！有时候乌云来了却没下雨，有时候突然就下起了太阳雨——这就是\"不确定性\"。",
+          "order": 2
+        },
+        {
+          "audio": "L15/L15_P3.mp3",
+          "source_text": "AI也天天在预测！它预测你喜欢的视频、预测明天的气温、预测哪条路会堵车。它看了海量的过去数据，找到规律，然后做出最好的猜测。但就像天气预报偶尔不准一样，AI的预测也可能出错——因为未来不是百分之百可以预知的。",
+          "order": 3
+        },
+        {
+          "audio": "L15/L15_P4.mp3",
+          "source_text": "记住：预测是\"很可能会\"而不是\"一定会\"。信息越多、规律越清楚，猜对的概率就越大，但永远不能说绝对！",
+          "order": 4
+        }
+      ],
+      "quiz": [
+        {
+          "question_no": 1,
+          "question_audio": "L15/L15_Q1.mp3",
+          "answer_audio": "L15/L15_A1.mp3",
+          "title": "预测是什么意思？",
+          "options": [
+            "确定未来会发生什么。",
+            "随便猜一个答案。",
+            "根据过去的规律来猜未来。",
+            "只能大人做。"
+          ],
+          "correct_answer": "C",
+          "explanation": "预测是根据过去观察到的规律，来猜测未来可能发生的事情。"
+        },
+        {
+          "question_no": 2,
+          "question_audio": "L15/L15_Q2.mp3",
+          "answer_audio": "L15/L15_A2.mp3",
+          "title": "天气预报是怎么做出来的？",
+          "options": [
+            "看云的形状猜的。",
+            "随便猜的。",
+            "问路人猜的。",
+            "根据过去很多天的数据，找到规律，猜明天会怎样。"
+          ],
+          "correct_answer": "D",
+          "explanation": "天气预报是根据过去大量数据，找到规律，然后预测未来。"
+        },
+        {
+          "question_no": 3,
+          "question_audio": "L15/L15_Q3.mp3",
+          "answer_audio": "L15/L15_A3.mp3",
+          "title": "预测是100%确定的吗？",
+          "options": [
+            "不是，预测有不确定性。",
+            "只要看数据就一定对。",
+            "是的，预测一定对。",
+            "预测和猜没区别。"
+          ],
+          "correct_answer": "A",
+          "explanation": "预测不是百分百对的，有不确定性。"
+        },
+        {
+          "question_no": 4,
+          "question_audio": "L15/L15_Q4.mp3",
+          "answer_audio": "L15/L15_A4.mp3",
+          "title": "什么情况下预测会更靠谱？",
+          "options": [
+            "只看一天数据的时候。",
+            "规律越明显，信息越多。",
+            "不看数据的时候。",
+            "随便猜的时候。"
+          ],
+          "correct_answer": "B",
+          "explanation": "规律越明显、信息越多，预测越靠谱。"
+        },
+        {
+          "question_no": 5,
+          "question_audio": "L15/L15_Q5.mp3",
+          "answer_audio": "L15/L15_A5.mp3",
+          "title": "\"每次乌云密布，过一会儿就下雨\"，这属于什么？",
+          "options": [
+            "运气。",
+            "幻觉。",
+            "规律。",
+            "巧合。"
+          ],
+          "correct_answer": "C",
+          "explanation": "反复观察到的模式，就是规律。"
+        },
+        {
+          "question_no": 6,
+          "question_audio": "L15/L15_Q6.mp3",
+          "answer_audio": "L15/L15_A6.mp3",
+          "title": "AI做预测时可能出现什么问题？",
+          "options": [
+            "AI预测永远正确。",
+            "AI不会做预测。",
+            "AI只能预测天气。",
+            "AI预测也可能出错。"
+          ],
+          "correct_answer": "D",
+          "explanation": "AI的预测也可能出错，因为未来不是100%可以预知的。"
+        },
+        {
+          "question_no": 7,
+          "question_audio": "L15/L15_Q7.mp3",
+          "answer_audio": "L15/L15_A7.mp3",
+          "title": "预测是\"很可能会\"还是\"一定会\"？",
+          "options": [
+            "很可能会。",
+            "一定会。",
+            "不可能。",
+            "说不清。"
+          ],
+          "correct_answer": "A",
+          "explanation": "预测是\"很可能会\"，而不是\"一定会\"。"
+        },
+        {
+          "question_no": 8,
+          "question_audio": "L15/L15_Q8.mp3",
+          "answer_audio": "L15/L15_A8.mp3",
+          "title": "AI可以预测什么？",
+          "options": [
+            "只能预测体育比赛。",
+            "可以预测你喜欢的视频、明天气温、堵车等。",
+            "只能预测天气。",
+            "什么都预测不了。"
+          ],
+          "correct_answer": "B",
+          "explanation": "AI可以预测很多事，推荐视频、天气、路况等。"
+        },
+        {
+          "question_no": 9,
+          "question_audio": "L15/L15_Q9.mp3",
+          "answer_audio": "L15/L15_A9.mp3",
+          "title": "\"下雨概率70%\"是什么意思？",
+          "options": [
+            "一定会下雨70分钟。",
+            "70%的地方会下雨。",
+            "下雨的可能性比较大，但不是一定下。",
+            "70%的人带伞了。"
+          ],
+          "correct_answer": "C",
+          "explanation": "概率70%表示下雨的可能性比较大，但不是百分之百确定。"
+        },
+        {
+          "question_no": 10,
+          "question_audio": "L15/L15_Q10.mp3",
+          "answer_audio": "L15/L15_A10.mp3",
+          "title": "预测准不准跟什么有关系？",
+          "options": [
+            "跟运气有关。",
+            "跟谁做预测无关。",
+            "只跟时间有关。",
+            "跟信息多少和规律清楚程度有关。"
+          ],
+          "correct_answer": "D",
+          "explanation": "信息越多、规律越清楚，预测就越准。"
+        }
+      ]
+    },
+    {
+      "lesson_id": "L16",
+      "lesson_num": 16,
+      "title": "《背答案的鹦鹉》",
+      "core_knowledge": [
+        "只记住答案不等于真正学会",
+        "过拟合就是\"只会做见过的题，不会做新题\"",
+        "真正的学习是理解规律、能举一反三"
+      ],
+      "explanation_segments": [
+        {
+          "audio": "L16/L16_P1.mp3",
+          "source_text": "你有没有见过一只鹦鹉，它能说\"你好\"\"再见\"\"恭喜发财\"，说得可溜了！但你让它说一句从来没练过的话，它就说不出来了。因为它只是\"背\"了那几句话，并不理解自己在说什么——这就是\"背答案\"！",
+          "order": 1
+        },
+        {
+          "audio": "L16/L16_P2.mp3",
+          "source_text": "学习也是一样。如果一个人把数学题的答案全背下来，考试考一样的题他能得100分，但稍微换一道新题他就傻眼了。因为他没有理解方法，只是死记硬背。在AI的世界里，这叫\"过拟合\"——听起来是个很复杂的词，其实意思很简单：AI把练习题背得太熟了，但遇到新题就不会了！",
+          "order": 2
+        },
+        {
+          "audio": "L16/L16_P3.mp3",
+          "source_text": "真正学会是什么呢？是理解规律，能举一反三！比如你学会了\"3+5=8\"不是靠背，而是理解了\"加法就是把两个数合起来\"。那我问你\"7+9=？\"，你虽然没练过这道题，但也能算出来——因为你理解了方法，不是在背答案。",
+          "order": 3
+        },
+        {
+          "audio": "L16/L16_P4.mp3",
+          "source_text": "所以，不管是小朋友还是AI，最好的学习方式是：理解规律，灵活运用，而不是死记硬背！",
+          "order": 4
+        }
+      ],
+      "quiz": [
+        {
+          "question_no": 1,
+          "question_audio": "L16/L16_Q1.mp3",
+          "answer_audio": "L16/L16_A1.mp3",
+          "title": "只记住答案不等于真正学会，这叫什么？",
+          "options": [
+            "聪明学习。",
+            "好的学习方法。",
+            "快速学习。",
+            "背答案，过拟合。"
+          ],
+          "correct_answer": "D",
+          "explanation": "只记住答案、不理解方法，就是过拟合。"
+        },
+        {
+          "question_no": 2,
+          "question_audio": "L16/L16_Q2.mp3",
+          "answer_audio": "L16/L16_A2.mp3",
+          "title": "过拟合是什么意思？",
+          "options": [
+            "AI把练习题背得太熟，但遇到新题就不会了。",
+            "AI学的速度太快。",
+            "AI学得太好了。",
+            "AI不需要学习。"
+          ],
+          "correct_answer": "A",
+          "explanation": "过拟合就是AI只会做见过的题，不会做新题。"
+        },
+        {
+          "question_no": 3,
+          "question_audio": "L16/L16_Q3.mp3",
+          "answer_audio": "L16/L16_A3.mp3",
+          "title": "真正学会是什么意思？",
+          "options": [
+            "做题最快。",
+            "理解规律，能举一反三。",
+            "考试得100分。",
+            "把所有答案背下来。"
+          ],
+          "correct_answer": "B",
+          "explanation": "真正学会，是理解了方法和规律，遇到新问题也能解决。"
+        },
+        {
+          "question_no": 4,
+          "question_audio": "L16/L16_Q4.mp3",
+          "answer_audio": "L16/L16_A4.mp3",
+          "title": "鹦鹉会说\"你好\"\"再见\"，但它理解自己在说什么吗？",
+          "options": [
+            "理解，它学过语文。",
+            "理解。",
+            "不理解，它只是背下来的。",
+            "理解，它在打招呼。"
+          ],
+          "correct_answer": "C",
+          "explanation": "鹦鹉只是学会了发音，并不理解词的意思。"
+        },
+        {
+          "question_no": 5,
+          "question_audio": "L16/L16_Q5.mp3",
+          "answer_audio": "L16/L16_A5.mp3",
+          "title": "一个人把数学题答案全背下来，换一道新题会怎样？",
+          "options": [
+            "也能做对。",
+            "不需要做新题。",
+            "更厉害了。",
+            "可能就不会了。"
+          ],
+          "correct_answer": "D",
+          "explanation": "背答案、不理解方法，遇到新题就傻眼了。"
+        },
+        {
+          "question_no": 6,
+          "question_audio": "L16/L16_Q6.mp3",
+          "answer_audio": "L16/L16_A6.mp3",
+          "title": "理解\"加法就是把两个数合起来\"后，7+9能答出来吗？",
+          "options": [
+            "能，因为理解了方法。",
+            "只能靠猜。",
+            "不能，太难了。",
+            "不能，没背过。"
+          ],
+          "correct_answer": "A",
+          "explanation": "理解了加法的规律，就能算任何加法题。"
+        },
+        {
+          "question_no": 7,
+          "question_audio": "L16/L16_Q7.mp3",
+          "answer_audio": "L16/L16_A7.mp3",
+          "title": "怎样才能不\"背答案\"？",
+          "options": [
+            "不用学习。",
+            "理解规律，灵活运用。",
+            "多做一模一样的题。",
+            "只做简单题。"
+          ],
+          "correct_answer": "B",
+          "explanation": "理解规律、灵活运用，才是真学会。"
+        },
+        {
+          "question_no": 8,
+          "question_audio": "L16/L16_Q8.mp3",
+          "answer_audio": "L16/L16_A8.mp3",
+          "title": "AI考试练习题全对，但新题全错，说明什么？",
+          "options": [
+            "AI运气不好。",
+            "新题太难了。",
+            "AI过拟合了，只是背了答案。",
+            "AI很聪明。"
+          ],
+          "correct_answer": "C",
+          "explanation": "练习题全对但新题不会，就是过拟合的表现。"
+        },
+        {
+          "question_no": 9,
+          "question_audio": "L16/L16_Q9.mp3",
+          "answer_audio": "L16/L16_A9.mp3",
+          "title": "\"举一反三\"是什么意思？",
+          "options": [
+            "一次只做一道题。",
+            "只学一个例子。",
+            "做三遍同样的题。",
+            "学会一个，就能解决类似的其他问题。"
+          ],
+          "correct_answer": "D",
+          "explanation": "\"举一反三\"就是理解了一个规律后，能灵活运用到新的类似问题上。"
+        },
+        {
+          "question_no": 10,
+          "question_audio": "L16/L16_Q10.mp3",
+          "answer_audio": "L16/L16_A10.mp3",
+          "title": "下面哪个属于\"理解规律\"而不是\"背答案\"？",
+          "options": [
+            "理解乘法是多次相加，可以算任何乘法。",
+            "把9×9乘法表全背下来。",
+            "记住老师说的每句话。",
+            "把考试答案抄下来。"
+          ],
+          "correct_answer": "A",
+          "explanation": "理解乘法的原理后，可以算任何乘法题，比死背乘法表更好。\n\n---\n\n## 模块E｜从例子里学——机器学习（第17–20课）"
+        }
+      ]
+    },
+    {
+      "lesson_id": "L17",
+      "lesson_num": 17,
+      "title": "《学校里的AI同学》",
+      "core_knowledge": [
+        "训练集就是\"练习题\"，用来学习",
+        "测试集就是\"考试题\"，用来检验是否真学会",
+        "用新题检验才能知道是不是真的理解了"
+      ],
+      "explanation_segments": [
+        {
+          "audio": "L17/L17_P1.mp3",
+          "source_text": "你在学校是怎么学数学的？老师先在课堂上讲例题、做练习——这些练习题就是你的\"训练集\"，让你通过大量练习来掌握知识。等学了一段时间，老师会出一张考卷来考你——这张考卷上的题你之前没见过，它就是\"测试集\"，用来检查你是不是真的学会了。",
+          "order": 1
+        },
+        {
+          "audio": "L17/L17_P2.mp3",
+          "source_text": "如果考试出的全是练习册上做过的原题，那你就算全做对了，也不能说明你真会——可能只是背下了答案！只有拿没见过的新题考你，才能看出你是不是真正理解了。",
+          "order": 2
+        },
+        {
+          "audio": "L17/L17_P3.mp3",
+          "source_text": "AI也是这样学习的！工程师先给AI一大堆\"练习题\"（训练集），让它反复学习。然后拿出一些AI没见过的新题（测试集）来考它。如果AI在新题上也答得很好，说明它真的学会了；如果练习题全对但新题全错，那就是\"背答案\"了（还记得过拟合吗？）。",
+          "order": 3
+        },
+        {
+          "audio": "L17/L17_P4.mp3",
+          "source_text": "所以，练习帮我们学，考试帮我们确认——练习和考试缺一不可，AI和小朋友都一样！",
+          "order": 4
+        }
+      ],
+      "quiz": [
+        {
+          "question_no": 1,
+          "question_audio": "L17/L17_Q1.mp3",
+          "answer_audio": "L17/L17_A1.mp3",
+          "title": "训练集是什么？",
+          "options": [
+            "练习题，用来学习。",
+            "游戏规则。",
+            "考试试题。",
+            "运动训练。"
+          ],
+          "correct_answer": "A",
+          "explanation": "训练集就是练习题，AI通过大量练习来掌握知识。"
+        },
+        {
+          "question_no": 2,
+          "question_audio": "L17/L17_Q2.mp3",
+          "answer_audio": "L17/L17_A2.mp3",
+          "title": "测试集是什么？",
+          "options": [
+            "练习题。",
+            "考试题，用来检验是否真学会。",
+            "游戏题目。",
+            "家庭作业。"
+          ],
+          "correct_answer": "B",
+          "explanation": "测试集就是考试题，用没见过的新题来检验。"
+        },
+        {
+          "question_no": 3,
+          "question_audio": "L17/L17_Q3.mp3",
+          "answer_audio": "L17/L17_A3.mp3",
+          "title": "为什么不能用练习题当考试题？",
+          "options": [
+            "因为练习题太难了。",
+            "可以用，没区别。",
+            "用练习题考试，看不出是真会还是背了答案。",
+            "因为练习题太简单了。"
+          ],
+          "correct_answer": "C",
+          "explanation": "考试就是练习的原题，全对也可能是背下来的。"
+        },
+        {
+          "question_no": 4,
+          "question_audio": "L17/L17_Q4.mp3",
+          "answer_audio": "L17/L17_A4.mp3",
+          "title": "AI在练习题上全对，但在新题上全错，这说明什么？",
+          "options": [
+            "练习做得不够多。",
+            "新题不重要。",
+            "AI很厉害。",
+            "AI只是背了答案，没有真学会。"
+          ],
+          "correct_answer": "D",
+          "explanation": "练习题全对但新题不会，说明AI过拟合了。"
+        },
+        {
+          "question_no": 5,
+          "question_audio": "L17/L17_Q5.mp3",
+          "answer_audio": "L17/L17_A5.mp3",
+          "title": "用新题考试，才能看出什么？",
+          "options": [
+            "是不是真正理解了。",
+            "考试有多难。",
+            "谁运气好。",
+            "谁背得快。"
+          ],
+          "correct_answer": "A",
+          "explanation": "只有用没见过的新题，才能检验是真正理解了还是只背了答案。"
+        },
+        {
+          "question_no": 6,
+          "question_audio": "L17/L17_Q6.mp3",
+          "answer_audio": "L17/L17_A6.mp3",
+          "title": "练习和考试的关系是什么？",
+          "options": [
+            "只需要考试，不需要练习。",
+            "练习帮我们学，考试帮我们确认。",
+            "练习和考试没关系。",
+            "只需要练习，不需要考试。"
+          ],
+          "correct_answer": "B",
+          "explanation": "练习帮我们学习，考试帮我们确认是否真学会了。"
+        },
+        {
+          "question_no": 7,
+          "question_audio": "L17/L17_Q7.mp3",
+          "answer_audio": "L17/L17_A7.mp3",
+          "title": "\"训练集和测试集不能重叠\"是什么意思？",
+          "options": [
+            "不用做练习。",
+            "不用考试。",
+            "练习题和考试题不能有一样的。",
+            "练习题和考试题要一样。"
+          ],
+          "correct_answer": "C",
+          "explanation": "训练集和测试集不能有相同的题目，否则检验不了真本事。"
+        },
+        {
+          "question_no": 8,
+          "question_audio": "L17/L17_Q8.mp3",
+          "answer_audio": "L17/L17_A8.mp3",
+          "title": "AI学习需要训练集和测试集，小朋友学习需要什么？",
+          "options": [
+            "只需要课本。",
+            "只需要考试。",
+            "什么都不需要。",
+            "练习和考试。"
+          ],
+          "correct_answer": "D",
+          "explanation": "AI和小朋友一样，都需要通过练习来学习，通过考试来确认。"
+        },
+        {
+          "question_no": 9,
+          "question_audio": "L17/L17_Q9.mp3",
+          "answer_audio": "L17/L17_A9.mp3",
+          "title": "如果考试题和练习题太像，能说明真学会了吗？",
+          "options": [
+            "不能，可能是背了类似的题。",
+            "无所谓。",
+            "能，练习题和考试题一样最好。",
+            "能，答对了就是学会了。"
+          ],
+          "correct_answer": "A",
+          "explanation": "太像的题目，可能只是背了答案。"
+        },
+        {
+          "question_no": 10,
+          "question_audio": "L17/L17_Q10.mp3",
+          "answer_audio": "L17/L17_A10.mp3",
+          "title": "\"7张卡片练习，3张卡片考试\"，为什么考试卡更少？",
+          "options": [
+            "考试不需要太多题。",
+            "只需要少量新题，就能检验是否真学会。",
+            "考试题不重要。",
+            "卡片不够用了。"
+          ],
+          "correct_answer": "B",
+          "explanation": "少量没见过的新题，就够检验了。"
+        }
+      ]
+    },
+    {
+      "lesson_id": "L18",
+      "lesson_num": 18,
+      "title": "《小狗学握手》",
+      "core_knowledge": [
+        "强化学习是通过\"奖励\"来学会行为的",
+        "做对了得到奖励→下次更愿意这么做",
+        "\"试一试→得反馈→再调整\"是学习的关键循环"
+      ],
+      "explanation_segments": [
+        {
+          "audio": "L18/L18_P1.mp3",
+          "source_text": "你家有没有养小狗？教小狗\"握手\"的时候，你是怎么教的？你先说\"握手\"，小狗可能歪着脑袋不明白。但有一次它碰巧把爪子搭在了你手上，你赶紧夸它\"好棒！\"还给了它一块小零食。小狗想：哇，这样做有好吃的东西！下次你再说\"握手\"，它就赶紧伸出爪子。多练几次，小狗就学会了！",
+          "order": 1
+        },
+        {
+          "audio": "L18/L18_P2.mp3",
+          "source_text": "这就是\"强化学习\"——通过奖励来学习！做得好→得奖励→下次还这么做；做得不好→没奖励→下次就不这么做了。简单吧？",
+          "order": 2
+        },
+        {
+          "audio": "L18/L18_P3.mp3",
+          "source_text": "你其实也在用强化学习呢！比如你考试得了100分，妈妈表扬你、给你买冰淇淋，你就更努力地学习。你帮爸爸洗碗，爸爸说\"谢谢宝贝\"，你就更愿意帮忙。奖励让你想再做一次对的事情！",
+          "order": 3
+        },
+        {
+          "audio": "L18/L18_P4.mp3",
+          "source_text": "AI也是这样学的！工程师让AI去\"试\"，做对了就给它\"奖励分\"（虽然不是真的零食），做错了就不给。AI不断地试、得反馈、再调整，慢慢地就越做越好了。就像小狗一遍遍地练习握手，最终变成了一只超听话的小狗！",
+          "order": 4
+        }
+      ],
+      "quiz": [
+        {
+          "question_no": 1,
+          "question_audio": "L18/L18_Q1.mp3",
+          "answer_audio": "L18/L18_A1.mp3",
+          "title": "强化学习是通过什么来学习的？",
+          "options": [
+            "看书。",
+            "通过奖励来学会行为。",
+            "听老师讲课。",
+            "抄答案。"
+          ],
+          "correct_answer": "B",
+          "explanation": "强化学习是通过奖励来学习的。"
+        },
+        {
+          "question_no": 2,
+          "question_audio": "L18/L18_Q2.mp3",
+          "answer_audio": "L18/L18_A2.mp3",
+          "title": "小狗学会\"握手\"，靠的是什么？",
+          "options": [
+            "别的狗教的。",
+            "天生就会。",
+            "做对了得零食奖励，慢慢就学会了。",
+            "看电视学的。"
+          ],
+          "correct_answer": "C",
+          "explanation": "小狗做对时得了零食奖励，多练几次就学会了。"
+        },
+        {
+          "question_no": 3,
+          "question_audio": "L18/L18_Q3.mp3",
+          "answer_audio": "L18/L18_A3.mp3",
+          "title": "\"做得好得奖励，下次还这么做\"，这描述的是什么过程？",
+          "options": [
+            "分类。",
+            "压缩。",
+            "编码。",
+            "强化学习。"
+          ],
+          "correct_answer": "D",
+          "explanation": "这就是强化学习的过程。"
+        },
+        {
+          "question_no": 4,
+          "question_audio": "L18/L18_Q4.mp3",
+          "answer_audio": "L18/L18_A4.mp3",
+          "title": "你考试得100分，妈妈表扬你，给你买冰淇淋，你会怎样？",
+          "options": [
+            "更努力地学习，想再得奖励。",
+            "不喜欢冰淇淋。",
+            "不想再考100分了。",
+            "觉得无所谓。"
+          ],
+          "correct_answer": "A",
+          "explanation": "奖励让你想做更多对的事情，这就是强化学习的原理。"
+        },
+        {
+          "question_no": 5,
+          "question_audio": "L18/L18_Q5.mp3",
+          "answer_audio": "L18/L18_A5.mp3",
+          "title": "强化学习的关键循环是什么？",
+          "options": [
+            "听说读。",
+            "试一试→得反馈→再调整。",
+            "学习→考试→毕业。",
+            "看→想→写。"
+          ],
+          "correct_answer": "B",
+          "explanation": "\"试一试→得反馈→再调整\"是强化学习的关键循环。"
+        },
+        {
+          "question_no": 6,
+          "question_audio": "L18/L18_Q6.mp3",
+          "answer_audio": "L18/L18_A6.mp3",
+          "title": "AI做错了会怎样？",
+          "options": [
+            "没关系。",
+            "会哭。",
+            "没得到奖励，下次就不这么做了。",
+            "被关掉。"
+          ],
+          "correct_answer": "C",
+          "explanation": "做错了没奖励，AI就学到\"这样不行\"。"
+        },
+        {
+          "question_no": 7,
+          "question_audio": "L18/L18_Q7.mp3",
+          "answer_audio": "L18/L18_A7.mp3",
+          "title": "训练小机器人游戏里，机器人做对了动作，你应该怎样？",
+          "options": [
+            "什么都不做。",
+            "批评它。",
+            "忽略它。",
+            "给奖励（拍手、贴纸）。"
+          ],
+          "correct_answer": "D",
+          "explanation": "做对了给奖励，机器人才知道这个动作是对的。"
+        },
+        {
+          "question_no": 8,
+          "question_audio": "L18/L18_Q8.mp3",
+          "answer_audio": "L18/L18_A8.mp3",
+          "title": "强化学习中\"正强化\"是什么意思？",
+          "options": [
+            "做对了给奖励，增加好行为。",
+            "不给任何反馈。",
+            "做错了就惩罚。",
+            "只骂不夸。"
+          ],
+          "correct_answer": "A",
+          "explanation": "\"正强化\"是做对了给奖励，让好行为变得更多。"
+        },
+        {
+          "question_no": 9,
+          "question_audio": "L18/L18_Q9.mp3",
+          "answer_audio": "L18/L18_A9.mp3",
+          "title": "如果只有奖励、没有惩罚，够不够让AI学好？",
+          "options": [
+            "够了。",
+            "不一定，奖励设计很重要。",
+            "完全不够。",
+            "只需要惩罚。"
+          ],
+          "correct_answer": "B",
+          "explanation": "奖励能引导好行为，但奖励怎么设计很重要。"
+        },
+        {
+          "question_no": 10,
+          "question_audio": "L18/L18_Q10.mp3",
+          "answer_audio": "L18/L18_A10.mp3",
+          "title": "小狗一遍遍练习握手最终学会了，这说明什么？",
+          "options": [
+            "小狗很聪明。",
+            "小狗天生会握手。",
+            "不断尝试和得到反馈就能学会。",
+            "只需要一次奖励。"
+          ],
+          "correct_answer": "C",
+          "explanation": "反复试、得反馈、再调整，经过多次练习就能学会。"
+        }
+      ]
+    },
+    {
+      "lesson_id": "L19",
+      "lesson_num": 19,
+      "title": "《贴标签的老师》",
+      "core_knowledge": [
+        "监督学习是有\"标准答案\"的学习方式",
+        "标签就是每条数据的\"正确答案\"",
+        "标签越清楚，机器学得越好"
+      ],
+      "explanation_segments": [
+        {
+          "audio": "L19/L19_P1.mp3",
+          "source_text": "你做题的时候，练习册后面是不是有答案？做完题对一对答案，错了就改，这样你就越做越对了。答案就像一个标签，告诉你\"这道题的正确答案是什么\"。",
+          "order": 1
+        },
+        {
+          "audio": "L19/L19_P2.mp3",
+          "source_text": "在AI的世界里，有一种学习方式叫\"监督学习\"——就是给AI看很多很多带\"标签\"的例子。比如给AI看1万张猫的照片，每张照片上都贴着标签：\"这是猫\"。再看1万张狗的照片，每张都标着\"这是狗\"。AI看着这些带标签的例子，慢慢就学会了区分猫和狗。",
+          "order": 2
+        },
+        {
+          "audio": "L19/L19_P3.mp3",
+          "source_text": "这就像老师手把手教你——每做一道题，老师都告诉你对不对、正确答案是什么。有了老师的指导，你学得又快又准。标签就是AI的\"老师\"！",
+          "order": 3
+        },
+        {
+          "audio": "L19/L19_P4.mp3",
+          "source_text": "但标签的质量也很重要。如果标签贴错了——把猫的照片标成了\"狗\"——AI就会学错！就像你的练习册答案印错了，你照着错的学，考试肯定考不好。所以标签一定要准确、清楚，AI才能学得好。",
+          "order": 4
+        }
+      ],
+      "quiz": [
+        {
+          "question_no": 1,
+          "question_audio": "L19/L19_Q1.mp3",
+          "answer_audio": "L19/L19_A1.mp3",
+          "title": "监督学习是什么意思？",
+          "options": [
+            "自己学，没人教。",
+            "只能大人学。",
+            "有标准答案的学习方式。",
+            "只看不用学。"
+          ],
+          "correct_answer": "C",
+          "explanation": "监督学习就是有标准答案的学习，每条数据都有标签。"
+        },
+        {
+          "question_no": 2,
+          "question_audio": "L19/L19_Q2.mp3",
+          "answer_audio": "L19/L19_A2.mp3",
+          "title": "在监督学习中，\"标签\"是什么？",
+          "options": [
+            "名字牌。",
+            "价格标签。",
+            "贴在衣服上的标签。",
+            "每条数据的正确答案。"
+          ],
+          "correct_answer": "D",
+          "explanation": "标签就是每条数据的正确答案。"
+        },
+        {
+          "question_no": 3,
+          "question_audio": "L19/L19_Q3.mp3",
+          "answer_audio": "L19/L19_A3.mp3",
+          "title": "给AI看1万张猫的照片，每张标着\"这是猫\"，这是在做什么？",
+          "options": [
+            "监督学习，用带标签的例子教AI。",
+            "画画。",
+            "浪费时间。",
+            "玩游戏。"
+          ],
+          "correct_answer": "A",
+          "explanation": "给AI看带标签的例子，就是监督学习。"
+        },
+        {
+          "question_no": 4,
+          "question_audio": "L19/L19_Q4.mp3",
+          "answer_audio": "L19/L19_A4.mp3",
+          "title": "标签就像什么？",
+          "options": [
+            "像游戏规则。",
+            "像练习册后面的答案。",
+            "像密码。",
+            "像笑话。"
+          ],
+          "correct_answer": "B",
+          "explanation": "标签就像练习册的答案，做完题对一对。"
+        },
+        {
+          "question_no": 5,
+          "question_audio": "L19/L19_Q5.mp3",
+          "answer_audio": "L19/L19_A5.mp3",
+          "title": "如果标签贴错了，会怎样？",
+          "options": [
+            "没关系。",
+            "AI会自动纠正。",
+            "AI会学错。",
+            "标签不重要。"
+          ],
+          "correct_answer": "C",
+          "explanation": "标签错了，AI就学错了。"
+        },
+        {
+          "question_no": 6,
+          "question_audio": "L19/L19_Q6.mp3",
+          "answer_audio": "L19/L19_A6.mp3",
+          "title": "监督学习就像什么？",
+          "options": [
+            "像睡觉。",
+            "像玩游戏。",
+            "像自己看书。",
+            "像老师手把手教你。"
+          ],
+          "correct_answer": "D",
+          "explanation": "监督学习就像有老师指导，每题都告诉你对不对。"
+        },
+        {
+          "question_no": 7,
+          "question_audio": "L19/L19_Q7.mp3",
+          "answer_audio": "L19/L19_A7.mp3",
+          "title": "标签越清楚，AI学得会怎样？",
+          "options": [
+            "越好。",
+            "越差。",
+            "越慢。",
+            "不变。"
+          ],
+          "correct_answer": "A",
+          "explanation": "标签越准确清楚，AI学得越好。"
+        },
+        {
+          "question_no": 8,
+          "question_audio": "L19/L19_Q8.mp3",
+          "answer_audio": "L19/L19_A8.mp3",
+          "title": "\"数据标注\"是什么意思？",
+          "options": [
+            "复制数据。",
+            "人来给数据贴标签。",
+            "在数据上画画。",
+            "删掉数据。"
+          ],
+          "correct_answer": "B",
+          "explanation": "数据标注，就是人工给数据贴上正确标签。"
+        },
+        {
+          "question_no": 9,
+          "question_audio": "L19/L19_Q9.mp3",
+          "answer_audio": "L19/L19_A9.mp3",
+          "title": "给水果图片贴标签时，故意把苹果标成香蕉，AI会怎样？",
+          "options": [
+            "AI会自动发现错误。",
+            "没关系。",
+            "AI可能会把苹果认成香蕉。",
+            "AI不学了。"
+          ],
+          "correct_answer": "C",
+          "explanation": "错误的标签，会让AI学错。"
+        },
+        {
+          "question_no": 10,
+          "question_audio": "L19/L19_Q10.mp3",
+          "answer_audio": "L19/L19_A10.mp3",
+          "title": "监督学习需要什么条件？",
+          "options": [
+            "只需要标签。",
+            "只需要数据。",
+            "不需要任何数据。",
+            "需要带标签的数据。"
+          ],
+          "correct_answer": "D",
+          "explanation": "监督学习需要带标签的数据，数据和标签缺一不可。"
+        }
+      ]
+    },
+    {
+      "lesson_id": "L20",
+      "lesson_num": 20,
+      "title": "《没有标签的玩具箱》",
+      "core_knowledge": [
+        "无监督学习是不给\"标准答案\"的学习方式",
+        "没有标签也能按相似性把东西分成组",
+        "能发现\"隐藏的分组\"——数据自己会说话"
+      ],
+      "explanation_segments": [
+        {
+          "audio": "L20/L20_P1.mp3",
+          "source_text": "想象一个大大的玩具箱，里面乱七八糟地堆着各种玩具——积木、小汽车、娃娃、球……没有人告诉你该怎么分，但你可能会自己把小汽车归在一起、积木归在一起、娃娃归在一起——因为它们看起来就是一类的！你没有标签、没有答案，但你自己就按相似性分好了组——这就是\"无监督学习\"！",
+          "order": 1
+        },
+        {
+          "audio": "L20/L20_P2.mp3",
+          "source_text": "之前的监督学习是老师手把手教，告诉你\"这是猫、那是狗\"。但无监督学习没有人教，AI要自己去看数据，发现里面的规律和分组。就像你打开玩具箱，自己发现\"咦，这几个都是圆的，那几个都是方的\"，然后自然地分了组。",
+          "order": 2
+        },
+        {
+          "audio": "L20/L20_P3.mp3",
+          "source_text": "这种学习方式特别厉害，因为它能发现我们意想不到的规律！比如AI看了很多很多人的购物记录，虽然没有人告诉它什么跟什么是一类，但它自己发现\"买尿布的人经常也买啤酒\"——这种隐藏的规律，就是无监督学习找出来的！",
+          "order": 3
+        },
+        {
+          "audio": "L20/L20_P4.mp3",
+          "source_text": "所以，有时候不需要老师，自己仔细观察也能学到很多——AI也是这样！",
+          "order": 4
+        }
+      ],
+      "quiz": [
+        {
+          "question_no": 1,
+          "question_audio": "L20/L20_Q1.mp3",
+          "answer_audio": "L20/L20_A1.mp3",
+          "title": "无监督学习是什么意思？",
+          "options": [
+            "不学习。",
+            "有标准答案的学习。",
+            "只能大人做。",
+            "不给标准答案的学习方式。"
+          ],
+          "correct_answer": "D",
+          "explanation": "无监督学习不给标准答案，AI要自己观察数据发现规律。"
+        },
+        {
+          "question_no": 2,
+          "question_audio": "L20/L20_Q2.mp3",
+          "answer_audio": "L20/L20_A2.mp3",
+          "title": "玩具箱没人教你怎么分，你自己把小汽车归在一起，这属于什么？",
+          "options": [
+            "无监督学习。",
+            "强化学习。",
+            "不学习。",
+            "监督学习。"
+          ],
+          "correct_answer": "A",
+          "explanation": "没有人告诉你怎么分，你自己按相似性分组，这就是无监督学习。"
+        },
+        {
+          "question_no": 3,
+          "question_audio": "L20/L20_Q3.mp3",
+          "answer_audio": "L20/L20_A3.mp3",
+          "title": "无监督学习靠什么来分组？",
+          "options": [
+            "奖励。",
+            "按相似性把东西分成组。",
+            "答案。",
+            "标签。"
+          ],
+          "correct_answer": "B",
+          "explanation": "无监督学习没有标签和答案，但可以按相似性自然地分组。"
+        },
+        {
+          "question_no": 4,
+          "question_audio": "L20/L20_Q4.mp3",
+          "answer_audio": "L20/L20_A4.mp3",
+          "title": "无监督学习能发现什么？",
+          "options": [
+            "只能发现颜色。",
+            "什么都发现不了。",
+            "能发现隐藏的分组和意想不到的规律。",
+            "只能发现标签。"
+          ],
+          "correct_answer": "C",
+          "explanation": "无监督学习能发现隐藏的规律。"
+        },
+        {
+          "question_no": 5,
+          "question_audio": "L20/L20_Q5.mp3",
+          "answer_audio": "L20/L20_A5.mp3",
+          "title": "监督学习和无监督学习的区别是什么？",
+          "options": [
+            "没区别。",
+            "监督学习不需要数据。",
+            "无监督学习更简单。",
+            "监督学习有标签答案，无监督学习没有。"
+          ],
+          "correct_answer": "D",
+          "explanation": "监督学习有老师标签教，无监督学习没人教。"
+        },
+        {
+          "question_no": 6,
+          "question_audio": "L20/L20_Q6.mp3",
+          "answer_audio": "L20/L20_A6.mp3",
+          "title": "\"买尿布的人经常也买啤酒\"是怎么发现的？",
+          "options": [
+            "AI通过无监督学习，自己发现的隐藏规律。",
+            "随便猜的。",
+            "在课本上写的。",
+            "有人告诉AI的。"
+          ],
+          "correct_answer": "A",
+          "explanation": "这种隐藏的关联，是AI自己从数据中发现的。"
+        },
+        {
+          "question_no": 7,
+          "question_audio": "L20/L20_Q7.mp3",
+          "answer_audio": "L20/L20_A7.mp3",
+          "title": "无监督学习像什么？",
+          "options": [
+            "像老师讲课。",
+            "像自己打开玩具箱，观察发现规律。",
+            "像考试。",
+            "像做练习题。"
+          ],
+          "correct_answer": "B",
+          "explanation": "无监督学习就像自己观察、发现规律。"
+        },
+        {
+          "question_no": 8,
+          "question_audio": "L20/L20_Q8.mp3",
+          "answer_audio": "L20/L20_A8.mp3",
+          "title": "让孩子自由分组混合杂物，不同孩子的分法可能不一样，这说明了什么？",
+          "options": [
+            "不能分组。",
+            "只有一种分法是对的。",
+            "没有标准答案也能分，但分法可以不同。",
+            "有人分错了。"
+          ],
+          "correct_answer": "C",
+          "explanation": "没有标签时，分组方式不唯一。"
+        },
+        {
+          "question_no": 9,
+          "question_audio": "L20/L20_Q9.mp3",
+          "answer_audio": "L20/L20_A9.mp3",
+          "title": "无监督学习发现规律的前提是什么？",
+          "options": [
+            "不需要数据。",
+            "只需要一两个数据。",
+            "必须有人教。",
+            "需要大量数据，仔细观察才能发现规律。"
+          ],
+          "correct_answer": "D",
+          "explanation": "无监督学习需要大量数据，AI仔细观察才能发现隐藏规律。"
+        },
+        {
+          "question_no": 10,
+          "question_audio": "L20/L20_Q10.mp3",
+          "answer_audio": "L20/L20_A10.mp3",
+          "title": "下面哪个场景更适合无监督学习？",
+          "options": [
+            "探索一个新玩具箱，看看有什么规律。",
+            "做有答案的练习题。",
+            "听老师讲课。",
+            "有标准答案的考试。"
+          ],
+          "correct_answer": "A",
+          "explanation": "没有标准答案、自己探索发现规律的场景，更适合无监督学习。\n\n---\n\n## 模块F｜神经网络是什么（第21–24课）"
+        }
+      ]
+    },
+    {
+      "lesson_id": "L21",
+      "lesson_num": 21,
+      "title": "《点亮聪明灯》",
+      "core_knowledge": [
+        "神经元（节点）是信息处理的小单元",
+        "信息从一个节点传到另一个节点",
+        "节点之间的连接让整个系统变得更聪明"
+      ],
+      "explanation_segments": [
+        {
+          "audio": "L21/L21_P1.mp3",
+          "source_text": "你玩过\"传话游戏\"吗？一群人排成一排，第一个人悄悄说一句话，传给第二个人，再传给第三个人……一直传到最后。每个人就像一个小小的\"中转站\"，收到信息再传出去。大脑里的\"神经元\"也是这样工作的！",
+          "order": 1
+        },
+        {
+          "audio": "L21/L21_P2.mp3",
+          "source_text": "神经元就像是大脑里的小灯泡。一个灯泡亮了，它会把光传给旁边的灯泡，旁边的灯泡再传给更远的灯泡……一个个传下去，信息就在整个网络里流动起来了。一个灯泡可能只做很简单的事——亮或不亮，但千千万万个灯泡连在一起，就能做超级复杂的事情，比如认出你朋友的脸、理解你说的话！",
+          "order": 2
+        },
+        {
+          "audio": "L21/L21_P3.mp3",
+          "source_text": "AI也学着大脑的样子，造了一个\"人工神经网络\"——很多很多小节点（就像灯泡）连在一起，信息从一端进去，一个节点传给下一个节点，最后从另一端出来答案。每个节点只处理一小部分信息，但连起来就变成了一个超级聪明的系统！",
+          "order": 3
+        },
+        {
+          "audio": "L21/L21_P4.mp3",
+          "source_text": "记住：一个灯泡不算什么，但千千万万个灯泡连成网，就能点亮整个智慧的天空！",
+          "order": 4
+        }
+      ],
+      "quiz": [
+        {
+          "question_no": 1,
+          "question_audio": "L21/L21_Q1.mp3",
+          "answer_audio": "L21/L21_A1.mp3",
+          "title": "神经元（节点）是什么？",
+          "options": [
+            "信息处理的小单元。",
+            "一种食物。",
+            "一种颜色。",
+            "一种动物。"
+          ],
+          "correct_answer": "A",
+          "explanation": "神经元是信息处理的小单元，就像大脑里的小灯泡。"
+        },
+        {
+          "question_no": 2,
+          "question_audio": "L21/L21_Q2.mp3",
+          "answer_audio": "L21/L21_A2.mp3",
+          "title": "信息在神经网络里是怎么流动的？",
+          "options": [
+            "直接从输入跳到输出。",
+            "从一个节点传到另一个节点。",
+            "不流动。",
+            "随机流动。"
+          ],
+          "correct_answer": "B",
+          "explanation": "信息从一个节点传到另一个节点，就像传话游戏。"
+        },
+        {
+          "question_no": 3,
+          "question_audio": "L21/L21_Q3.mp3",
+          "answer_audio": "L21/L21_A3.mp3",
+          "title": "传话游戏里，每个人像什么？",
+          "options": [
+            "像答案。",
+            "像问题。",
+            "像一个神经元节点，接收信息再传出去。",
+            "像一条信息。"
+          ],
+          "correct_answer": "C",
+          "explanation": "传话游戏里，每个人就像一个神经元。"
+        },
+        {
+          "question_no": 4,
+          "question_audio": "L21/L21_Q4.mp3",
+          "answer_audio": "L21/L21_A4.mp3",
+          "title": "一个神经元能做什么？",
+          "options": [
+            "能理解所有信息。",
+            "能做超级复杂的事。",
+            "什么都不能做。",
+            "只做很简单的事（亮或不亮）。"
+          ],
+          "correct_answer": "D",
+          "explanation": "一个神经元只做很简单的事，但大量连在一起就能做复杂的事。"
+        },
+        {
+          "question_no": 5,
+          "question_audio": "L21/L21_Q5.mp3",
+          "answer_audio": "L21/L21_A5.mp3",
+          "title": "千千万万个节点连在一起，能做什么？",
+          "options": [
+            "能做超级复杂的事情。",
+            "只能做简单的事。",
+            "还是什么都做不了。",
+            "会变笨。"
+          ],
+          "correct_answer": "A",
+          "explanation": "大量节点连接在一起，就能做超级复杂的事。"
+        },
+        {
+          "question_no": 6,
+          "question_audio": "L21/L21_Q6.mp3",
+          "answer_audio": "L21/L21_A6.mp3",
+          "title": "AI的\"人工神经网络\"模仿了什么？",
+          "options": [
+            "汽车。",
+            "大脑的神经网络。",
+            "飞机。",
+            "船。"
+          ],
+          "correct_answer": "B",
+          "explanation": "AI模仿大脑的样子，造了人工神经网络。"
+        },
+        {
+          "question_no": 7,
+          "question_audio": "L21/L21_Q7.mp3",
+          "answer_audio": "L21/L21_A7.mp3",
+          "title": "信息在神经网络里从哪里进，从哪里出？",
+          "options": [
+            "不进出。",
+            "从中间进，从两边出。",
+            "从一端进去，最后从另一端出来答案。",
+            "从两端进，从中间出。"
+          ],
+          "correct_answer": "C",
+          "explanation": "信息从一端进入，经过节点传递，最后从另一端输出答案。"
+        },
+        {
+          "question_no": 8,
+          "question_audio": "L21/L21_Q8.mp3",
+          "answer_audio": "L21/L21_A8.mp3",
+          "title": "\"一个灯泡不算什么，千千万万个灯泡连成网\"说明什么？",
+          "options": [
+            "一个灯泡就够了。",
+            "灯泡越多越好。",
+            "灯泡不重要。",
+            "简单的单元连接起来，就能变得很强大。"
+          ],
+          "correct_answer": "D",
+          "explanation": "单个节点虽然简单，但大量连接后就能产生强大的能力。"
+        },
+        {
+          "question_no": 9,
+          "question_audio": "L21/L21_Q9.mp3",
+          "answer_audio": "L21/L21_A9.mp3",
+          "title": "在传话游戏中，如果中间一个人传错了，会怎样？",
+          "options": [
+            "最终结果可能就错了。",
+            "最后一个人能自动纠正。",
+            "没关系。",
+            "不影响结果。"
+          ],
+          "correct_answer": "A",
+          "explanation": "信息经过多个节点传递，中间出错就会影响最终结果。"
+        },
+        {
+          "question_no": 10,
+          "question_audio": "L21/L21_Q10.mp3",
+          "answer_audio": "L21/L21_A10.mp3",
+          "title": "节点之间的连接有什么作用？",
+          "options": [
+            "只是装饰。",
+            "让信息能在节点之间传递，让整个系统变聪明。",
+            "让节点变多。",
+            "让网络变好看。"
+          ],
+          "correct_answer": "B",
+          "explanation": "节点之间的连接让信息能传递流动，连接起来系统才能变聪明。"
+        }
+      ]
+    },
+    {
+      "lesson_id": "L22",
+      "lesson_num": 22,
+      "title": "《从边边角角到整张脸》",
+      "core_knowledge": [
+        "神经网络有多层，每层看不同层次的信息",
+        "前面的层看简单的局部特征（线条、角角）",
+        "后面的层把局部组合成整体（整张脸、整幅图）"
+      ],
+      "explanation_segments": [
+        {
+          "audio": "L22/L22_P1.mp3",
+          "source_text": "你是怎么看出一幅画画的是猫的？你肯定不是先看到\"猫\"这个整体的——你的眼睛先看到圆圆的轮廓、尖尖的耳朵、长长的胡须……然后你的大脑把这些小线索拼在一起，才说\"哦，这是一只猫！\"",
+          "order": 1
+        },
+        {
+          "audio": "L22/L22_P2.mp3",
+          "source_text": "AI的神经网络也是这样工作的！它有很多层，就像一栋楼有很多层一样。第一层住在最下面，它只看最简单的东西——一条线、一个角、一个小弧线。就像你看拼图的碎片，每一块只有一点点图案。",
+          "order": 2
+        },
+        {
+          "audio": "L22/L22_P3.mp3",
+          "source_text": "第二层把第一层看到的线条组合起来——两条线交叉可能是个角，一条弧线可能是个圆。第三层再往上组合——圆形加两个三角形可能是个猫头！最后一层把所有线索都拼在一起，大喊：\"这是一只猫！\"",
+          "order": 3
+        },
+        {
+          "audio": "L22/L22_P4.mp3",
+          "source_text": "从\"边边角角\"到\"整张脸\"——一层一层往上组合，越来越复杂，越来越整体。这就是神经网络看世界的方式，也像你从拼图碎片慢慢拼出完整画面的过程！",
+          "order": 4
+        }
+      ],
+      "quiz": [
+        {
+          "question_no": 1,
+          "question_audio": "L22/L22_Q1.mp3",
+          "answer_audio": "L22/L22_A1.mp3",
+          "title": "神经网络的多层结构，每层看什么？",
+          "options": [
+            "每层什么都不看。",
+            "每层看不同层次的信息。",
+            "只有一层看信息。",
+            "每层看一样的信息。"
+          ],
+          "correct_answer": "B",
+          "explanation": "神经网络有多层，每层看不同层次的信息。"
+        },
+        {
+          "question_no": 2,
+          "question_audio": "L22/L22_Q2.mp3",
+          "answer_audio": "L22/L22_A2.mp3",
+          "title": "神经网络的第一层看什么？",
+          "options": [
+            "完整的物体。",
+            "颜色。",
+            "最简单的局部特征（线条、角角）。",
+            "整张图片。"
+          ],
+          "correct_answer": "C",
+          "explanation": "第一层只看最简单的东西：线条、角、弧线。"
+        },
+        {
+          "question_no": 3,
+          "question_audio": "L22/L22_Q3.mp3",
+          "answer_audio": "L22/L22_A3.mp3",
+          "title": "后面的层做什么？",
+          "options": [
+            "什么都不做。",
+            "跟第一层一样。",
+            "只看颜色。",
+            "把局部组合成整体。"
+          ],
+          "correct_answer": "D",
+          "explanation": "后面的层把前面看到的简单特征组合起来，从局部到整体。"
+        },
+        {
+          "question_no": 4,
+          "question_audio": "L22/L22_Q4.mp3",
+          "answer_audio": "L22/L22_A4.mp3",
+          "title": "\"从边边角角到整张脸\"的过程说明了什么？",
+          "options": [
+            "一层一层往上组合，越来越复杂，越来越整体。",
+            "只看边边角角就够了。",
+            "第一层最重要。",
+            "不需要多层。"
+          ],
+          "correct_answer": "A",
+          "explanation": "神经网络从简单特征开始，逐层组合成更复杂的整体。"
+        },
+        {
+          "question_no": 5,
+          "question_audio": "L22/L22_Q5.mp3",
+          "answer_audio": "L22/L22_A5.mp3",
+          "title": "用3层透明纸做分层拼图，第一张画什么？",
+          "options": [
+            "完整的猫脸。",
+            "简单的线条（直线、弧线）。",
+            "颜色。",
+            "五官的形状。"
+          ],
+          "correct_answer": "B",
+          "explanation": "第一层最简单，只画线条。"
+        },
+        {
+          "question_no": 6,
+          "question_audio": "L22/L22_Q6.mp3",
+          "answer_audio": "L22/L22_A6.mp3",
+          "title": "\"圆形加两个三角形可能是个猫头\"，这是第几层的判断？",
+          "options": [
+            "不属于任何层。",
+            "第一层。",
+            "中间的层，把简单特征组合成形状。",
+            "最后一层。"
+          ],
+          "correct_answer": "C",
+          "explanation": "中间的层，把线条组合成形状。"
+        },
+        {
+          "question_no": 7,
+          "question_audio": "L22/L22_Q7.mp3",
+          "answer_audio": "L22/L22_A7.mp3",
+          "title": "最后一层做什么？",
+          "options": [
+            "看线条。",
+            "只看颜色。",
+            "什么都不做。",
+            "把所有线索拼在一起，做出最终判断。"
+          ],
+          "correct_answer": "D",
+          "explanation": "最后一层把所有线索都拼在一起，做出最终判断。"
+        },
+        {
+          "question_no": 8,
+          "question_audio": "L22/L22_Q8.mp3",
+          "answer_audio": "L22/L22_A8.mp3",
+          "title": "神经网络看世界的方式像什么？",
+          "options": [
+            "像从拼图碎片慢慢拼出完整画面。",
+            "像闭着眼睛猜。",
+            "像一眼就看到全貌。",
+            "像随便看一眼。"
+          ],
+          "correct_answer": "A",
+          "explanation": "神经网络从碎片开始，一层一层拼出完整画面。"
+        },
+        {
+          "question_no": 9,
+          "question_audio": "L22/L22_Q9.mp3",
+          "answer_audio": "L22/L22_A9.mp3",
+          "title": "\"逐层抽象\"是什么意思？",
+          "options": [
+            "每层都看同样的东西。",
+            "从简单到复杂，从局部到整体，层次越高看的东西越高级。",
+            "只有一层。",
+            "抽象画。"
+          ],
+          "correct_answer": "B",
+          "explanation": "\"逐层抽象\"就是从简单特征到复杂特征，层次越高，组合的信息越复杂。"
+        },
+        {
+          "question_no": 10,
+          "question_audio": "L22/L22_Q10.mp3",
+          "answer_audio": "L22/L22_A10.mp3",
+          "title": "\"4层网络示意图：线条→形状→部件→整脸\"，说明什么？",
+          "options": [
+            "每层一样重要。",
+            "网络不需要层。",
+            "信息从简单到复杂，逐层组合。",
+            "只需要1层。"
+          ],
+          "correct_answer": "C",
+          "explanation": "每层看的东西越来越复杂，逐层组合信息。"
+        }
+      ]
+    },
+    {
+      "lesson_id": "L23",
+      "lesson_num": 23,
+      "title": "《音量旋钮决定谁更重要》",
+      "core_knowledge": [
+        "不同的线索重要程度不一样",
+        "权重就像旋钮，控制每个线索的影响力",
+        "调整权重是让AI变得更聪明的关键"
+      ],
+      "explanation_segments": [
+        {
+          "audio": "L23/L23_P1.mp3",
+          "source_text": "你听音乐的时候，会调音量旋钮对不对？想把歌声调大就往右拧，想把伴奏调小就往左拧。每个旋钮控制一个声音的大小——拧得越大，那个声音就越响、越重要。",
+          "order": 1
+        },
+        {
+          "audio": "L23/L23_P2.mp3",
+          "source_text": "在神经网络里，也有这样的\"旋钮\"，它叫\"权重\"。每个连接都有一个权重旋钮，控制着\"这条线索有多重要\"。比如认猫的时候，\"有尖耳朵\"这个线索的权重可能拧得很大（很重要），而\"有毛\"这个线索的权重可能比较小（因为狗也有毛，不够特别）。",
+          "order": 2
+        },
+        {
+          "audio": "L23/L23_P3.mp3",
+          "source_text": "想象你在猜一个动物：有人说\"它有四条腿\"（嗯，很多动物都有，不太有用），有人说\"它会喵喵叫\"（哇，这个线索太关键了！）。你心里自然会给\"喵喵叫\"更高的重视——这就是在调\"权重旋钮\"！",
+          "order": 3
+        },
+        {
+          "audio": "L23/L23_P4.mp3",
+          "source_text": "AI在学习的过程中，最重要的事情就是不断调整这些旋钮——把有用的线索拧大，把没用的线索拧小。旋钮调得越准，AI就越聪明！就像你调音量，把好听的声音调大、杂音调小，音乐就越好听。",
+          "order": 4
+        }
+      ],
+      "quiz": [
+        {
+          "question_no": 1,
+          "question_audio": "L23/L23_Q1.mp3",
+          "answer_audio": "L23/L23_A1.mp3",
+          "title": "不同的线索，重要程度一样吗？",
+          "options": [
+            "一样重要。",
+            "都一样没用。",
+            "不一样，有些线索更重要。",
+            "都不重要。"
+          ],
+          "correct_answer": "C",
+          "explanation": "不同的线索，重要程度不同。"
+        },
+        {
+          "question_no": 2,
+          "question_audio": "L23/L23_Q2.mp3",
+          "answer_audio": "L23/L23_A2.mp3",
+          "title": "权重像什么？",
+          "options": [
+            "像重量。",
+            "像灯泡。",
+            "像开关。",
+            "像音量旋钮，控制每个线索的影响力。"
+          ],
+          "correct_answer": "D",
+          "explanation": "权重就像旋钮，控制每个线索的重要性。"
+        },
+        {
+          "question_no": 3,
+          "question_audio": "L23/L23_Q3.mp3",
+          "answer_audio": "L23/L23_A3.mp3",
+          "title": "认猫时，\"有尖耳朵\"的权重可能比\"有毛\"大，为什么？",
+          "options": [
+            "因为狗也有毛，有毛不够特别。",
+            "随便设的。",
+            "因为耳朵比毛好看。",
+            "因为尖耳朵更重要。"
+          ],
+          "correct_answer": "A",
+          "explanation": "\"有毛\"这个特征不特别，狗也有毛，区分度低。"
+        },
+        {
+          "question_no": 4,
+          "question_audio": "L23/L23_Q4.mp3",
+          "answer_audio": "L23/L23_A4.mp3",
+          "title": "调整权重，对AI有什么影响？",
+          "options": [
+            "只影响速度。",
+            "是让AI变得更聪明的关键。",
+            "没影响。",
+            "会让AI变笨。"
+          ],
+          "correct_answer": "B",
+          "explanation": "调整权重，是让AI变聪明的关键。"
+        },
+        {
+          "question_no": 5,
+          "question_audio": "L23/L23_Q5.mp3",
+          "answer_audio": "L23/L23_A5.mp3",
+          "title": "猜动物时，\"它会喵喵叫\"比\"它有四条腿\"更关键，这像在做什么？",
+          "options": [
+            "在编码。",
+            "在压缩。",
+            "在调权重旋钮，给\"喵喵叫\"更高的重视。",
+            "在分类。"
+          ],
+          "correct_answer": "C",
+          "explanation": "你心里给不同线索不同重视程度，就是在调权重。"
+        },
+        {
+          "question_no": 6,
+          "question_audio": "L23/L23_Q6.mp3",
+          "answer_audio": "L23/L23_A6.mp3",
+          "title": "AI学习过程中，最重要的事情是什么？",
+          "options": [
+            "背答案。",
+            "看更多图片。",
+            "休息。",
+            "不断调整权重旋钮。"
+          ],
+          "correct_answer": "D",
+          "explanation": "AI学习最重要的事，就是不断调整权重。"
+        },
+        {
+          "question_no": 7,
+          "question_audio": "L23/L23_Q7.mp3",
+          "answer_audio": "L23/L23_A7.mp3",
+          "title": "如果权重调错了，会怎样？",
+          "options": [
+            "AI可能会做出错误判断。",
+            "AI会自动纠正。",
+            "AI会变聪明。",
+            "没关系。"
+          ],
+          "correct_answer": "A",
+          "explanation": "权重调错了，AI就会做出错误判断。"
+        },
+        {
+          "question_no": 8,
+          "question_audio": "L23/L23_Q8.mp3",
+          "answer_audio": "L23/L23_A8.mp3",
+          "title": "调音量时，把好听的声音调大、杂音调小，这像什么？",
+          "options": [
+            "像编码。",
+            "像AI调整权重，把有用线索调大、没用的调小。",
+            "像分类。",
+            "像循环。"
+          ],
+          "correct_answer": "B",
+          "explanation": "调音量和调权重是同一个道理。"
+        },
+        {
+          "question_no": 9,
+          "question_audio": "L23/L23_Q9.mp3",
+          "answer_audio": "L23/L23_A9.mp3",
+          "title": "在\"猜猜谁最重要\"游戏中给线索打分，就是在做什么？",
+          "options": [
+            "在分类。",
+            "在玩。",
+            "在给每条线索设定权重。",
+            "在考试。"
+          ],
+          "correct_answer": "C",
+          "explanation": "给线索打分，就是在设定权重。"
+        },
+        {
+          "question_no": 10,
+          "question_audio": "L23/L23_Q10.mp3",
+          "answer_audio": "L23/L23_A10.mp3",
+          "title": "\"乌云密布\"对判断\"会不会下雨\"的权重应该怎样设？",
+          "options": [
+            "随便设。",
+            "不需要设。",
+            "设很低。",
+            "设很高，因为乌云和下雨关系很大。"
+          ],
+          "correct_answer": "D",
+          "explanation": "\"乌云密布\"和\"下雨\"关系密切，是很重要的线索，权重应该设高。"
+        }
+      ]
+    },
+    {
+      "lesson_id": "L24",
+      "lesson_num": 24,
+      "title": "《慢慢调准的小箭头》",
+      "core_knowledge": [
+        "每次只调整一点点，慢慢接近目标",
+        "方向要对——朝着\"更接近答案\"的方向调",
+        "持续微调就会越来越好"
+      ],
+      "explanation_segments": [
+        {
+          "audio": "L24/L24_P1.mp3",
+          "source_text": "你射过箭吗？第一次射可能偏得很远——太左了。第二次你往右调一点，还是偏——太右了。第三次再微微往左调一点点……就这样一次调一点、一次调一点，最后正中靶心！",
+          "order": 1
+        },
+        {
+          "audio": "L24/L24_P2.mp3",
+          "source_text": "这就像AI学习的过程，有个很酷的名字叫\"梯度下降\"——听起来好难，其实特别简单：每次只调一点点，朝着对的方向，慢慢就越来越准了！",
+          "order": 2
+        },
+        {
+          "audio": "L24/L24_P3.mp3",
+          "source_text": "想象你蒙着眼睛要走到房间中央的桌子上。你看不见，但每走一步，有人告诉你\"再往左一点\"\"再往前一点\"。你就按他说的微微调整方向，一步一步走，最后终于摸到了桌子！如果一下子迈一大步，可能会走过了、撞到墙。小步小步地走，反而更容易到。",
+          "order": 3
+        },
+        {
+          "audio": "L24/L24_P4.mp3",
+          "source_text": "AI也是这样学的！它一开始什么都不懂，答案可能差很远。但它会看看\"差了多少、往哪个方向差了\"，然后微微调整一点点，再看看是不是更接近了，再调一点……成千上万次小调整之后，它就变得越来越准了。",
+          "order": 4
+        },
+        {
+          "audio": "L24/L24_P5.mp3",
+          "source_text": "记住：不用一步到位，每次进步一点点，坚持下去就能到达目标！",
+          "order": 5
+        }
+      ],
+      "quiz": [
+        {
+          "question_no": 1,
+          "question_audio": "L24/L24_Q1.mp3",
+          "answer_audio": "L24/L24_A1.mp3",
+          "title": "AI学习时，每次调整多少？",
+          "options": [
+            "随便调整。",
+            "不需要调整。",
+            "一次性大调整。",
+            "每次只调整一点点。"
+          ],
+          "correct_answer": "D",
+          "explanation": "AI每次只调整一点点，慢慢接近目标。"
+        },
+        {
+          "question_no": 2,
+          "question_audio": "L24/L24_Q2.mp3",
+          "answer_audio": "L24/L24_A2.mp3",
+          "title": "调整的方向应该怎样？",
+          "options": [
+            "朝着更接近答案的方向调。",
+            "不需要方向。",
+            "随便调。",
+            "往反方向调。"
+          ],
+          "correct_answer": "A",
+          "explanation": "调整方向必须朝着更接近答案的方向调。"
+        },
+        {
+          "question_no": 3,
+          "question_audio": "L24/L24_Q3.mp3",
+          "answer_audio": "L24/L24_A3.mp3",
+          "title": "射箭时第一次偏左了，第二次应该怎么调？",
+          "options": [
+            "继续往左。",
+            "往右调一点。",
+            "不调。",
+            "随便射。"
+          ],
+          "correct_answer": "B",
+          "explanation": "偏左了就往右调一点，朝着靶心方向调整。"
+        },
+        {
+          "question_no": 4,
+          "question_audio": "L24/L24_Q4.mp3",
+          "answer_audio": "L24/L24_A4.mp3",
+          "title": "\"梯度下降\"听起来复杂，其实是什么意思？",
+          "options": [
+            "从高处往下走。",
+            "快速到达目标。",
+            "每次只调一点点，朝着对的方向，慢慢越来越准。",
+            "随便调整。"
+          ],
+          "correct_answer": "C",
+          "explanation": "\"梯度下降\"的核心很简单，每次微调一点，方向对了就越来越准。"
+        },
+        {
+          "question_no": 5,
+          "question_audio": "L24/L24_Q5.mp3",
+          "answer_audio": "L24/L24_A5.mp3",
+          "title": "蒙眼走向桌子时，为什么要小步走？",
+          "options": [
+            "大步走更快。",
+            "大步走更安全。",
+            "小步走更好玩。",
+            "小步走更容易精确到达，大步可能走过头。"
+          ],
+          "correct_answer": "D",
+          "explanation": "小步微调，更容易精准到达目标。"
+        },
+        {
+          "question_no": 6,
+          "question_audio": "L24/L24_Q6.mp3",
+          "answer_audio": "L24/L24_A6.mp3",
+          "title": "AI持续微调，会怎样？",
+          "options": [
+            "越来越好。",
+            "不变。",
+            "越来越慢。",
+            "越来越差。"
+          ],
+          "correct_answer": "A",
+          "explanation": "持续微调，就会越来越好。"
+        },
+        {
+          "question_no": 7,
+          "question_audio": "L24/L24_Q7.mp3",
+          "answer_audio": "L24/L24_A7.mp3",
+          "title": "学习率太大，会有什么问题？",
+          "options": [
+            "学得更快。",
+            "可能跳过目标，调过头了。",
+            "没问题。",
+            "更准确。"
+          ],
+          "correct_answer": "B",
+          "explanation": "步子太大，可能跳过目标。"
+        },
+        {
+          "question_no": 8,
+          "question_audio": "L24/L24_Q8.mp3",
+          "answer_audio": "L24/L24_A8.mp3",
+          "title": "学习率太小，会有什么问题？",
+          "options": [
+            "更快。",
+            "更准确。",
+            "太慢了，需要很多很多步才能到。",
+            "没问题。"
+          ],
+          "correct_answer": "C",
+          "explanation": "步子太小，虽然稳但很慢。"
+        },
+        {
+          "question_no": 9,
+          "question_audio": "L24/L24_Q9.mp3",
+          "answer_audio": "L24/L24_A9.mp3",
+          "title": "最好的调整方式是什么？",
+          "options": [
+            "一次调一大步。",
+            "不用调。",
+            "随便调。",
+            "每次调一点点，方向对了坚持下去。"
+          ],
+          "correct_answer": "D",
+          "explanation": "每次进步一点点，方向对了坚持下去，就能到达目标。"
+        },
+        {
+          "question_no": 10,
+          "question_audio": "L24/L24_Q10.mp3",
+          "answer_audio": "L24/L24_A10.mp3",
+          "title": "\"不用一步到位，每次进步一点点\"告诉我们什么？",
+          "options": [
+            "坚持小步前进，就能成功。",
+            "要走得很慢。",
+            "不需要努力。",
+            "要一次做到最好。"
+          ],
+          "correct_answer": "A",
+          "explanation": "学习不需要一步到位，每次进步一点点，坚持下去就能成功。\n\n---\n\n## 模块G｜AI会说话会画画（第25–28课）"
+        }
+      ]
+    },
+    {
+      "lesson_id": "L25",
+      "lesson_num": 25,
+      "title": "《会接话的鹦鹉2.0》",
+      "core_knowledge": [
+        "语言模型根据前面的话预测下一个词",
+        "上下文（之前说了什么）会影响AI的输出",
+        "AI不是\"懂\"意思，而是在做\"接话预测\""
+      ],
+      "explanation_segments": [
+        {
+          "audio": "L25/L25_P1.mp3",
+          "source_text": "你跟朋友聊天的时候，朋友说\"今天天气真好，我们去——\"，你是不是马上就想到\"公园！\"？你为什么能接上呢？因为你听过很多很多人说这句话，知道后面大概率是\"公园\"或\"外面玩\"。你其实是在\"预测\"下一个词！",
+          "order": 1
+        },
+        {
+          "audio": "L25/L25_P2.mp3",
+          "source_text": "AI的语言模型也是这样工作的！它读了海量海量的文字——书、文章、对话……然后学会了\"在某个上下文里，下一个词最可能是什么\"。当你说\"从前有座——\"，AI就知道接下来很可能是\"山\"。它就像一只超级厉害的\"接话鹦鹉\"，根据你前面说的话，猜你接下来想听什么。",
+          "order": 2
+        },
+        {
+          "audio": "L25/L25_P3.mp3",
+          "source_text": "但这里有个秘密：AI并不是真的\"理解\"你说的话！它不知道\"山\"是什么，没爬过山，也没见过山。它只是通过大量阅读知道\"从前有座\"后面跟着\"山\"的概率最高。就像鹦鹉说\"你好\"，它不是在打招呼，只是学会了在这个场景下该说这个词。",
+          "order": 3
+        },
+        {
+          "audio": "L25/L25_P4.mp3",
+          "source_text": "上下文很重要！如果你说\"今天我生日，我想吃——\"，AI可能会猜\"蛋糕\"；但如果你说\"今天好热，我想吃——\"，AI可能猜\"冰淇淋\"。前面的话不同，后面的预测就不同！",
+          "order": 4
+        }
+      ],
+      "quiz": [
+        {
+          "question_no": 1,
+          "question_audio": "L25/L25_Q1.mp3",
+          "answer_audio": "L25/L25_A1.mp3",
+          "title": "语言模型是怎么工作的？",
+          "options": [
+            "根据前面的话预测下一个词。",
+            "随机说一个词。",
+            "翻译语言。",
+            "理解意思后回答。"
+          ],
+          "correct_answer": "A",
+          "explanation": "语言模型根据前面的上下文，预测下一个最可能的词。"
+        },
+        {
+          "question_no": 2,
+          "question_audio": "L25/L25_Q2.mp3",
+          "answer_audio": "L25/L25_A2.mp3",
+          "title": "\"今天天气真好，我们去——\"，你最可能接什么？",
+          "options": [
+            "睡觉。",
+            "公园。",
+            "写作业。",
+            "打扫卫生。"
+          ],
+          "correct_answer": "B",
+          "explanation": "你听过很多这种说法，知道后面大概率是\"公园\"或\"外面玩\"。"
+        },
+        {
+          "question_no": 3,
+          "question_audio": "L25/L25_Q3.mp3",
+          "answer_audio": "L25/L25_A3.mp3",
+          "title": "AI的语言模型读了什么来学习？",
+          "options": [
+            "只读课本。",
+            "一本书。",
+            "海量海量的文字（书文章对话）。",
+            "不需要读书。"
+          ],
+          "correct_answer": "C",
+          "explanation": "语言模型读了海量的文字，学会了词语之间的概率关系。"
+        },
+        {
+          "question_no": 4,
+          "question_audio": "L25/L25_Q4.mp3",
+          "answer_audio": "L25/L25_A4.mp3",
+          "title": "AI是真的\"理解\"你说的话吗？",
+          "options": [
+            "是的，它懂你的意思。",
+            "是的，它有自己的想法。",
+            "是的，它和你一样思考。",
+            "不是，它只是在做\"接话预测\"。"
+          ],
+          "correct_answer": "D",
+          "explanation": "AI不是真的理解，它只是通过大量阅读，知道哪个词出现的概率最高。"
+        },
+        {
+          "question_no": 5,
+          "question_audio": "L25/L25_Q5.mp3",
+          "answer_audio": "L25/L25_A5.mp3",
+          "title": "鹦鹉说\"你好\"，它在打招呼吗？",
+          "options": [
+            "不是，它只是学会了在这个场景下该说这个词。",
+            "是的，它认识你。",
+            "是的，它很礼貌。",
+            "是的，它很开心。"
+          ],
+          "correct_answer": "A",
+          "explanation": "鹦鹉不懂得\"你好\"的意思，只是学会了发音和场景。"
+        },
+        {
+          "question_no": 6,
+          "question_audio": "L25/L25_Q6.mp3",
+          "answer_audio": "L25/L25_A6.mp3",
+          "title": "\"今天我生日，我想吃——\"，AI可能猜什么？",
+          "options": [
+            "面条。",
+            "蛋糕。",
+            "米饭。",
+            "药。"
+          ],
+          "correct_answer": "B",
+          "explanation": "上下文是\"生日\"，AI知道生日大概率跟蛋糕有关。"
+        },
+        {
+          "question_no": 7,
+          "question_audio": "L25/L25_Q7.mp3",
+          "answer_audio": "L25/L25_A7.mp3",
+          "title": "\"今天好热，我想吃——\"，AI可能猜什么？",
+          "options": [
+            "蛋糕。",
+            "火锅。",
+            "冰淇淋。",
+            "烤肉。"
+          ],
+          "correct_answer": "C",
+          "explanation": "上下文是\"很热\"，AI知道热天人们常想吃冰淇淋。"
+        },
+        {
+          "question_no": 8,
+          "question_audio": "L25/L25_Q8.mp3",
+          "answer_audio": "L25/L25_A8.mp3",
+          "title": "\"上下文\"为什么重要？",
+          "options": [
+            "只影响回答长度。",
+            "只影响回答速度。",
+            "不重要。",
+            "前面的话不同，后面的预测就不同。"
+          ],
+          "correct_answer": "D",
+          "explanation": "AI根据上下文来预测，前面说生日就猜蛋糕，前面说热就猜冰淇淋。"
+        },
+        {
+          "question_no": 9,
+          "question_audio": "L25/L25_Q9.mp3",
+          "answer_audio": "L25/L25_A9.mp3",
+          "title": "\"从前有座——\"，AI最可能接什么？",
+          "options": [
+            "山。",
+            "楼。",
+            "桥。",
+            "城。"
+          ],
+          "correct_answer": "A",
+          "explanation": "AI读了大量文字，知道\"从前有座\"后面最可能跟\"山\"。"
+        },
+        {
+          "question_no": 10,
+          "question_audio": "L25/L25_Q10.mp3",
+          "answer_audio": "L25/L25_A10.mp3",
+          "title": "AI的语言能力来自哪里？",
+          "options": [
+            "天生就会。",
+            "大量阅读文字，学会了词与词之间的概率关系。",
+            "老师教的。",
+            "父母遗传。"
+          ],
+          "correct_answer": "B",
+          "explanation": "AI通过读海量文字，学会了词语之间的概率关系。"
+        }
+      ]
+    },
+    {
+      "lesson_id": "L26",
+      "lesson_num": 26,
+      "title": "《给AI的清楚指令》",
+      "core_knowledge": [
+        "提示词就是你给AI的指令",
+        "指令越清楚，AI的回答越靠谱",
+        "好的提示词要设定角色、目标和限制"
+      ],
+      "explanation_segments": [
+        {
+          "audio": "L26/L26_P1.mp3",
+          "source_text": "你有没有让小伙伴帮忙拿东西，结果拿错了？你说\"帮我拿那个\"，小伙伴一脸懵——\"哪个呀？\"你说\"桌上那本书\"，他还是不知道——\"哪本书？\"最后你说\"桌上那本蓝色封面的、写着'恐龙'的厚书\"，小伙伴终于拿对了！",
+          "order": 1
+        },
+        {
+          "audio": "L26/L26_P2.mp3",
+          "source_text": "给AI下指令也是一样的道理！你说\"给我讲个故事\"，AI可能会讲一个恐怖故事，但你其实想听睡前故事。如果你说\"给我讲一个适合5岁小朋友听的、关于小兔子的、温馨的睡前故事，不超过200字\"——这下AI就知道该怎么做了！",
+          "order": 2
+        },
+        {
+          "audio": "L26/L26_P3.mp3",
+          "source_text": "一个好的指令通常包含三个部分：**角色**（你是谁？比如\"你是一个幼儿园老师\"）、**目标**（你要做什么？比如\"讲一个关于分享的故事\"）、**限制**（有什么要求？比如\"不要太长\"\"不要 scary 的内容\"）。就像给小伙伴指路——说得越具体，他越不容易走错。",
+          "order": 3
+        },
+        {
+          "audio": "L26/L26_P4.mp3",
+          "source_text": "学会写清楚的指令，是一种超级有用的能力！它不仅帮你更好地使用AI，还能让你在生活里更清楚地表达自己的想法。",
+          "order": 4
+        }
+      ],
+      "quiz": [
+        {
+          "question_no": 1,
+          "question_audio": "L26/L26_Q1.mp3",
+          "answer_audio": "L26/L26_A1.mp3",
+          "title": "提示词是什么？",
+          "options": [
+            "一种颜色。",
+            "你给AI的指令。",
+            "一种密码。",
+            "一种游戏。"
+          ],
+          "correct_answer": "B",
+          "explanation": "提示词就是你给AI的指令，告诉AI你想要什么。"
+        },
+        {
+          "question_no": 2,
+          "question_audio": "L26/L26_Q2.mp3",
+          "answer_audio": "L26/L26_A2.mp3",
+          "title": "指令越清楚，AI的回答会怎样？",
+          "options": [
+            "越慢。",
+            "越短。",
+            "越靠谱。",
+            "越差。"
+          ],
+          "correct_answer": "C",
+          "explanation": "指令越清楚，AI越明白你想要什么，回答就越靠谱。"
+        },
+        {
+          "question_no": 3,
+          "question_audio": "L26/L26_Q3.mp3",
+          "answer_audio": "L26/L26_A3.mp3",
+          "title": "\"给我讲个故事\"，这个指令有什么问题？",
+          "options": [
+            "没问题。",
+            "太难了。",
+            "太长了。",
+            "太模糊，AI不知道讲什么样的故事。"
+          ],
+          "correct_answer": "D",
+          "explanation": "模糊的指令，让AI不知道你想听什么类型的故事。"
+        },
+        {
+          "question_no": 4,
+          "question_audio": "L26/L26_Q4.mp3",
+          "answer_audio": "L26/L26_A4.mp3",
+          "title": "好的提示词通常包含哪三个部分？",
+          "options": [
+            "角色、目标、限制。",
+            "时间、地点、人物。",
+            "颜色、形状、大小。",
+            "开始、中间、结尾。"
+          ],
+          "correct_answer": "A",
+          "explanation": "好的指令包含角色、目标、限制。"
+        },
+        {
+          "question_no": 5,
+          "question_audio": "L26/L26_Q5.mp3",
+          "answer_audio": "L26/L26_A5.mp3",
+          "title": "\"你是一个幼儿园老师\"属于提示词的哪个部分？",
+          "options": [
+            "答案。",
+            "角色。",
+            "限制。",
+            "目标。"
+          ],
+          "correct_answer": "B",
+          "explanation": "设定\"你是一个幼儿园老师\"是在告诉AI它的角色身份。"
+        },
+        {
+          "question_no": 6,
+          "question_audio": "L26/L26_Q6.mp3",
+          "answer_audio": "L26/L26_A6.mp3",
+          "title": "\"讲一个关于分享的故事\"属于提示词的哪个部分？",
+          "options": [
+            "颜色。",
+            "限制。",
+            "目标。",
+            "角色。"
+          ],
+          "correct_answer": "C",
+          "explanation": "\"讲一个关于分享的故事\"是在告诉AI要做什么，属于目标。"
+        },
+        {
+          "question_no": 7,
+          "question_audio": "L26/L26_Q7.mp3",
+          "answer_audio": "L26/L26_A7.mp3",
+          "title": "\"不要太长\"属于提示词的哪个部分？",
+          "options": [
+            "风格。",
+            "角色。",
+            "目标。",
+            "限制。"
+          ],
+          "correct_answer": "D",
+          "explanation": "\"不要太长\"是在设定要求，属于限制。"
+        },
+        {
+          "question_no": 8,
+          "question_audio": "L26/L26_Q8.mp3",
+          "answer_audio": "L26/L26_A8.mp3",
+          "title": "\"帮我拿那个\"，为什么小伙伴拿错了？",
+          "options": [
+            "指令太模糊，不知道\"那个\"是哪个。",
+            "小伙伴笨。",
+            "东西不见了。",
+            "小伙伴不想帮忙。"
+          ],
+          "correct_answer": "A",
+          "explanation": "模糊的指令，让人不知道你具体要什么。"
+        },
+        {
+          "question_no": 9,
+          "question_audio": "L26/L26_Q9.mp3",
+          "answer_audio": "L26/L26_A9.mp3",
+          "title": "学会写清楚的指令有什么好处？",
+          "options": [
+            "只对用AI有用。",
+            "不仅帮AI用得好，还能让你更清楚表达想法。",
+            "只对考试有用。",
+            "没好处。"
+          ],
+          "correct_answer": "B",
+          "explanation": "写清楚指令不仅帮AI更好地回答，还能训练你清晰地表达。"
+        },
+        {
+          "question_no": 10,
+          "question_audio": "L26/L26_Q10.mp3",
+          "answer_audio": "L26/L26_A10.mp3",
+          "title": "\"画一只橘色的、胖胖的、坐在月亮上的小猫\"，比\"画一只动物\"好在哪里？",
+          "options": [
+            "没区别。",
+            "更长。",
+            "更具体，AI更可能画出你想要的。",
+            "更短。"
+          ],
+          "correct_answer": "C",
+          "explanation": "具体的指令让AI清楚知道你想要什么。"
+        }
+      ]
+    },
+    {
+      "lesson_id": "L27",
+      "lesson_num": 27,
+      "title": "《从乱点点到清图画》",
+      "core_knowledge": [
+        "AI生成图片是从\"噪点/乱\"一步步变\"清晰\"的",
+        "每一步去掉一点噪声，画面就清楚一点",
+        "这就像从雾气中慢慢看到一张清晰的画"
+      ],
+      "explanation_segments": [
+        {
+          "audio": "L27/L27_P1.mp3",
+          "source_text": "你有没有在冬天对着窗户哈气？玻璃上起了一层雾，什么都看不清。然后雾慢慢散了，窗外的树啊、房子啊就越来越清楚——从一片模糊，到慢慢看到轮廓，再到最后清清楚楚！",
+          "order": 1
+        },
+        {
+          "audio": "L27/L27_P2.mp3",
+          "source_text": "AI画画的方式就和雾气散去的过程特别像！它不是一笔一笔画的，而是先给你看一张全是乱七八糟彩色点点的图——就像电视没信号时的雪花屏。然后它一步一步地把乱点点去掉，每次去掉一点\"噪声\"，画面就清楚一点。就像窗户上的雾一层层散去一样，从完全看不清，到模模糊糊有个形状，到最后变成一张漂漂亮亮的画！",
+          "order": 2
+        },
+        {
+          "audio": "L27/L27_P3.mp3",
+          "source_text": "这个过程叫\"扩散\"——从有序变混乱很容易（把墨水滴进水里，一下就散了），但从混乱变回有序就很难，需要一步一步地来。AI就是学会了\"怎么从混乱中一点一点恢复出清晰的画面\"，就像学会了怎么让窗户上的雾一层一层地散去。",
+          "order": 3
+        },
+        {
+          "audio": "L27/L27_P4.mp3",
+          "source_text": "每一步只去掉一点点噪声，走很多很多步，最终从一片乱七八糟的噪点中，诞生出一幅美丽的画——这就是AI画画的秘密！",
+          "order": 4
+        }
+      ],
+      "quiz": [
+        {
+          "question_no": 1,
+          "question_audio": "L27/L27_Q1.mp3",
+          "answer_audio": "L27/L27_A1.mp3",
+          "title": "AI生成图片是从什么开始的？",
+          "options": [
+            "从一张空白纸。",
+            "从一张完整照片。",
+            "从噪点/乱，一步步变清晰。",
+            "从一笔一笔画。"
+          ],
+          "correct_answer": "C",
+          "explanation": "AI先给你看全是乱点点的图，然后一步步去噪变清晰。"
+        },
+        {
+          "question_no": 2,
+          "question_audio": "L27/L27_Q2.mp3",
+          "answer_audio": "L27/L27_A2.mp3",
+          "title": "AI画画的每一步做了什么？",
+          "options": [
+            "涂一种颜色。",
+            "加更多噪点。",
+            "画一笔。",
+            "去掉一点噪声，画面清楚一点。"
+          ],
+          "correct_answer": "D",
+          "explanation": "每一步只去掉一点噪声，画面就比上一步清楚一点。"
+        },
+        {
+          "question_no": 3,
+          "question_audio": "L27/L27_Q3.mp3",
+          "answer_audio": "L27/L27_A3.mp3",
+          "title": "AI画画的过程像什么？",
+          "options": [
+            "像从雾气中慢慢看到一张清晰的画。",
+            "像一笔一笔画画。",
+            "像剪贴。",
+            "像拍照。"
+          ],
+          "correct_answer": "A",
+          "explanation": "AI画画就像窗户上的雾一层层散去，从看不清到慢慢清晰。"
+        },
+        {
+          "question_no": 4,
+          "question_audio": "L27/L27_Q4.mp3",
+          "answer_audio": "L27/L27_A4.mp3",
+          "title": "\"扩散\"过程是什么意思？",
+          "options": [
+            "颜料扩散。",
+            "从有序变混乱很容易，从混乱变回有序需要一步步来。",
+            "信息扩散。",
+            "声音扩散。"
+          ],
+          "correct_answer": "B",
+          "explanation": "\"扩散\"是从有序变混乱容易，但反过来需要一步一步来。"
+        },
+        {
+          "question_no": 5,
+          "question_audio": "L27/L27_Q5.mp3",
+          "answer_audio": "L27/L27_A5.mp3",
+          "title": "墨水滴进水里很快散开，这像什么过程？",
+          "options": [
+            "不变。",
+            "从混乱变有序。",
+            "从有序变混乱（正向扩散）。",
+            "压缩。"
+          ],
+          "correct_answer": "C",
+          "explanation": "墨水滴进水里一下就散了，这是从有序变混乱。"
+        },
+        {
+          "question_no": 6,
+          "question_audio": "L27/L27_Q6.mp3",
+          "answer_audio": "L27/L27_A6.mp3",
+          "title": "为什么AI不能一步到位画出清晰的画？",
+          "options": [
+            "AI不够聪明。",
+            "一步到位更好。",
+            "不需要多步。",
+            "每步只去掉一点噪声，需要很多步才能从混乱变清晰。"
+          ],
+          "correct_answer": "D",
+          "explanation": "从混乱恢复有序很难，只能每步去掉一点噪声，走很多步。"
+        },
+        {
+          "question_no": 7,
+          "question_audio": "L27/L27_Q7.mp3",
+          "answer_audio": "L27/L27_A7.mp3",
+          "title": "电视没信号时的雪花屏像什么？",
+          "options": [
+            "像AI画画开始时的噪点。",
+            "像部分完成的画。",
+            "像清晰的画面。",
+            "像完成的作品。"
+          ],
+          "correct_answer": "A",
+          "explanation": "雪花屏全是乱七八糟的噪点，就是AI画画的起点。"
+        },
+        {
+          "question_no": 8,
+          "question_audio": "L27/L27_Q8.mp3",
+          "answer_audio": "L27/L27_A8.mp3",
+          "title": "窗户上的雾慢慢散去，最后看到清晰的窗外景色，这像什么？",
+          "options": [
+            "像编码。",
+            "像AI一步步去噪变清晰的画画过程。",
+            "像分类。",
+            "像压缩。"
+          ],
+          "correct_answer": "B",
+          "explanation": "雾一层层散去，就像AI一步步去噪，从模糊到清晰。"
+        },
+        {
+          "question_no": 9,
+          "question_audio": "L27/L27_Q9.mp3",
+          "answer_audio": "L27/L27_A9.mp3",
+          "title": "AI画画时每步只去掉一点噪声，好处是什么？",
+          "options": [
+            "更省电。",
+            "更快。",
+            "每步变化很小但稳定，最终能精确地恢复出清晰画面。",
+            "更简单。"
+          ],
+          "correct_answer": "C",
+          "explanation": "每步只去掉一点噪声，虽然步数多，但每步变化小而稳。"
+        },
+        {
+          "question_no": 10,
+          "question_audio": "L27/L27_Q10.mp3",
+          "answer_audio": "L27/L27_A10.mp3",
+          "title": "从一片乱七八糟的噪点中诞生出一幅美丽的画，靠的是什么？",
+          "options": [
+            "运气。",
+            "魔法。",
+            "别人帮忙。",
+            "AI学会了怎么从混乱中一步一步恢复出清晰的画面。"
+          ],
+          "correct_answer": "D",
+          "explanation": "AI通过学习，掌握了从混乱到清晰的步骤方法。"
+        }
+      ]
+    },
+    {
+      "lesson_id": "L28",
+      "lesson_num": 28,
+      "title": "《会编故事的机器人》",
+      "core_knowledge": [
+        "AI可能会编出听起来很真但实际不对的内容（幻觉）",
+        "不能AI说什么就信什么，要学会查证",
+        "多方验证是检验信息可靠性的好方法"
+      ],
+      "explanation_segments": [
+        {
+          "audio": "L28/L28_P1.mp3",
+          "source_text": "你有没有遇到过这样的同学——他讲故事特别生动，说\"我家养了一只会飞的猫！\"说得有鼻子有眼的，你差点就信了。但仔细想想——猫哪会飞呀？他是在瞎编，只是编得太像真的了！",
+          "order": 1
+        },
+        {
+          "audio": "L28/L28_P2.mp3",
+          "source_text": "AI有时候也会这样！它可能会告诉你\"恐龙是在300年前灭绝的\"——听起来很厉害很有道理，但其实完全不对！恐龙是6500万年前灭绝的。AI不是故意骗你，它只是在\"接话\"的时候接得不对——还记得吗？它是根据概率猜下一个词的，有时候猜得听起来很通顺，但事实是错的。这叫AI的\"幻觉\"——就像一个人说梦话，说得挺流畅，但内容是编的。",
+          "order": 2
+        },
+        {
+          "audio": "L28/L28_P3.mp3",
+          "source_text": "那怎么办呢？很简单——不要AI说什么就信什么！就像你不会相信同学说的\"会飞的猫\"一样，听到AI说的话，你要想一想：这合理吗？然后去查一查：翻翻书、问问老师、或者用别的可靠来源验证一下。这叫\"多方验证\"——从不同地方查证，如果都说一样，那大概率是对的；如果说法不一样，就要小心了。",
+          "order": 3
+        },
+        {
+          "audio": "L28/L28_P4.mp3",
+          "source_text": "AI是很好的助手，但它不是百科全书，更不会永远说对的话。学会怀疑、学会查证，你就是聪明的AI使用者！",
+          "order": 4
+        }
+      ],
+      "quiz": [
+        {
+          "question_no": 1,
+          "question_audio": "L28/L28_Q1.mp3",
+          "answer_audio": "L28/L28_A1.mp3",
+          "title": "AI的\"幻觉\"是什么意思？",
+          "options": [
+            "AI会变魔术。",
+            "AI在做梦。",
+            "AI眼睛花了。",
+            "AI编出听起来很真、但实际不对的内容。"
+          ],
+          "correct_answer": "D",
+          "explanation": "AI的\"幻觉\"就是它编出听起来很通顺、但事实错误的内容。"
+        },
+        {
+          "question_no": 2,
+          "question_audio": "L28/L28_Q2.mp3",
+          "answer_audio": "L28/L28_A2.mp3",
+          "title": "AI说\"恐龙是在300年前灭绝的\"，这属于什么？",
+          "options": [
+            "AI的幻觉（听起来有道理，但事实错误）。",
+            "AI在开玩笑。",
+            "正确信息。",
+            "AI在考你。"
+          ],
+          "correct_answer": "A",
+          "explanation": "恐龙是6500万年前灭绝的，AI说的\"300年前\"完全错误。"
+        },
+        {
+          "question_no": 3,
+          "question_audio": "L28/L28_Q3.mp3",
+          "answer_audio": "L28/L28_A3.mp3",
+          "title": "为什么AI会产生\"幻觉\"？",
+          "options": [
+            "AI太笨了。",
+            "AI根据概率猜下一个词，有时猜得通顺但事实错误。",
+            "AI在测试你。",
+            "AI故意骗人。"
+          ],
+          "correct_answer": "B",
+          "explanation": "AI是做\"接话预测\"，有时猜得通顺，但内容是编的。"
+        },
+        {
+          "question_no": 4,
+          "question_audio": "L28/L28_Q4.mp3",
+          "answer_audio": "L28/L28_A4.mp3",
+          "title": "面对AI说的话，我们应该怎么做？",
+          "options": [
+            "AI说什么就信什么。",
+            "不听AI的。",
+            "不要AI说什么就信什么，要学会查证。",
+            "AI一定是对的。"
+          ],
+          "correct_answer": "C",
+          "explanation": "AI可能编故事，不能全信，要查证。"
+        },
+        {
+          "question_no": 5,
+          "question_audio": "L28/L28_Q5.mp3",
+          "answer_audio": "L28/L28_A5.mp3",
+          "title": "\"多方验证\"是什么意思？",
+          "options": [
+            "只看一个来源。",
+            "自己想想就行。",
+            "问AI很多次。",
+            "从不同地方查证，看说法是否一致。"
+          ],
+          "correct_answer": "D",
+          "explanation": "\"多方验证\"就是从不同来源查证，说法都一样，大概率是对的。"
+        },
+        {
+          "question_no": 6,
+          "question_audio": "L28/L28_Q6.mp3",
+          "answer_audio": "L28/L28_A6.mp3",
+          "title": "同学说\"我家养了一只会飞的猫\"，你应该怎么做？",
+          "options": [
+            "仔细想想，猫不会飞，这可能不是真的。",
+            "不理他。",
+            "夸他厉害。",
+            "立刻相信。"
+          ],
+          "correct_answer": "A",
+          "explanation": "听到不合理的话要想一想，这就是质疑和批判性思维。"
+        },
+        {
+          "question_no": 7,
+          "question_audio": "L28/L28_Q7.mp3",
+          "answer_audio": "L28/L28_A7.mp3",
+          "title": "怎样发现AI说错了？",
+          "options": [
+            "AI不会错。",
+            "查一查书、问老师、用可靠来源验证。",
+            "不可能发现。",
+            "不需要发现。"
+          ],
+          "correct_answer": "B",
+          "explanation": "通过查证，就能发现AI的错误。"
+        },
+        {
+          "question_no": 8,
+          "question_audio": "L28/L28_Q8.mp3",
+          "answer_audio": "L28/L28_A8.mp3",
+          "title": "AI说\"企鹅住在北极\"，实际上企鹅住在哪？",
+          "options": [
+            "北极。",
+            "非洲。",
+            "南极。",
+            "亚洲。"
+          ],
+          "correct_answer": "C",
+          "explanation": "企鹅住在南极，AI说\"北极\"是错的。"
+        },
+        {
+          "question_no": 9,
+          "question_audio": "L28/L28_Q9.mp3",
+          "answer_audio": "L28/L28_A9.mp3",
+          "title": "AI是很好的助手，但它不是什么？",
+          "options": [
+            "不是工具。",
+            "不是程序。",
+            "不是电脑。",
+            "不是百科全书，不会永远说对的话。"
+          ],
+          "correct_answer": "D",
+          "explanation": "AI不是百科全书，它可能出错。"
+        },
+        {
+          "question_no": 10,
+          "question_audio": "L28/L28_Q10.mp3",
+          "answer_audio": "L28/L28_A10.mp3",
+          "title": "\"接话预测不等于事实核查\"是什么意思？",
+          "options": [
+            "AI擅长预测下一个词，但不擅长核实事实。",
+            "AI预测的都不对。",
+            "预测和查证一样。",
+            "AI不需要事实。"
+          ],
+          "correct_answer": "A",
+          "explanation": "AI是在做\"接话预测\"，不是在做\"事实核实\"。\n\n---\n\n## 模块H｜安全、偏见与未来（第29–32课）"
+        }
+      ]
+    },
+    {
+      "lesson_id": "L29",
+      "lesson_num": 29,
+      "title": "《不要随便给陌生人》",
+      "core_knowledge": [
+        "有些个人信息不能随便告诉别人",
+        "隐私就像一扇门，你有权决定让谁进来",
+        "遇到不确定的情况，要找大人帮忙"
+      ],
+      "explanation_segments": [
+        {
+          "audio": "L29/L29_P1.mp3",
+          "source_text": "你有没有一个秘密基地或者一个带锁的小盒子？里面装着你最宝贝的东西，只有你和你信任的人才能打开。你的个人信息——名字、家庭住址、电话号码、学校名字——就像那个小盒子里的宝贝，不能随便给陌生人看！",
+          "order": 1
+        },
+        {
+          "audio": "L29/L29_P2.mp3",
+          "source_text": "想象一下，如果有人敲门说\"告诉我你家住哪里，我给你一颗糖\"，你会告诉他吗？当然不会！在网上也是一样的——如果有人问你\"你叫什么名字呀？你爸爸妈妈的电话是多少？\"，你也绝对不能告诉他们！",
+          "order": 2
+        },
+        {
+          "audio": "L29/L29_P3.mp3",
+          "source_text": "在用AI的时候也要小心。有些AI应用会问你问题，比如\"你最喜欢什么？\"\"你在哪个学校上学？\"这些看起来很普通的问题，其实可能是在收集你的信息。记住：你的信息是你的，你有权利说\"我不告诉你！\"",
+          "order": 3
+        },
+        {
+          "audio": "L29/L29_P4.mp3",
+          "source_text": "那遇到不确定的情况怎么办呢？去找你信任的大人——爸爸妈妈、老师、爷爷奶奶——问问他们\"这个人/这个应用问我的信息，我可以给吗？\"大人会帮你判断安不安全。",
+          "order": 4
+        },
+        {
+          "audio": "L29/L29_P5.mp3",
+          "source_text": "保护好自己的信息，就像守护你的秘密基地——钥匙在你手里，你说了算！",
+          "order": 5
+        }
+      ],
+      "quiz": [
+        {
+          "question_no": 1,
+          "question_audio": "L29/L29_Q1.mp3",
+          "answer_audio": "L29/L29_A1.mp3",
+          "title": "下面哪个属于个人信息，不能随便告诉别人？",
+          "options": [
+            "家庭住址。",
+            "我喜欢画画。",
+            "我喜欢踢球。",
+            "我爱吃苹果。"
+          ],
+          "correct_answer": "A",
+          "explanation": "家庭住址是重要的个人信息，不能随便告诉陌生人。"
+        },
+        {
+          "question_no": 2,
+          "question_audio": "L29/L29_Q2.mp3",
+          "answer_audio": "L29/L29_A2.mp3",
+          "title": "隐私像什么？",
+          "options": [
+            "像一扇窗。",
+            "像一扇门，你有权决定让谁进来。",
+            "像一面墙。",
+            "像一条路。"
+          ],
+          "correct_answer": "B",
+          "explanation": "隐私就像一扇门，钥匙在你手里，你有权决定让谁进来。"
+        },
+        {
+          "question_no": 3,
+          "question_audio": "L29/L29_Q3.mp3",
+          "answer_audio": "L29/L29_A3.mp3",
+          "title": "有人敲门问你\"你家住哪里\"，你应该怎么做？",
+          "options": [
+            "想想再决定。",
+            "问他的名字，再告诉他。",
+            "不告诉陌生人，找大人帮忙。",
+            "告诉他。"
+          ],
+          "correct_answer": "C",
+          "explanation": "不能把个人信息告诉陌生人，遇到不确定的情况要找信任的大人。"
+        },
+        {
+          "question_no": 4,
+          "question_audio": "L29/L29_Q4.mp3",
+          "answer_audio": "L29/L29_A4.mp3",
+          "title": "在网上有人问你\"爸爸妈妈的电话是多少\"，你应该怎样？",
+          "options": [
+            "告诉一部分。",
+            "看他好不好人。",
+            "告诉他。",
+            "绝对不能告诉。"
+          ],
+          "correct_answer": "D",
+          "explanation": "父母电话是重要的个人信息，绝对不能随便告诉网上的人。"
+        },
+        {
+          "question_no": 5,
+          "question_audio": "L29/L29_Q5.mp3",
+          "answer_audio": "L29/L29_A5.mp3",
+          "title": "有些AI应用问你在哪个学校上学，这可能是在做什么？",
+          "options": [
+            "可能在收集你的个人信息。",
+            "想做朋友。",
+            "帮你学习。",
+            "只是好奇。"
+          ],
+          "correct_answer": "A",
+          "explanation": "有些AI应用可能通过提问来收集信息。"
+        },
+        {
+          "question_no": 6,
+          "question_audio": "L29/L29_Q6.mp3",
+          "answer_audio": "L29/L29_A6.mp3",
+          "title": "遇到不确定安不安全的情况，应该怎么办？",
+          "options": [
+            "自己决定。",
+            "找信任的大人帮忙判断。",
+            "不用管。",
+            "随便试试。"
+          ],
+          "correct_answer": "B",
+          "explanation": "遇到不确定的情况，要找爸爸妈妈、老师等信任的大人帮忙。"
+        },
+        {
+          "question_no": 7,
+          "question_audio": "L29/L29_Q7.mp3",
+          "answer_audio": "L29/L29_A7.mp3",
+          "title": "\"信息红绿灯\"中，\"红灯信息\"是什么？",
+          "options": [
+            "可以说的信息。",
+            "要想想再说的信息。",
+            "绝对不能说的信息（如住址、爸妈电话）。",
+            "不重要的信息。"
+          ],
+          "correct_answer": "C",
+          "explanation": "\"红灯信息\"是最敏感的，绝对不能告诉陌生人。"
+        },
+        {
+          "question_no": 8,
+          "question_audio": "L29/L29_Q8.mp3",
+          "answer_audio": "L29/L29_A8.mp3",
+          "title": "\"信息红绿灯\"中，\"绿灯信息\"是什么？",
+          "options": [
+            "危险的信息。",
+            "不能说的信息。",
+            "要问问大人的信息。",
+            "可以说的信息（如兴趣爱好）。"
+          ],
+          "correct_answer": "D",
+          "explanation": "\"绿灯信息\"是可以安全分享的，比如\"我喜欢画画\"。"
+        },
+        {
+          "question_no": 9,
+          "question_audio": "L29/L29_Q9.mp3",
+          "answer_audio": "L29/L29_A9.mp3",
+          "title": "保护好自己的信息，像什么？",
+          "options": [
+            "像守护你的秘密基地，钥匙在你手里，你说了算。",
+            "像搬家。",
+            "像丢掉钥匙。",
+            "像打开大门。"
+          ],
+          "correct_answer": "A",
+          "explanation": "你的信息是你的，就像秘密基地的钥匙在你手里。"
+        },
+        {
+          "question_no": 10,
+          "question_audio": "L29/L29_Q10.mp3",
+          "answer_audio": "L29/L29_A10.mp3",
+          "title": "\"你的信息是你的，你有权利不说\"，这说明什么？",
+          "options": [
+            "可以随便说别人的信息。",
+            "你有权保护自己的隐私，拒绝给陌生人信息。",
+            "不需要保护信息。",
+            "信息不重要。"
+          ],
+          "correct_answer": "B",
+          "explanation": "每个人都有权利保护自己的隐私，有权拒绝给陌生人个人信息。"
+        }
+      ]
+    },
+    {
+      "lesson_id": "L30",
+      "lesson_num": 30,
+      "title": "《同样努力却分数不同》",
+      "core_knowledge": [
+        "数据不公平会导致AI的结果偏心",
+        "偏见可能来自训练数据的不平衡",
+        "学会质疑不公平的结果，并想办法改进"
+      ],
+      "explanation_segments": [
+        {
+          "audio": "L30/L30_P1.mp3",
+          "source_text": "想象老师让全班同学画\"科学家\"，然后AI来评分。结果AI给所有画男性的画都打了高分，画女性的画却得分很低。为什么？因为AI学的那些图片里，\"科学家\"几乎都是男性！数据本身就不公平，AI学出来当然也偏心！",
+          "order": 1
+        },
+        {
+          "audio": "L30/L30_P2.mp3",
+          "source_text": "这就像你只吃过草莓味冰淇淋，然后让你选\"最好吃的冰淇淋\"，你肯定选草莓——因为你根本没尝过别的口味！不是别的口味不好吃，而是你没机会了解。AI也一样——如果它只看了某一类数据，它就会偏向那一类，这不是因为它坏，而是因为它\"见识不够广\"。",
+          "order": 2
+        },
+        {
+          "audio": "L30/L30_P3.mp3",
+          "source_text": "偏见在生活里也很多见。有人说\"男生数学好，女生语文好\"，这就是偏见！实际上很多女生数学超棒，很多男生作文写得很好。这种偏见可能来自刻板印象，就像AI只看了一部分数据就下了结论。",
+          "order": 3
+        },
+        {
+          "audio": "L30/L30_P4.mp3",
+          "source_text": "遇到不公平的结果，我们要勇敢地提出来：\"这不公平！\"然后想办法改进——给AI看更多样、更平衡的数据，就像让你尝更多口味的冰淇淋再做选择。消除偏见，从看到偏见开始！",
+          "order": 4
+        }
+      ],
+      "quiz": [
+        {
+          "question_no": 1,
+          "question_audio": "L30/L30_Q1.mp3",
+          "answer_audio": "L30/L30_A1.mp3",
+          "title": "数据不公平，会导致AI的结果怎样？",
+          "options": [
+            "更快。",
+            "偏心。",
+            "更准确。",
+            "不变。"
+          ],
+          "correct_answer": "B",
+          "explanation": "数据不公平，会让AI的结果偏心。"
+        },
+        {
+          "question_no": 2,
+          "question_audio": "L30/L30_Q2.mp3",
+          "answer_audio": "L30/L30_A2.mp3",
+          "title": "AI给画\"男性科学家\"的画打高分、画\"女性\"的打低分，为什么？",
+          "options": [
+            "因为AI不喜欢女性。",
+            "因为男性画得更好。",
+            "因为AI学的图片里\"科学家\"几乎都是男性，数据本身就不公平。",
+            "因为画得不好。"
+          ],
+          "correct_answer": "C",
+          "explanation": "AI学的数据里\"科学家\"大多是男性，数据不公平，导致结果偏心。"
+        },
+        {
+          "question_no": 3,
+          "question_audio": "L30/L30_Q3.mp3",
+          "answer_audio": "L30/L30_A3.mp3",
+          "title": "偏见可能来自哪里？",
+          "options": [
+            "天生的。",
+            "AI故意这样做。",
+            "没有来源。",
+            "训练数据的不平衡。"
+          ],
+          "correct_answer": "D",
+          "explanation": "AI的偏见来自训练数据不平衡。"
+        },
+        {
+          "question_no": 4,
+          "question_audio": "L30/L30_Q4.mp3",
+          "answer_audio": "L30/L30_A4.mp3",
+          "title": "\"只吃过草莓味冰淇淋，就选草莓最好吃\"，这属于什么？",
+          "options": [
+            "偏见，因为没尝过别的口味。",
+            "客观的判断。",
+            "不相关。",
+            "聪明的选择。"
+          ],
+          "correct_answer": "A",
+          "explanation": "没有尝试其他选择就下结论，这是偏见。"
+        },
+        {
+          "question_no": 5,
+          "question_audio": "L30/L30_Q5.mp3",
+          "answer_audio": "L30/L30_A5.mp3",
+          "title": "\"男生数学好，女生语文好\"是什么？",
+          "options": [
+            "统计结果。",
+            "偏见（刻板印象）。",
+            "事实。",
+            "科学结论。"
+          ],
+          "correct_answer": "B",
+          "explanation": "这是一种偏见，实际上很多女生数学很棒。"
+        },
+        {
+          "question_no": 6,
+          "question_audio": "L30/L30_Q6.mp3",
+          "answer_audio": "L30/L30_A6.mp3",
+          "title": "AI的偏见是因为它\"坏\"吗？",
+          "options": [
+            "是的，AI很坏。",
+            "不确定。",
+            "不是，是因为它见识不够广、数据不够平衡。",
+            "是的，AI故意偏心。"
+          ],
+          "correct_answer": "C",
+          "explanation": "AI偏心不是因为它坏，而是因为它学的数据不够多样和平衡。"
+        },
+        {
+          "question_no": 7,
+          "question_audio": "L30/L30_Q7.mp3",
+          "answer_audio": "L30/L30_A7.mp3",
+          "title": "怎样改进AI的偏见？",
+          "options": [
+            "换一个AI。",
+            "不用管。",
+            "没办法改进。",
+            "给AI看更多样、更平衡的数据。"
+          ],
+          "correct_answer": "D",
+          "explanation": "给AI更多样、更平衡的数据，就像让你尝更多口味的冰淇淋。"
+        },
+        {
+          "question_no": 8,
+          "question_audio": "L30/L30_Q8.mp3",
+          "answer_audio": "L30/L30_A8.mp3",
+          "title": "遇到不公平的结果，我们应该怎么做？",
+          "options": [
+            "勇敢提出来\"这不公平\"，想办法改进。",
+            "忽略它。",
+            "习惯了就好。",
+            "接受它。"
+          ],
+          "correct_answer": "A",
+          "explanation": "看到不公平，要勇敢说出来，想办法改进。"
+        },
+        {
+          "question_no": 9,
+          "question_audio": "L30/L30_Q9.mp3",
+          "answer_audio": "L30/L30_A9.mp3",
+          "title": "\"男生也可以当护士，女生也可以当飞行员\"，说明了什么？",
+          "options": [
+            "护士只需要男生。",
+            "职业不分性别，刻板印象是偏见。",
+            "飞行员只需要女生。",
+            "不需要在意。"
+          ],
+          "correct_answer": "B",
+          "explanation": "任何性别都可以从事任何职业，觉得\"某职业只属于某种性别\"是偏见。"
+        },
+        {
+          "question_no": 10,
+          "question_audio": "L30/L30_Q10.mp3",
+          "answer_audio": "L30/L30_A10.mp3",
+          "title": "\"消除偏见\"从什么开始？",
+          "options": [
+            "从不在意开始。",
+            "从接受偏见开始。",
+            "从看到偏见开始。",
+            "从假装看不到偏见开始。"
+          ],
+          "correct_answer": "C",
+          "explanation": "消除偏见，首先要看到和承认偏见的存在。"
+        }
+      ]
+    },
+    {
+      "lesson_id": "L31",
+      "lesson_num": 31,
+      "title": "《超级搭档》",
+      "core_knowledge": [
+        "人和AI各有擅长的事情",
+        "AI擅长：快速处理大量数据、不知疲倦地重复",
+        "人擅长：创造力、情感理解、道德判断",
+        "最好的方式是人和AI搭档，而不是让AI替代人"
+      ],
+      "explanation_segments": [
+        {
+          "audio": "L31/L31_P1.mp3",
+          "source_text": "你看过超级英雄电影吗？每个英雄都有自己的超能力——蜘蛛侠能飞檐走壁，钢铁侠有高科技战甲。但一个人再厉害也有搞不定的时候，所以他们组成了联盟，一起打坏蛋！",
+          "order": 1
+        },
+        {
+          "audio": "L31/L31_P2.mp3",
+          "source_text": "人和AI就像超级搭档！AI有它的超能力：它可以一秒钟读完一万本书，从来不会累，也不会走神。但AI也有做不到的事——它不会真的开心或难过，不知道什么是对的什么是错的，更不会像你一样突发奇想画出一条会飞的鱼！",
+          "order": 2
+        },
+        {
+          "audio": "L31/L31_P3.mp3",
+          "source_text": "你也有超能力！你能感受到朋友的难过并去安慰他，你能想出从来没有人想到过的点子，你能判断\"这样做是不是好的、对的\"。这些是AI做不到的！",
+          "order": 3
+        },
+        {
+          "audio": "L31/L31_P4.mp3",
+          "source_text": "最好的方式是你们搭档！AI帮你查资料、算数据、做重复的工作，你来做决定、想创意、判断对错。就像蝙蝠侠负责战斗，罗宾负责支援——少了谁都不行！",
+          "order": 4
+        },
+        {
+          "audio": "L31/L31_P5.mp3",
+          "source_text": "记住：AI是你的助手，不是你的替代。你的创造力、善良和判断力是AI永远学不会的超级力量！",
+          "order": 5
+        }
+      ],
+      "quiz": [
+        {
+          "question_no": 1,
+          "question_audio": "L31/L31_Q1.mp3",
+          "answer_audio": "L31/L31_A1.mp3",
+          "title": "人和AI各有什么特点？",
+          "options": [
+            "人和AI什么都会。",
+            "AI什么都会，人什么都不会。",
+            "人和AI各有擅长的事情。",
+            "人什么都会，AI什么都不会。"
+          ],
+          "correct_answer": "C",
+          "explanation": "人和AI各有擅长的事。"
+        },
+        {
+          "question_no": 2,
+          "question_audio": "L31/L31_Q2.mp3",
+          "answer_audio": "L31/L31_A2.mp3",
+          "title": "AI擅长什么？",
+          "options": [
+            "感情。",
+            "创造力。",
+            "道德判断。",
+            "快速处理大量数据、不知疲倦地重复。"
+          ],
+          "correct_answer": "D",
+          "explanation": "AI可以一秒读万卷书，从不疲倦、走神。"
+        },
+        {
+          "question_no": 3,
+          "question_audio": "L31/L31_Q3.mp3",
+          "answer_audio": "L31/L31_A3.mp3",
+          "title": "人擅长什么？",
+          "options": [
+            "创造力、情感理解、道德判断。",
+            "不知疲倦地重复。",
+            "处理大量数据。",
+            "快速算数。"
+          ],
+          "correct_answer": "A",
+          "explanation": "人能感受情感、想出新点子、判断对错，AI做不到。"
+        },
+        {
+          "question_no": 4,
+          "question_audio": "L31/L31_Q4.mp3",
+          "answer_audio": "L31/L31_A4.mp3",
+          "title": "最好的方式是什么？",
+          "options": [
+            "不用AI。",
+            "人和AI搭档合作。",
+            "人做所有事。",
+            "让AI做所有事。"
+          ],
+          "correct_answer": "B",
+          "explanation": "最好的方式是人和AI搭档，各做自己擅长的事。"
+        },
+        {
+          "question_no": 5,
+          "question_audio": "L31/L31_Q5.mp3",
+          "answer_audio": "L31/L31_A5.mp3",
+          "title": "AI能感受到朋友的难过并去安慰吗？",
+          "options": [
+            "能，AI有感情。",
+            "能，AI很会安慰人。",
+            "不能，AI不会真的开心或难过。",
+            "有时候能。"
+          ],
+          "correct_answer": "C",
+          "explanation": "AI不会真的开心或难过，情感理解是人的超能力。"
+        },
+        {
+          "question_no": 6,
+          "question_audio": "L31/L31_Q6.mp3",
+          "answer_audio": "L31/L31_A6.mp3",
+          "title": "你能想出从来没有人想到过的点子，这说明你有什么能力？",
+          "options": [
+            "速度。",
+            "耐力。",
+            "算数能力。",
+            "创造力。"
+          ],
+          "correct_answer": "D",
+          "explanation": "人能想出全新的点子，这是AI做不到的超级力量。"
+        },
+        {
+          "question_no": 7,
+          "question_audio": "L31/L31_Q7.mp3",
+          "answer_audio": "L31/L31_A7.mp3",
+          "title": "AI是你的什么？",
+          "options": [
+            "助手和搭档。",
+            "老师。",
+            "替代者。",
+            "老板。"
+          ],
+          "correct_answer": "A",
+          "explanation": "AI是你的助手，不是替代。"
+        },
+        {
+          "question_no": 8,
+          "question_audio": "L31/L31_Q8.mp3",
+          "answer_audio": "L31/L31_A8.mp3",
+          "title": "超级英雄为什么要组成联盟？",
+          "options": [
+            "不想一个人待着。",
+            "每个人有不同的超能力，合作才能打败强敌。",
+            "一个人就够了。",
+            "为了好看。"
+          ],
+          "correct_answer": "B",
+          "explanation": "每个英雄各有特长，组合起来才更强大。"
+        },
+        {
+          "question_no": 9,
+          "question_audio": "L31/L31_Q9.mp3",
+          "answer_audio": "L31/L31_A9.mp3",
+          "title": "\"人类在环\"是什么意思？",
+          "options": [
+            "人不重要。",
+            "人在跑步。",
+            "重要决定要让人来参与和把关。",
+            "AI不需要人。"
+          ],
+          "correct_answer": "C",
+          "explanation": "\"人类在环\"是指重要决策需要人来参与。"
+        },
+        {
+          "question_no": 10,
+          "question_audio": "L31/L31_Q10.mp3",
+          "answer_audio": "L31/L31_A10.mp3",
+          "title": "你的创造力、善良和判断力，是AI能学会的吗？",
+          "options": [
+            "能，AI很聪明。",
+            "已经学会了。",
+            "可能能学会。",
+            "不能，这些是AI永远学不会的超级力量。"
+          ],
+          "correct_answer": "D",
+          "explanation": "创造力、善良和判断力是人的独特能力，AI永远无法真正学会。"
+        }
+      ]
+    },
+    {
+      "lesson_id": "L32",
+      "lesson_num": 32,
+      "title": "《小小AI研究员毕业啦》",
+      "core_knowledge": [
+        "回顾整个课程：信息→规则→学习→安全",
+        "形成完整的AI素养框架",
+        "AI在不断进步，保持好奇心和批判性思维"
+      ],
+      "explanation_segments": [
+        {
+          "audio": "L32/L32_P1.mp3",
+          "source_text": "恭喜你，小小AI研究员！你已经走完了32节课的冒险旅程！让我们回顾一下你学到了哪些超级厉害的知识：",
+          "order": 1
+        },
+        {
+          "audio": "L32/L32_P2.mp3",
+          "source_text": "首先，你学会了**信息是AI的粮食**——没有信息，AI什么都做不了（模块A）。然后你发现了图片和声音在电脑里是怎么变成数字的（模块B）。接着你知道了电脑靠**规则和循环**来做事——如果……就……、重复做、分步做、找错误（模块C）。",
+          "order": 2
+        },
+        {
+          "audio": "L32/L32_P3.mp3",
+          "source_text": "你还学会了AI怎么\"思考\"——分类、找特征、做预测，还知道了光背答案不算真学会（模块D）。然后你深入了解了AI怎么从例子里学——有老师教的监督学习、自己摸索的无监督学习、靠奖励学的强化学习（模块E）。你还揭开了神经网络的秘密——节点、多层、权重、小步调整（模块F）。",
+          "order": 3
+        },
+        {
+          "audio": "L32/L32_P4.mp3",
+          "source_text": "最后，你学会了AI会说话会画画，但也可能编故事骗你（模块G），还知道了保护隐私、反对偏见、人AI搭档（模块H）。",
+          "order": 4
+        },
+        {
+          "audio": "L32/L32_P5.mp3",
+          "source_text": "现在你可以大声说：**我懂AI了！** 但记住，AI世界还在不断变化，新的技术每天都在出现。保持你的好奇心，继续提问、继续探索、继续思考\"这是真的吗？这公平吗？这安全吗？\"——这才是最重要的AI素养！",
+          "order": 5
+        }
+      ],
+      "quiz": [
+        {
+          "question_no": 1,
+          "question_audio": "L32/L32_Q1.mp3",
+          "answer_audio": "L32/L32_A1.mp3",
+          "title": "32节课中，最先学到的是什么？",
+          "options": [
+            "偏见。",
+            "神经网络。",
+            "编码。",
+            "信息是AI的粮食，没有信息AI什么都做不了。"
+          ],
+          "correct_answer": "D",
+          "explanation": "模块A最先学习，核心是\"信息是AI的粮食\"。"
+        },
+        {
+          "question_no": 2,
+          "question_audio": "L32/L32_Q2.mp3",
+          "answer_audio": "L32/L32_A2.mp3",
+          "title": "电脑靠什么来做事？",
+          "options": [
+            "规则和循环（如果……就……、重复做、分步做）。",
+            "感觉。",
+            "魔法。",
+            "随便做。"
+          ],
+          "correct_answer": "A",
+          "explanation": "模块C讲电脑靠规则和循环做事。"
+        },
+        {
+          "question_no": 3,
+          "question_audio": "L32/L32_Q3.mp3",
+          "answer_audio": "L32/L32_A3.mp3",
+          "title": "AI怎么\"思考\"？",
+          "options": [
+            "不思考。",
+            "通过分类、找特征、做预测来\"思考\"。",
+            "随便猜。",
+            "跟人一样思考。"
+          ],
+          "correct_answer": "B",
+          "explanation": "模块D讲AI的思考方式：分类、找特征、做预测。"
+        },
+        {
+          "question_no": 4,
+          "question_audio": "L32/L32_Q4.mp3",
+          "answer_audio": "L32/L32_A4.mp3",
+          "title": "监督学习和无监督学习的区别是什么？",
+          "options": [
+            "没区别。",
+            "监督学习不需要数据。",
+            "监督学习有标签答案，无监督学习没有。",
+            "无监督学习更难。"
+          ],
+          "correct_answer": "C",
+          "explanation": "模块E讲监督学习有标签，无监督学习没有。"
+        },
+        {
+          "question_no": 5,
+          "question_audio": "L32/L32_Q5.mp3",
+          "answer_audio": "L32/L32_A5.mp3",
+          "title": "神经网络的\"秘密\"是什么？",
+          "options": [
+            "只靠运气。",
+            "只有一个节点。",
+            "不需要学习。",
+            "节点、多层、权重、小步调整。"
+          ],
+          "correct_answer": "D",
+          "explanation": "模块F讲神经网络的秘密：节点、多层、权重、梯度下降。"
+        },
+        {
+          "question_no": 6,
+          "question_audio": "L32/L32_Q6.mp3",
+          "answer_audio": "L32/L32_A6.mp3",
+          "title": "AI说话、画画时，我们要注意什么？",
+          "options": [
+            "AI可能编故事骗你（幻觉），要查证。",
+            "AI不会画画。",
+            "AI一定是对的。",
+            "AI不会说话。"
+          ],
+          "correct_answer": "A",
+          "explanation": "模块G讲AI会说话画画，但也可能产生幻觉。"
+        },
+        {
+          "question_no": 7,
+          "question_audio": "L32/L32_Q7.mp3",
+          "answer_audio": "L32/L32_A7.mp3",
+          "title": "使用AI时，要注意哪些安全问题？",
+          "options": [
+            "不需要大人帮忙。",
+            "保护隐私、反对偏见、人和AI搭档。",
+            "不需要注意。",
+            "只需要快乐使用。"
+          ],
+          "correct_answer": "B",
+          "explanation": "模块H讲了\"保护隐私、反对偏见、人AI搭档\"的重要性。"
+        },
+        {
+          "question_no": 8,
+          "question_audio": "L32/L32_Q8.mp3",
+          "answer_audio": "L32/L32_A8.mp3",
+          "title": "最重要的AI素养是什么？",
+          "options": [
+            "记住所有知识。",
+            "会用AI。",
+            "保持好奇心和批判性思维。",
+            "速度最快。"
+          ],
+          "correct_answer": "C",
+          "explanation": "保持好奇心和批判性思维最重要。"
+        },
+        {
+          "question_no": 9,
+          "question_audio": "L32/L32_Q9.mp3",
+          "answer_audio": "L32/L32_A9.mp3",
+          "title": "\"这是真的吗？这公平吗？这安全吗？\"是在做什么？",
+          "options": [
+            "在怀疑一切。",
+            "在拒绝AI。",
+            "在害怕AI。",
+            "在运用批判性思维。"
+          ],
+          "correct_answer": "D",
+          "explanation": "这三个问题是批判性思维的体现。"
+        },
+        {
+          "question_no": 10,
+          "question_audio": "L32/L32_Q10.mp3",
+          "answer_audio": "L32/L32_A10.mp3",
+          "title": "8个模块的正确顺序是什么？",
+          "options": [
+            "信息→像素世界→规则→思考→学习→神经网络→说话画画→安全偏见未来。",
+            "信息→学习→规则→安全。",
+            "学习→信息→安全→规则。",
+            "安全→信息→规则→学习。"
+          ],
+          "correct_answer": "A",
+          "explanation": "8个模块的顺序是：A信息、B像素、C规则、D思考、E学习、F神经网络、G说话画画、H安全偏见未来。\n\n---\n\n> 🎉 全部32节课完成！每个孩子都可以成为懂AI、会用AI、善判断的未来公民！\n\n---\n\n> 本内容由 Coze AI 生成，请遵循相关法律法规及《人工智能生成合成内容标识办法》使用与传播。"
+        }
+      ]
+    }
+  ]
+}

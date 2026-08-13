@@ -1,6 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
 import type { QuizItem } from '../../data/courseData.ts';
 import { Medal, TriangleAlert, CircleCheck } from 'lucide-react';
+import AudioPlayButton from '../../components/AudioPlayButton';
+import { getAudioAssetUrl, getLessonAudioMapping } from '../../data/audioMapping';
+import { useAudioPlayer } from '../../hooks/useAudioPlayer';
 
 interface QuizRecord {
   total: number;
@@ -19,10 +22,11 @@ interface QuizRecord {
 interface QuizModuleProps {
   quiz: QuizItem[];
   courseTitle: string;
+  courseId: number;
   onComplete: (record: QuizRecord) => void;
 }
 
-export default function QuizModule({ quiz, courseTitle, onComplete }: QuizModuleProps) {
+export default function QuizModule({ quiz, courseTitle, courseId, onComplete }: QuizModuleProps) {
   const [currentQ, setCurrentQ] = useState(0);
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [isAnswered, setIsAnswered] = useState(false);
@@ -35,13 +39,48 @@ export default function QuizModule({ quiz, courseTitle, onComplete }: QuizModule
   const [showError, setShowError] = useState(false);
   const [wrongAnswers, setWrongAnswers] = useState<Array<{ questionIndex: number; question: string; selectedKey: string; correctKey: string }>>([]);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const correctSoundRef = useRef<HTMLAudioElement | null>(null);
+  const wrongSoundRef = useRef<HTMLAudioElement | null>(null);
+  const { activeSrc, toggle: toggleNarration, stop: stopNarration } = useAudioPlayer();
+  const lessonAudio = getLessonAudioMapping(courseId);
 
   useEffect(() => {
     timerRef.current = setInterval(() => setTimeSeconds((t) => t + 1), 1000);
     return () => { if (timerRef.current) clearInterval(timerRef.current); };
   }, []);
 
+  useEffect(() => {
+    const soundsBaseUrl = `${import.meta.env.BASE_URL}assets/sounds/`;
+    const correctSound = new Audio(`${soundsBaseUrl}Right.wav`);
+    const wrongSound = new Audio(`${soundsBaseUrl}Wrong.wav`);
+
+    correctSound.preload = 'auto';
+    wrongSound.preload = 'auto';
+    correctSoundRef.current = correctSound;
+    wrongSoundRef.current = wrongSound;
+
+    return () => {
+      correctSound.pause();
+      wrongSound.pause();
+      correctSoundRef.current = null;
+      wrongSoundRef.current = null;
+    };
+  }, []);
+
+  const playAnswerSound = (correct: boolean) => {
+    const sound = correct ? correctSoundRef.current : wrongSoundRef.current;
+    if (!sound) return;
+
+    sound.currentTime = 0;
+    void sound.play().catch(() => {
+      // 浏览器可能因系统静音或播放策略拒绝音频，不影响答题流程。
+    });
+  };
+
   const currentQuestion = quiz[currentQ];
+  const currentAudio = lessonAudio?.quiz[currentQ];
+  const questionAudioSrc = currentAudio ? getAudioAssetUrl(currentAudio.question_audio) : null;
+  const answerAudioSrc = currentAudio ? getAudioAssetUrl(currentAudio.answer_audio) : null;
 
   const handleSelect = (optionKey: string) => {
     if (isAnswered && isCorrect) return;
@@ -51,7 +90,9 @@ export default function QuizModule({ quiz, courseTitle, onComplete }: QuizModule
 
   const handleConfirm = () => {
     if (!selectedOption) return;
+    stopNarration();
     const correct = selectedOption === currentQuestion.answer;
+    playAnswerSound(correct);
     setIsAnswered(true);
     setIsCorrect(correct);
     if (correct) {
@@ -73,6 +114,7 @@ export default function QuizModule({ quiz, courseTitle, onComplete }: QuizModule
 
   const handleNext = () => {
     if (!isCorrect) return;
+    stopNarration();
     if (currentQ < quiz.length - 1) {
       setCurrentQ((q) => q + 1);
       setSelectedOption(null);
@@ -227,9 +269,17 @@ export default function QuizModule({ quiz, courseTitle, onComplete }: QuizModule
           }}>
             {currentQ + 1}
           </div>
-          <p style={{ fontSize: 18, fontWeight: 700, color: 'var(--kid-gray-800)', lineHeight: 1.7, margin: 0 }}>
+          <p style={{ flex: 1, fontSize: 18, fontWeight: 700, color: 'var(--kid-gray-800)', lineHeight: 1.7, margin: 0 }}>
             {currentQuestion.question}
           </p>
+          {questionAudioSrc && (
+            <AudioPlayButton
+              audioSrc={questionAudioSrc}
+              isPlaying={activeSrc === questionAudioSrc}
+              onToggle={toggleNarration}
+              label={`播放第${currentQ + 1}题题目和选项`}
+            />
+          )}
         </div>
       </div>
 
@@ -296,7 +346,7 @@ export default function QuizModule({ quiz, courseTitle, onComplete }: QuizModule
           display: 'flex', alignItems: 'flex-start', gap: 12,
         }}>
           <TriangleAlert size={22} />
-          <div>
+          <div style={{ flex: 1 }}>
             <p style={{ fontWeight: 800, fontSize: 16, color: 'var(--kid-red-500)', marginBottom: 3 }}>
               回答错误！请重新选择正确答案。
             </p>
@@ -317,7 +367,7 @@ export default function QuizModule({ quiz, courseTitle, onComplete }: QuizModule
           display: 'flex', alignItems: 'flex-start', gap: 12,
         }}>
           <CircleCheck size={22} />
-          <div>
+          <div style={{ flex: 1 }}>
             <p style={{ fontWeight: 800, fontSize: 16, color: 'var(--kid-green-500)', marginBottom: 4 }}>
               回答正确！
             </p>
@@ -325,6 +375,14 @@ export default function QuizModule({ quiz, courseTitle, onComplete }: QuizModule
               {currentQuestion.explanation}
             </p>
           </div>
+          {answerAudioSrc && (
+            <AudioPlayButton
+              audioSrc={answerAudioSrc}
+              isPlaying={activeSrc === answerAudioSrc}
+              onToggle={toggleNarration}
+              label={`播放第${currentQ + 1}题答案和解析`}
+            />
+          )}
         </div>
       )}
 

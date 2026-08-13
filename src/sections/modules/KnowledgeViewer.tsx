@@ -1,17 +1,25 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { BookOpen, Lightbulb, ClipboardList } from 'lucide-react';
+import AudioPlayButton from '../../components/AudioPlayButton';
+import { useAudioPlayer } from '../../hooks/useAudioPlayer';
 
 interface KnowledgeViewerProps {
   images: string[];
   knowledgePoints: string[];
   courseId: number;
+  explanationAudio?: string[];
   onComplete?: () => void;
 }
 
-export default function KnowledgeViewer({ images, knowledgePoints, courseId, onComplete }: KnowledgeViewerProps) {
+export default function KnowledgeViewer({ images, knowledgePoints, courseId, explanationAudio = [], onComplete }: KnowledgeViewerProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [imageError, setImageError] = useState(false);
+  const { activeSrc, toggle, stop } = useAudioPlayer();
   const total = images.length;
+
+  useEffect(() => {
+    stop();
+  }, [courseId, currentIndex, stop]);
 
   const handlePrev = () => {
     if (currentIndex > 0) {
@@ -74,6 +82,17 @@ export default function KnowledgeViewer({ images, knowledgePoints, courseId, onC
               }}
               onError={() => setImageError(true)}
             />
+          )}
+
+          {explanationAudio[currentIndex] && (
+            <div style={{ position: 'absolute', right: 20, bottom: 18, zIndex: 2 }}>
+              <AudioPlayButton
+                audioSrc={explanationAudio[currentIndex]}
+                isPlaying={activeSrc === explanationAudio[currentIndex]}
+                onToggle={toggle}
+                label={`播放第${currentIndex + 1}页讲解`}
+              />
+            </div>
           )}
 
           {/* 左翻页按钮 */}
