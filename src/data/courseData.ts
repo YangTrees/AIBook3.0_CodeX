@@ -1809,7 +1809,7 @@ const courseCatalog: Course[] = [
     "intro": "第8课「雾气里的照片」的AI启蒙故事",
     "keyPoints": ["图像可能含有噪点需要处理", "降噪让图像更清晰", "AI可以自动修复模糊的图像", "图像处理是计算机视觉的基础"],
     "coverImage": "./assets/covers/covers/AI启蒙绘本_第08课_封面海报_3x4.jpeg",
-    "knowledgeImages": ["./assets/knowledge/knowledge/08/01.jpg", "./assets/knowledge/knowledge/08/02.jpg", "./assets/knowledge/knowledge/08/03.jpg", "./assets/knowledge/knowledge/08/04.jpg", "./assets/knowledge/knowledge/08/05.jpg"],
+    "knowledgeImages": ["./assets/knowledge/knowledge/08/01.jpg", "./assets/knowledge/knowledge/08/02.jpg", "./assets/knowledge/knowledge/08/03.jpg", "./assets/knowledge/knowledge/08/04.jpg", "./assets/knowledge/knowledge/08/031.jpg"],
     "picturebookVideos": ["assets/videos/videos/08/AI启蒙绘本_第8课_雾气里的照片_横版视频.mp4"],
     "scienceVideos": [
       {
@@ -2313,7 +2313,7 @@ const courseCatalog: Course[] = [
     "intro": "第10课「会数数的刷牙机器人」的AI启蒙故事",
     "keyPoints": ["循环让程序自动重复做某件事", "计数循环知道要重复几次", "循环是提高效率的重要方法", "AI训练时会循环处理大量数据"],
     "coverImage": "./assets/covers/covers/AI启蒙绘本_第10课_封面海报_3x4.jpeg",
-    "knowledgeImages": ["./assets/knowledge/knowledge/10/01.jpg", "./assets/knowledge/knowledge/10/02.jpg", "./assets/knowledge/knowledge/10/03.jpg", "./assets/knowledge/knowledge/10/04.jpg", "./assets/knowledge/knowledge/10/05.jpg"],
+    "knowledgeImages": ["./assets/knowledge/knowledge/10/01.jpg", "./assets/knowledge/knowledge/10/02.jpg", "./assets/knowledge/knowledge/10/03.jpg", "./assets/knowledge/knowledge/10/04.jpg", "./assets/knowledge/knowledge/10/031.jpg"],
     "picturebookVideos": ["assets/videos/videos/10/AI启蒙绘本_第10课_会数数的刷牙机器人_横版视频.mp4"],
     "scienceVideos": [
       {
@@ -2817,7 +2817,7 @@ const courseCatalog: Course[] = [
     "intro": "第12课「找bug的小修理工」的AI启蒙故事",
     "keyPoints": ["程序中的错误叫做bug", "调试（debug）是找到并修复错误的过程", "耐心检查每一步是调试的关键", "AI系统也需要不断调试和优化"],
     "coverImage": "./assets/covers/covers/AI启蒙绘本_第12课_封面海报_3x4.jpeg",
-    "knowledgeImages": ["./assets/knowledge/knowledge/12/01.jpg", "./assets/knowledge/knowledge/12/02.jpg", "./assets/knowledge/knowledge/12/03.jpg", "./assets/knowledge/knowledge/12/04.jpg", "./assets/knowledge/knowledge/12/05.jpg"],
+    "knowledgeImages": ["./assets/knowledge/knowledge/12/01.jpg", "./assets/knowledge/knowledge/12/02.jpg", "./assets/knowledge/knowledge/12/03.jpg", "./assets/knowledge/knowledge/12/04.jpg", "./assets/knowledge/knowledge/12/041.jpg"],
     "picturebookVideos": ["assets/videos/videos/12/AI启蒙绘本_第12课_找bug的小修理工_横版视频.mp4"],
     "scienceVideos": [
       {
@@ -3071,7 +3071,7 @@ const courseCatalog: Course[] = [
     "intro": "第13课「袜子大整理」的AI启蒙故事",
     "keyPoints": ["分类是把相似的东西归为一组", "好的分类需要找到共同特征", "分类让数据更有条理", "AI的核心能力之一就是自动分类"],
     "coverImage": "./assets/covers/covers/AI启蒙绘本_第13课_封面海报_3x4.jpeg",
-    "knowledgeImages": ["./assets/knowledge/knowledge/13/01.jpg", "./assets/knowledge/knowledge/13/02.jpg", "./assets/knowledge/knowledge/13/03.jpg", "./assets/knowledge/knowledge/13/04.jpg", "./assets/knowledge/knowledge/13/05.jpg"],
+    "knowledgeImages": ["./assets/knowledge/knowledge/13/01.jpg", "./assets/knowledge/knowledge/13/02.jpg", "./assets/knowledge/knowledge/13/03.jpg", "./assets/knowledge/knowledge/13/04.jpg", "./assets/knowledge/knowledge/13/041.jpg"],
     "picturebookVideos": ["assets/videos/videos/13/AI启蒙绘本_第13课_袜子大整理_横版视频.mp4"],
     "scienceVideos": [
       {
@@ -3571,7 +3571,7 @@ const courseCatalog: Course[] = [
     "intro": "第15课「猜一猜明天带伞吗」的AI启蒙故事",
     "keyPoints": ["预测是根据已有数据推测未来", "概率帮助我们量化预测的可信度", "数据越多，预测越准确", "AI天气预报就是预测的典型应用"],
     "coverImage": "./assets/covers/covers/AI启蒙绘本_第15课_封面海报_3x4.jpeg",
-    "knowledgeImages": ["./assets/knowledge/knowledge/15/01.jpg", "./assets/knowledge/knowledge/15/02.jpg", "./assets/knowledge/knowledge/15/03.jpg", "./assets/knowledge/knowledge/15/04.jpg", "./assets/knowledge/knowledge/15/05.jpg"],
+    "knowledgeImages": ["./assets/knowledge/knowledge/15/01.jpg", "./assets/knowledge/knowledge/15/02.jpg", "./assets/knowledge/knowledge/15/03.jpg", "./assets/knowledge/knowledge/15/04.jpg", "./assets/knowledge/knowledge/15/031.jpg"],
     "picturebookVideos": ["assets/videos/videos/15/AI启蒙绘本_第15课_猜一猜明天带伞吗_横版视频.mp4"],
     "scienceVideos": [
       {
@@ -5849,7 +5849,7 @@ const courseCatalog: Course[] = [
     "intro": "第24课「慢慢调准的小箭头」的AI启蒙故事",
     "keyPoints": ["梯度下降是优化模型的方法", "通过计算错误来调整参数", "慢慢调整，逐渐找到最优解", "这是AI学习的数学核心"],
     "coverImage": "./assets/covers/covers/AI启蒙绘本_第24课_封面海报_3x4.jpeg",
-    "knowledgeImages": ["./assets/knowledge/knowledge/24/01.jpg", "./assets/knowledge/knowledge/24/02.jpg", "./assets/knowledge/knowledge/24/03.jpg", "./assets/knowledge/knowledge/24/04.jpg", "./assets/knowledge/knowledge/24/05.jpg"],
+    "knowledgeImages": ["./assets/knowledge/knowledge/24/01.jpg", "./assets/knowledge/knowledge/24/02.jpg", "./assets/knowledge/knowledge/24/03.jpg", "./assets/knowledge/knowledge/24/04.jpg", "./assets/knowledge/knowledge/24/011.jpg"],
     "picturebookVideos": ["assets/videos/videos/24/AI启蒙绘本_第24课_慢慢调准的小箭头_横版视频.mp4"],
     "scienceVideos": [
       {
@@ -7119,7 +7119,7 @@ const courseCatalog: Course[] = [
     "intro": "第29课「不要随便给陌生人」的AI启蒙故事",
     "keyPoints": ["保护个人信息是AI时代的重要素养", "不随便分享个人信息", "AI系统需要遵守隐私保护规定", "学会辨别信息真假很重要"],
     "coverImage": "./assets/covers/covers/AI启蒙绘本_第29课_封面海报_3x4.jpeg",
-    "knowledgeImages": ["./assets/knowledge/knowledge/29/01.jpg", "./assets/knowledge/knowledge/29/02.jpg", "./assets/knowledge/knowledge/29/03.jpg", "./assets/knowledge/knowledge/29/04.jpg", "./assets/knowledge/knowledge/29/05.jpg"],
+    "knowledgeImages": ["./assets/knowledge/knowledge/29/01.jpg", "./assets/knowledge/knowledge/29/02.jpg", "./assets/knowledge/knowledge/29/03.jpg", "./assets/knowledge/knowledge/29/04.jpg", "./assets/knowledge/knowledge/29/031.jpg"],
     "picturebookVideos": ["assets/videos/videos/29/AI启蒙绘本_第29课_不要随便给陌生人_横版视频.mp4"],
     "scienceVideos": [
       {

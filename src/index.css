@@ -132,6 +132,12 @@
     height: 100%;
     overflow: hidden;
   }
+  html:has(body.promo-mode), body.promo-mode, body.promo-mode #root {
+    height: auto;
+    min-height: 100%;
+    overflow: visible;
+    scroll-behavior: smooth;
+  }
 }
 
 /* ============================================================
@@ -907,4 +913,18 @@
   .course-module-content { padding: 12px; border-radius: 20px; }
   .course-actions { bottom: 8px !important; margin-top: 20px !important; }
   .kid-bottom-nav { width: calc(100% - 16px); margin: 4px auto 0; border-radius: 22px 22px 0 0; }
+}
+img,
+picture,
+video,
+audio,
+canvas,
+[data-protected-media] {
+  -webkit-user-drag: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+video::-internal-media-controls-download-button {
+  display: none;
 }

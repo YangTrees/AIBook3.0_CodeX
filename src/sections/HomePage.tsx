@@ -249,13 +249,13 @@ export default function HomePage({ onSelectCourse }: HomePageProps) {
         </div>
       </div>
 
-      {/* ===== 课程卡片网格 - 调整为6列更有呼吸感 ===== */}
+      {/* ===== 课程卡片网格 - 每章 8 课同排展示 ===== */}
       <div
         className="kid-float-in delay-300 home-course-grid"
         style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(6, 1fr)',
-          gap: 24,
+          gridTemplateColumns: 'repeat(8, minmax(0, 1fr))',
+          gap: 20,
           margin: '0 48px',
         }}
       >

@@ -27,7 +27,7 @@ function generateVideoList(): VideoItem[] {
     videos.push({
       lessonId: course.id,
       courseTitle: course.title || `第${course.id}课`,
-      videoUrl: course.picturebookVideos?.[0]?.startsWith('.') ? course.picturebookVideos[0] : `./${course.picturebookVideos?.[0] || `assets/videos/videos/${numStr}/video.mp4`}`,
+      videoUrl: `./assets/videos/videos/${numStr}/story.mp4`,
       title: `${course.title || '绘本动画'} - 第${course.id}课`,
       coverImage,
       zone: 'picturebook',
@@ -362,8 +362,15 @@ export default function CinemaPage() {
                 ref={videoRef}
                 src={playingVideo.videoUrl}
                 controls
+                controlsList="nodownload noplaybackrate noremoteplayback"
+                disablePictureInPicture
+                disableRemotePlayback
+                playsInline
+                preload="metadata"
                 autoPlay
                 style={{ width: '100%', height: '100%' }}
+                onContextMenu={(event) => event.preventDefault()}
+                onDragStart={(event) => event.preventDefault()}
                 onTimeUpdate={handleVideoTimeUpdate}
                 onPause={() => {
                   if (videoRef.current) {

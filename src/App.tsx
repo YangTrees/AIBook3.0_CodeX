@@ -6,20 +6,22 @@ import CinemaPage from './sections/CinemaPage';
 import GamePage from './sections/GamePage';
 import ArchivePage from './sections/ArchivePage';
 import ParentPage from './sections/ParentPage';
+import PromoPage from './sections/PromoPage';
 import AppErrorBoundary from './components/AppErrorBoundary';
 import './App.css';
 
-export type TabType = 'home' | 'cinema' | 'game' | 'archive' | 'parent';
+export type TabType = 'promo' | 'home' | 'cinema' | 'game' | 'archive' | 'parent';
 
 function readRoute(): { tab: TabType; courseId: number | null } {
   const route = window.location.hash.replace(/^#\/?/, '');
+  if (!route || route === 'promo') return { tab: 'promo', courseId: null };
   const courseMatch = route.match(/^course\/(\d+)$/);
   if (courseMatch) {
     const courseId = Number(courseMatch[1]);
     if (courseId >= 1 && courseId <= 32) return { tab: 'home', courseId };
   }
   const tab = route as TabType;
-  return { tab: ['home', 'cinema', 'game', 'archive', 'parent'].includes(tab) ? tab : 'home', courseId: null };
+  return { tab: ['promo', 'home', 'cinema', 'game', 'archive', 'parent'].includes(tab) ? tab : 'promo', courseId: null };
 }
 
 function pushRoute(path: string) {
@@ -84,6 +86,32 @@ export default function App() {
     };
   }, []);
 
+  useEffect(() => {
+    const isProtectedMedia = (target: EventTarget | null) =>
+      target instanceof Element && Boolean(target.closest('img, video, audio, picture, canvas, [data-protected-media]'));
+
+    const preventMediaMenu = (event: MouseEvent) => {
+      if (isProtectedMedia(event.target)) event.preventDefault();
+    };
+    const preventMediaDrag = (event: DragEvent) => {
+      if (isProtectedMedia(event.target)) event.preventDefault();
+    };
+    const preventPageSave = (event: KeyboardEvent) => {
+      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 's') {
+        event.preventDefault();
+      }
+    };
+
+    document.addEventListener('contextmenu', preventMediaMenu, { capture: true });
+    document.addEventListener('dragstart', preventMediaDrag, { capture: true });
+    window.addEventListener('keydown', preventPageSave, { capture: true });
+    return () => {
+      document.removeEventListener('contextmenu', preventMediaMenu, { capture: true });
+      document.removeEventListener('dragstart', preventMediaDrag, { capture: true });
+      window.removeEventListener('keydown', preventPageSave, { capture: true });
+    };
+  }, []);
+
   const handleSelectCourse = (id: number) => {
     pushRoute(`course/${id}`);
     setCurrentCourseId(id);
@@ -106,6 +134,8 @@ export default function App() {
       return <CoursePage courseId={currentCourseId} onBack={handleBackToHome} />;
     }
     switch (currentTab) {
+      case 'promo':
+        return null;
       case 'home':
         return <HomePage onSelectCourse={handleSelectCourse} />;
       case 'cinema':
@@ -120,6 +150,15 @@ export default function App() {
         return <HomePage onSelectCourse={handleSelectCourse} />;
     }
   };
+
+  if (currentTab === 'promo' && currentCourseId === null) {
+    return (
+      <PromoPage
+        onExplore={() => handleTabChange('home')}
+        onTrial={() => handleSelectCourse(1)}
+      />
+    );
+  }
 
   return (
     <div className={`fixed inset-0 overflow-hidden app-shell ${compact ? 'is-compact' : ''}`} style={{ backgroundColor: '#b8d4f0' }}>
