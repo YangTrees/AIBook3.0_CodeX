@@ -1,29 +1,120 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import COURSE_DATA from '../data/courseData.ts';
 import { useStorage } from '../hooks/useStorage';
-import { Gamepad2, RotateCcw, CircleCheck, Rocket } from 'lucide-react';
+import { Gamepad2, RotateCcw, CircleCheck, Rocket, Shield, Sparkles, Target, Clock3 } from 'lucide-react';
+
+type GameEntry = {
+  id: string;
+  title: string;
+  subtitle: string;
+  coverImage: string;
+  gamePath: string;
+  kind: 'course' | 'featured';
+  lessonId?: number;
+  difficulty?: string;
+};
+
+type FeaturedProgress = Record<string, {
+  completed: boolean;
+  bestWave?: number;
+  bestSeconds?: number;
+  bestScore?: number;
+}>;
+
+const FEATURED_STORAGE_KEY = 'aibook-featured-game-progress-v1';
+
+const FEATURED_GAMES: GameEntry[] = [
+  {
+    id: 'ai-tower-defense',
+    title: 'AI知识保卫战',
+    subtitle: '建造AI思维炮塔，守护知识核心',
+    coverImage: './assets/games/games02/covers/game01-tower-defense.png',
+    gamePath: './assets/games/games02/Game01_TaFang/aitafang.html',
+    kind: 'featured',
+    difficulty: '进阶',
+  },
+  {
+    id: 'code-survivor',
+    title: '代码世界幸存者',
+    subtitle: '收集信息光包，组合AI技能持续生存',
+    coverImage: './assets/games/games02/covers/game02-code-survivor.png',
+    gamePath: './assets/games/games02/Game02_XinCunZhe/Game02_aixingcunzhe.html',
+    kind: 'featured',
+    difficulty: '挑战',
+  },
+  {
+    id: 'matrix-defense',
+    title: '向噪声开炮',
+    subtitle: '操控算力炮台，击退噪声与幻觉怪潮',
+    coverImage: './assets/games/games02/covers/game03-matrix-defense.png',
+    gamePath: './assets/games/games02/Game03_KaiPao/Game03_aikaipao.html',
+    kind: 'featured',
+    difficulty: '挑战',
+  },
+];
 
 export default function GamePage() {
-  const [playingGame, setPlayingGame] = useState<{ lessonId: number; title: string } | null>(null);
+  const [playingGame, setPlayingGame] = useState<GameEntry | null>(null);
   const [showConfetti, setShowConfetti] = useState(false);
   const [gameFrameKey, setGameFrameKey] = useState(0);
+  const [featuredProgress, setFeaturedProgress] = useState<FeaturedProgress>(() => {
+    try {
+      return JSON.parse(localStorage.getItem(FEATURED_STORAGE_KEY) || '{}') as FeaturedProgress;
+    } catch {
+      return {};
+    }
+  });
   const { storage, markGameCompleted } = useStorage();
 
-  const gameList = COURSE_DATA.map(course => ({
+  const gameList: GameEntry[] = COURSE_DATA.map(course => ({
+    id: `course-${course.id}`,
     lessonId: course.id,
     title: course.title,
+    subtitle: `第${course.id}课专属互动练习`,
     coverImage: course.coverImage,
     gamePath: `./assets/games/games/index${String(course.id).padStart(2, '0')}.html`,
+    kind: 'course' as const,
   }));
+
+  useEffect(() => {
+    const onFeaturedProgress = (event: MessageEvent) => {
+      const data = event.data as {
+        type?: string;
+        gameId?: string;
+        completed?: boolean;
+        wave?: number;
+        seconds?: number;
+        score?: number;
+      };
+      if (data?.type !== 'aibook-featured-game-progress' || !data.gameId) return;
+      setFeaturedProgress(previous => {
+        const old = previous[data.gameId!] || { completed: false };
+        const next = {
+          ...previous,
+          [data.gameId!]: {
+            completed: old.completed || Boolean(data.completed),
+            bestWave: Math.max(old.bestWave || 0, data.wave || 0),
+            bestSeconds: Math.max(old.bestSeconds || 0, data.seconds || 0),
+            bestScore: Math.max(old.bestScore || 0, data.score || 0),
+          },
+        };
+        localStorage.setItem(FEATURED_STORAGE_KEY, JSON.stringify(next));
+        return next;
+      });
+    };
+    window.addEventListener('message', onFeaturedProgress);
+    return () => window.removeEventListener('message', onFeaturedProgress);
+  }, []);
 
   const getGameProgress = (lessonId: number): number => {
     const record = storage.lessons[lessonId];
     return record?.gameCompleted ? 100 : 0;
   };
 
-  const handlePlayGame = (game: typeof gameList[0]) => {
-    setPlayingGame({ lessonId: game.lessonId, title: game.title });
+  const handlePlayGame = (game: GameEntry) => {
+    setPlayingGame(game);
+    setGameFrameKey(value => value + 1);
   };
 
   const handleCloseGame = () => {
@@ -32,7 +123,18 @@ export default function GamePage() {
 
   const handleGameComplete = () => {
     if (playingGame) {
-      markGameCompleted(playingGame.lessonId);
+      if (playingGame.kind === 'course' && playingGame.lessonId) {
+        markGameCompleted(playingGame.lessonId);
+      } else {
+        setFeaturedProgress(previous => {
+          const next = {
+            ...previous,
+            [playingGame.id]: { ...(previous[playingGame.id] || {}), completed: true },
+          };
+          localStorage.setItem(FEATURED_STORAGE_KEY, JSON.stringify(next));
+          return next;
+        });
+      }
       setShowConfetti(true);
       setTimeout(() => {
         setShowConfetti(false);
@@ -49,13 +151,63 @@ export default function GamePage() {
           <Gamepad2 size={48} strokeWidth={1.7} />
           <div>
             <h1 style={{ fontSize: 36, fontWeight: 900, color: 'var(--kid-gray-800)', margin: 0 }}>趣味游戏</h1>
-            <p style={{ fontSize: 16, color: 'var(--kid-gray-400)', margin: '4px 0 0 0' }}>32个互动游戏，自由练习巩固知识点</p>
+            <p style={{ fontSize: 16, color: 'var(--kid-gray-400)', margin: '4px 0 0 0' }}>32个课程游戏 + 3个大型挑战，自由练习巩固知识点</p>
           </div>
         </div>
         <div style={{ display: 'flex', gap: 12 }}>
           <img src="./assets/characters/characters/tuantuan.png" alt="团团" style={{ width: 60, height: 75 }} />
           <img src="./assets/characters/characters/diandian.png" alt="点点" style={{ width: 55, height: 65 }} />
         </div>
+      </div>
+
+      {/* 精选大型挑战 */}
+      <section style={{ marginBottom: 38 }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
+          <div>
+            <h2 style={{ margin: 0, fontSize: 26, fontWeight: 900, color: 'var(--kid-gray-800)', display: 'flex', alignItems: 'center', gap: 10 }}>
+              <Sparkles size={26} color="#f08a24" /> 精选大型挑战
+            </h2>
+            <p style={{ margin: '5px 0 0', color: 'var(--kid-gray-400)', fontSize: 14 }}>跨课程综合玩法，挑战更长流程和更丰富的AI技能组合</p>
+          </div>
+          <div style={{ padding: '8px 14px', borderRadius: 999, background: '#fff4dc', color: '#b96b15', fontWeight: 800, fontSize: 13 }}>3款全新游戏</div>
+        </div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', gap: 22 }}>
+          {FEATURED_GAMES.map((game, index) => {
+            const progress = featuredProgress[game.id];
+            const Icon = [Shield, Sparkles, Target][index];
+            return (
+              <article key={game.id} onClick={() => handlePlayGame(game)} className="game-card featured-game-card" style={{
+                position: 'relative', overflow: 'hidden', borderRadius: 24, minHeight: 290, cursor: 'pointer',
+                boxShadow: '0 12px 34px rgba(26, 80, 120, 0.16)', border: '2px solid rgba(255,255,255,.8)', background: '#0b1730',
+              }}>
+                <img src={game.coverImage} alt={game.title} style={{ width: '100%', height: 290, objectFit: 'cover', display: 'block' }} />
+                <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(180deg, rgba(5,15,38,.05) 24%, rgba(5,15,38,.94) 100%)' }} />
+                <div style={{ position: 'absolute', top: 14, left: 14, display: 'flex', gap: 8 }}>
+                  <span style={{ padding: '7px 11px', borderRadius: 999, background: 'rgba(255,255,255,.92)', color: '#176a92', fontWeight: 900, fontSize: 12 }}>精选挑战</span>
+                  <span style={{ padding: '7px 11px', borderRadius: 999, background: 'rgba(19,35,66,.82)', color: '#ffe3a2', fontWeight: 800, fontSize: 12 }}>难度：{game.difficulty}</span>
+                </div>
+                <div style={{ position: 'absolute', left: 20, right: 20, bottom: 18, color: 'white' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                    <div style={{ width: 42, height: 42, borderRadius: 14, background: 'rgba(38,205,220,.2)', border: '1px solid rgba(112,236,245,.5)', display: 'grid', placeItems: 'center' }}><Icon size={24} /></div>
+                    <div style={{ minWidth: 0 }}>
+                      <h3 style={{ margin: 0, fontSize: 23, fontWeight: 900 }}>{game.title}</h3>
+                      <p style={{ margin: '3px 0 0', fontSize: 13, color: 'rgba(255,255,255,.78)' }}>{game.subtitle}</p>
+                    </div>
+                  </div>
+                  <div style={{ marginTop: 12, display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: 12 }}>
+                    <span style={{ color: '#bdeff4', display: 'flex', alignItems: 'center', gap: 6 }}><Clock3 size={14} /> {progress?.bestSeconds ? `最佳 ${Math.floor(progress.bestSeconds / 60)}:${String(progress.bestSeconds % 60).padStart(2, '0')}` : '尚未挑战'}</span>
+                    <span style={{ padding: '7px 13px', borderRadius: 999, background: progress?.completed ? '#22b573' : '#2d8df5', fontWeight: 900 }}>{progress?.completed ? '已完成' : '开始挑战'}</span>
+                  </div>
+                </div>
+              </article>
+            );
+          })}
+        </div>
+      </section>
+
+      <div style={{ marginBottom: 16 }}>
+        <h2 style={{ margin: 0, fontSize: 26, fontWeight: 900, color: 'var(--kid-gray-800)' }}>32个课程游戏</h2>
+        <p style={{ margin: '5px 0 0', color: 'var(--kid-gray-400)', fontSize: 14 }}>按课程顺序练习，每课都有专属知识小游戏</p>
       </div>
 
       {/* 游戏网格 */}
@@ -65,7 +217,7 @@ export default function GamePage() {
         gap: 24,
       }}>
         {gameList.map(game => {
-          const progress = getGameProgress(game.lessonId);
+          const progress = getGameProgress(game.lessonId!);
 
           return (
             <div
@@ -262,7 +414,7 @@ export default function GamePage() {
                   ✕ 退出游戏
                 </button>
                 <h2 style={{ fontSize: 22, fontWeight: 800, margin: 0 }}>
-                  第{playingGame.lessonId}课游戏：{playingGame.title}
+                  {playingGame.kind === 'course' ? `第${playingGame.lessonId}课游戏：` : '精选挑战：'}{playingGame.title}
                 </h2>
               </div>
               <div style={{ display: 'flex', gap: 12 }}>
@@ -308,13 +460,13 @@ export default function GamePage() {
             <div style={{ flex: 1, background: 'var(--kid-gray-100)', position: 'relative' }}>
               <iframe
                 key={gameFrameKey}
-                src={`./assets/games/games/index${String(playingGame.lessonId).padStart(2, '0')}.html`}
+                src={playingGame.gamePath}
                 style={{
                   width: '100%',
                   height: '100%',
                   border: 'none',
                 }}
-                title={`Game ${playingGame.lessonId}`}
+                title={playingGame.title}
               />
             </div>
 

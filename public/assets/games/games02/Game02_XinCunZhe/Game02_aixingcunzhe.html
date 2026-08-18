@@ -1,0 +1,1208 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>团团点点AI探险记：代码世界幸存者</title>
+    <script src="/assets/libs/libs/tailwind.min.js"></script>
+    <link rel="stylesheet" href="/assets/libs/libs/game-icon-fallback.css">
+    <style>
+        body {
+            touch-action: none;
+            user-select: none;
+            -webkit-user-select: none;
+            overflow: hidden;
+            background-color: #0f172a;
+            font-family: system-ui, -apple-system, sans-serif;
+        }
+        canvas {
+            display: block;
+        }
+        .pixel-corners {
+            clip-path: polygon(
+                0 8px, 8px 8px, 8px 0,
+                calc(100% - 8px) 0, calc(100% - 8px) 8px, 100% 8px,
+                100% calc(100% - 8px), calc(100% - 8px) calc(100% - 8px), calc(100% - 8px) 100%,
+                8px 100%, 8px calc(100% - 8px), 0 calc(100% - 8px)
+            );
+        }
+    </style>
+</head>
+<body class="w-screen h-screen flex flex-col items-center justify-center text-white relative">
+    <audio id="bgm" src="bgm.mp3" loop preload="auto"></audio>
+
+    <!-- 游戏 UI 覆盖层 -->
+    <div id="ui-layer" class="absolute inset-0 pointer-events-none flex flex-col justify-between p-4 z-10">
+        <!-- 顶部信息栏 -->
+        <div class="flex flex-col gap-2 w-full max-w-2xl mx-auto pointer-events-auto">
+            <!-- 等级与经验条 -->
+            <div class="flex items-center justify-between bg-slate-900/80 backdrop-blur border border-cyan-500/30 px-4 py-2 rounded-xl shadow-lg">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-cyan-500/20 border-2 border-cyan-400 flex items-center justify-center font-bold text-cyan-300 text-lg">
+                        <span id="level-display">Lv.1</span>
+                    </div>
+                    <div>
+                        <div class="text-xs text-slate-400 font-bold">团团 & 点点</div>
+                        <div class="text-sm font-bold text-cyan-300 flex items-center gap-1">
+                            <i class="fa-solid fa-brain text-amber-400"></i> AI探险研究员
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex gap-6 text-center">
+                    <div>
+                        <div class="text-xs text-slate-400">生存时间</div>
+                        <div id="time-display" class="text-lg font-mono font-bold text-amber-400">00:00</div>
+                    </div>
+                    <div>
+                        <div class="text-xs text-slate-400">消灭BUG</div>
+                        <div id="kills-display" class="text-lg font-mono font-bold text-emerald-400">0</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="w-full bg-slate-950/80 rounded-full h-3.5 p-0.5 border border-cyan-500/20 relative">
+                <div id="exp-bar" class="bg-gradient-to-r from-cyan-500 to-blue-500 h-full rounded-full transition-all duration-200" style="width: 0%"></div>
+                <span id="exp-text" class="absolute inset-0 text-[10px] flex items-center justify-center font-bold text-cyan-200 drop-shadow">0 / 10 数据卡包</span>
+            </div>
+            
+            <!-- 生命值条 -->
+            <div class="w-full bg-slate-950/80 rounded-full h-2.5 p-0.5 border border-rose-500/20 relative">
+                <div id="hp-bar" class="bg-gradient-to-r from-rose-500 to-emerald-400 h-full rounded-full transition-all duration-200" style="width: 100%"></div>
+            </div>
+        </div>
+
+        <!-- 浮动通知/知识提示 -->
+        <div id="knowledge-toast" class="self-center bg-slate-900/90 border-2 border-amber-400/80 text-amber-200 px-4 py-2 rounded-xl text-sm font-bold shadow-2xl transition-all duration-300 transform translate-y-10 opacity-0 flex items-center gap-2 max-w-md">
+            <i class="fa-solid fa-lightbulb text-amber-400 text-lg"></i>
+            <span id="toast-text">获得知识点：信息是AI思考的依据！</span>
+        </div>
+
+        <!-- 底部控制与技能槽 -->
+        <div class="flex justify-between items-end w-full max-w-2xl mx-auto pointer-events-auto">
+            <!-- 获得的AI技能列表 -->
+            <div id="skills-container" class="flex gap-2 bg-slate-900/60 p-2 rounded-xl border border-white/10 backdrop-blur">
+                <!-- 动态填充已装备技能 -->
+            </div>
+
+            <!-- 音效切换按钮 -->
+            <button id="sound-btn" class="w-10 h-10 bg-slate-800/80 border border-slate-600 rounded-full flex items-center justify-center text-slate-300 hover:text-white pointer-events-auto cursor-pointer">
+                <i class="fa-solid fa-volume-high"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- 游戏主 Canvas -->
+    <canvas id="gameCanvas" class="w-full h-full absolute inset-0"></canvas>
+
+    <!-- 摇杆操作区 (移动端/触摸) -->
+    <div id="joystick-zone" class="absolute bottom-8 left-8 w-32 h-32 rounded-full border-2 border-white/20 bg-white/5 pointer-events-auto sm:hidden flex items-center justify-center z-20">
+        <div id="joystick-knob" class="w-12 h-12 rounded-full bg-cyan-400/50 border border-cyan-300 transform transition-transform duration-75"></div>
+    </div>
+
+    <!-- 升级选择模态框 -->
+    <div id="upgrade-modal" class="hidden absolute inset-0 bg-slate-950/85 backdrop-blur-md z-30 flex flex-col items-center justify-center p-4 pointer-events-auto">
+        <div class="text-center mb-6">
+            <div class="inline-block bg-amber-500/20 text-amber-300 border border-amber-400 px-4 py-1 rounded-full text-xs font-bold mb-2">
+                <i class="fa-solid fa-graduation-cap"></i> AI 算法升级进化 (暂停中)
+            </div>
+            <h2 class="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-white to-amber-300">选一张 AI 技能卡片！</h2>
+            <p class="text-xs text-slate-400 mt-1">学习32节AI探险课程知识点，强化团团与点点的战斗力</p>
+        </div>
+
+        <div id="upgrade-options" class="grid grid-cols-1 md:grid-cols-3 gap-4 w-full max-w-4xl">
+            <!-- 动态生成3张升级卡片 -->
+        </div>
+    </div>
+
+    <!-- AI 知识问答挑战宝箱模态框 -->
+    <div id="quiz-modal" class="hidden absolute inset-0 bg-slate-950/90 backdrop-blur-md z-40 flex flex-col items-center justify-center p-4 pointer-events-auto">
+        <div class="bg-slate-900 border-2 border-amber-400/60 rounded-2xl p-6 max-w-lg w-full shadow-2xl relative">
+            <div class="absolute -top-6 left-1/2 transform -translate-x-1/2 bg-amber-500 text-slate-950 font-black px-6 py-1 rounded-full text-sm flex items-center gap-2 border border-amber-300 shadow-lg">
+                <i class="fa-solid fa-box-open"></i> AI 探险问答宝箱 (暂停中)
+            </div>
+            
+            <div class="mt-4">
+                <span id="quiz-lesson-tag" class="text-xs font-bold text-cyan-400 bg-cyan-950 px-2.5 py-1 rounded-md border border-cyan-800">第1课：信息是什么</span>
+                <h3 id="quiz-question" class="text-lg font-bold text-slate-100 mt-3 mb-4">信息对我们做决定有什么帮助？</h3>
+                
+                <div id="quiz-answers" class="flex flex-col gap-2.5">
+                    <!-- 答案选项列表 -->
+                </div>
+
+                <div id="quiz-feedback" class="hidden mt-4 p-3 rounded-xl text-center text-sm font-bold"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 初始/游戏结束 模态框 -->
+    <div id="start-modal" class="absolute inset-0 bg-slate-950/90 backdrop-blur-lg z-50 flex flex-col items-center justify-center p-6 text-center pointer-events-auto" style="background:linear-gradient(90deg,rgba(2,8,23,.94),rgba(2,8,23,.55)),url('../covers/game02-code-survivor.png') center/cover no-repeat;">
+        <div class="w-20 h-20 bg-gradient-to-tr from-cyan-500 to-blue-600 rounded-3xl border-4 border-cyan-300 shadow-2xl flex items-center justify-center mb-4 transform rotate-6 animate-pulse">
+            <i class="fa-solid fa-robot text-4xl text-white"></i>
+        </div>
+        <h1 class="text-4xl sm:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-amber-200 to-rose-400 mb-2">团团点点 AI 探险记</h1>
+        <p class="text-lg font-bold text-cyan-300 mb-6">—— 代码世界幸存者 ——</p>
+        
+        <div class="bg-slate-900/80 border border-slate-700/80 p-4 rounded-2xl max-w-md mb-6 text-left text-xs text-slate-300 space-y-2 leading-relaxed">
+            <p><strong class="text-amber-400"><i class="fa-solid fa-gamepad"></i> 玩法指南：</strong></p>
+            <p>1. 使用 <strong class="text-white">WASD / 方向键 / 屏幕虚拟摇杆</strong> 控制团团移动，点点会自动使用AI算法攻击四周逼近的代码BUG。</p>
+            <p>2. 收集敌人掉落的 <strong class="text-cyan-300">信息线索光包</strong> 升级，组合多节AI课程知识点技能！</p>
+            <p>3. 遇到宝箱触发 <strong class="text-amber-300">AI知识问答</strong>，答对可获双倍爆破大招奖励！</p>
+        </div>
+
+        <button id="start-btn" class="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-black px-10 py-4 rounded-2xl text-xl border-2 border-cyan-200 shadow-xl transform active:scale-95 transition-all cursor-pointer">
+            <i class="fa-solid fa-play mr-2"></i> 开启探险！
+        </button>
+    </div>
+
+    <!-- 核心游戏脚本 -->
+    <script>
+        // --- 1. 全局配置与 AI 32课知识库数据 ---
+        const LESSONS_DATABASE = [
+            { id: 1, title: "小侦探找线索", skillName: "信息探针", type: "passive", icon: "fa-magnifying-glass", color: "text-blue-400", desc: "增加 30% 拾取线索范围，获得信息才能做决定！", detail: "信息是帮助做决定的线索。信息越多，判断越准！" },
+            { id: 2, title: "开关城的两兄弟", skillName: "01二进制脉冲", type: "active", icon: "fa-toggle-on", color: "text-emerald-400", desc: "向四周发射 0 和 1 的二进制光束，击退敌人。", detail: "0代表关/停，1代表开/运行。电脑内部全是用0和1说话的！" },
+            { id: 3, title: "小邮差的密码信", skillName: "密码加密护盾", type: "active", icon: "fa-key", color: "text-amber-400", desc: "围绕主角旋转的加密护盾，抵挡敌人并反弹伤害。", detail: "编码是给信息穿外套，解码是脱掉外套，必须用同一套规则！" },
+            { id: 4, title: "仓库管理员机器人", skillName: "存储记忆扩展", type: "passive", icon: "fa-boxes-stacked", color: "text-purple-400", desc: "增加 20% 最大生命值与 15% 经验吸收效果。", detail: "存储就是把信息放进格子里，格子越多，容量越大！" },
+            { id: 5, title: "小方块拼出大世界", skillName: "像素方块解构", type: "active", icon: "fa-cubes", color: "text-pink-400", desc: "将近处敌人爆裂解构成大量彩色像素方块 AOE。", detail: "图片由无数小像素块组成，像素越多越清晰！" },
+            { id: 6, title: "红绿蓝灯的合唱团", skillName: "RGB三原色激光", type: "active", icon: "fa-palette", color: "text-rose-400", desc: "红绿蓝三色激光交织环扫，红加伤、绿治疗、蓝减速。", detail: "红(Red)绿(Green)蓝(Blue)三原色混合，能配出千变万化的色彩！" },
+            { id: 7, title: "行李箱装不下啦", skillName: "无损压缩力场", type: "active", icon: "fa-compress", color: "text-indigo-400", desc: "周期性将四周敌人聚拢拉扯并造成挤压伤害。", detail: "压缩让文件变小节省空间。保留核心，去掉冗余！" },
+            { id: 8, title: "雾气里的照片", skillName: "降噪风暴", type: "active", icon: "fa-wind", color: "text-cyan-400", desc: "吹散四周毒雾噪声，削弱敌人的攻击力。", detail: "噪声是干扰信号，垃圾进垃圾出，数据越干净结果越准！" },
+            { id: 9, title: "红灯停绿灯行", skillName: "红绿灯判定场", type: "active", icon: "fa-traffic-light", color: "text-red-400", desc: "绿灯时移速+50%，红灯时周围敌人定身2秒。", detail: "条件判断根据‘如果...那么...’决定动作，多条件叠加更精准！" },
+            { id: 10, title: "会数数的刷牙机器人", skillName: "循环连发炮", type: "active", icon: "fa-rotate-right", color: "text-teal-400", desc: "按固定次数循环快速发射多枚水滴弹。", detail: "循环就是重复做同一步骤，电脑最擅长不嫌烦地重复！" },
+            { id: 11, title: "做披萨的流水线", skillName: "并行多轨流水线", type: "active", icon: "fa-code-branch", color: "text-amber-500", desc: "同时向前方与后方并行发射两组密集子弹。", detail: "任务分解把大工作分成小步骤，并行是指同时做不同事！" },
+            { id: 12, title: "找bug的小修理工", skillName: "Debug 重锤", type: "active", icon: "fa-bug-slash", color: "text-rose-500", desc: "自动锤击附近 Bug 怪，造成范围震荡秒杀小怪。", detail: "Bug是隐藏的错误，调试四步：发现问题→找到原因→修改→再试！" },
+            { id: 14, title: "特征放大镜", skillName: "特征弱点放大镜", type: "passive", icon: "fa-icicles", color: "text-blue-300", desc: "增加 20% 暴击率，暴露敌人弱点特征。", detail: "特征是区分事物的关键线索，找到有区分度的特征最重要！" },
+            { id: 18, title: "小狗学握手", skillName: "强化学习奖励", type: "passive", icon: "fa-award", color: "text-yellow-300", desc: "每消灭 50 个敌人，永久提高 5% 伤害。", detail: "强化学习：做对了得奖励，试一试→得反馈→再调整！" },
+            { id: 21, title: "点亮聪明灯", skillName: "神经网络电弧", type: "active", icon: "fa-network-wired", color: "text-cyan-300", desc: "发射电弧，在相近的敌人节点之间传导伤害。", detail: "神经元是小灯泡，神经网络是很多灯泡连在一起变聪明！" },
+            { id: 26, title: "给AI的清楚指令", skillName: "提示词精准天雷", type: "active", icon: "fa-bolt-lightning", color: "text-amber-300", desc: "精准召唤天雷轰炸敌群最密集区域。", detail: "清晰的指令=清晰的结果！包含角色、目标与限制！" },
+            { id: 27, title: "从乱点点到清图画", skillName: "噪点扩散去噪波", type: "active", icon: "fa-wand-magic-sparkles", color: "text-fuchsia-300", desc: "释放扩散波，清空屏幕小怪并转化为经验。", detail: "生成式AI从随机噪点一步一步去噪，诞生出高清画面！" },
+            { id: 29, title: "不要随便给陌生人", skillName: "隐私防爆盾", type: "passive", icon: "fa-user-shield", color: "text-emerald-300", desc: "减少 25% 受到的一切碰撞伤害。", detail: "个人信息是隐私，保护隐私就是保护自己的安全！" },
+            { id: 31, title: "超级搭档", skillName: "团团点点合体激光", type: "active", icon: "fa-handshake-angle", color: "text-amber-400", desc: "团团点点合体，发射持续 3 秒的贯穿高能激光！", detail: "AI擅长快速处理数据，人类擅长创造与道德判断，AI+人类=超级搭档！" }
+        ];
+
+        const QUIZ_BANK = [
+            {
+                lesson: "第1课：信息是什么",
+                question: "信息对我们做决定有什么帮助？",
+                options: ["A. 信息是帮助我们做决定的线索", "B. 没什么帮助靠猜就行", "C. 信息只会让我们困惑", "D. 只有大人才需要信息"],
+                correct: 0,
+                expReward: 35
+            },
+            {
+                lesson: "第2课：开关城的两兄弟",
+                question: "电脑内部是用什么符号来进行‘说话’和计算的？",
+                options: ["A. 英文和拼音", "B. 0 和 1", "C. 颜料和画笔", "D. 形状和线条"],
+                correct: 1,
+                expReward: 35
+            },
+            {
+                lesson: "第12课：找bug的小修理工",
+                question: "在电脑程序里，Bug 指的是什么？",
+                options: ["A. 一只可爱的宠物", "B. 隐藏的程序错误", "C. 电脑的电池", "D. 游戏主角的名字"],
+                correct: 1,
+                expReward: 35
+            },
+            {
+                lesson: "第26课：给AI的清楚指令",
+                question: "怎样给 AI 写指令才能让它给出最满意的回答？",
+                options: ["A. 越模糊越好", "B. 清晰明确（含角色、目标和限制）", "C. 只写一个词", "D. 不给任何指令"],
+                correct: 1,
+                expReward: 45
+            },
+            {
+                lesson: "第31课：超级搭档",
+                question: "人类与 AI 最理想的关系是什么？",
+                options: ["A. 完全不需要 AI", "B. 凡事让 AI 替人类做决定", "C. 人机协同搭档，各自发挥优势", "D. 互相打架"],
+                correct: 2,
+                expReward: 45
+            }
+        ];
+
+        // --- 2. Web Audio API 音效生成器 ---
+        class SoundFX {
+            constructor() {
+                this.ctx = null;
+                this.enabled = true;
+            }
+            init() {
+                if (!this.ctx) {
+                    this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+                }
+            }
+            playShoot() {
+                if (!this.enabled || !this.ctx) return;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.type = 'square';
+                osc.frequency.setValueAtTime(400, this.ctx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(80, this.ctx.currentTime + 0.1);
+                gain.gain.setValueAtTime(0.1, this.ctx.currentTime);
+                gain.gain.linearRampToValueAtTime(0.01, this.ctx.currentTime + 0.1);
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc.start();
+                osc.stop(this.ctx.currentTime + 0.1);
+            }
+            playHit() {
+                if (!this.enabled || !this.ctx) return;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(150, this.ctx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(30, this.ctx.currentTime + 0.08);
+                gain.gain.setValueAtTime(0.15, this.ctx.currentTime);
+                gain.gain.linearRampToValueAtTime(0.01, this.ctx.currentTime + 0.08);
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc.start();
+                osc.stop(this.ctx.currentTime + 0.08);
+            }
+            playLevelUp() {
+                if (!this.enabled || !this.ctx) return;
+                const now = this.ctx.currentTime;
+                [261, 329, 392, 523].forEach((freq, idx) => {
+                    const osc = this.ctx.createOscillator();
+                    const gain = this.ctx.createGain();
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(freq, now + idx * 0.08);
+                    gain.gain.setValueAtTime(0.2, now + idx * 0.08);
+                    gain.gain.linearRampToValueAtTime(0.01, now + idx * 0.08 + 0.15);
+                    osc.connect(gain);
+                    gain.connect(this.ctx.destination);
+                    osc.start(now + idx * 0.08);
+                    osc.stop(now + idx * 0.08 + 0.15);
+                });
+            }
+        }
+        const sound = new SoundFX();
+        const bgm = document.getElementById('bgm');
+        bgm.volume = 0.32;
+
+        function startBGM() {
+            if (!sound.enabled) return;
+            bgm.play().catch(() => {});
+        }
+
+        function stopBGM() {
+            bgm.pause();
+        }
+
+        // --- 3. 游戏引擎与控制 ---
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const tuantuanImage = new Image();
+        const diandianImage = new Image();
+        tuantuanImage.src = '/assets/characters/characters/tuantuan.png';
+        diandianImage.src = '/assets/characters/characters/diandian.png';
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        // 键盘控制
+        const keys = {};
+        window.addEventListener('keydown', e => keys[e.key.toLowerCase()] = true);
+        window.addEventListener('keyup', e => keys[e.key.toLowerCase()] = false);
+
+        // 虚拟摇杆控制
+        const joystickZone = document.getElementById('joystick-zone');
+        const joystickKnob = document.getElementById('joystick-knob');
+        let joystickVector = { x: 0, y: 0 };
+        let joystickActive = false;
+
+        function handleJoystickMove(evt) {
+            if (!joystickActive) return;
+            const touch = evt.touches ? evt.touches[0] : evt;
+            const rect = joystickZone.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+            let dx = touch.clientX - centerX;
+            let dy = touch.clientY - centerY;
+            const dist = Math.hypot(dx, dy);
+            const maxDist = rect.width / 2;
+            if (dist > maxDist) {
+                dx = (dx / dist) * maxDist;
+                dy = (dy / dist) * maxDist;
+            }
+            joystickKnob.style.transform = `translate(${dx}px, ${dy}px)`;
+            joystickVector = { x: dx / maxDist, y: dy / maxDist };
+        }
+
+        joystickZone.addEventListener('touchstart', e => { joystickActive = true; handleJoystickMove(e); });
+        window.addEventListener('touchmove', handleJoystickMove);
+        window.addEventListener('touchend', () => {
+            joystickActive = false;
+            joystickKnob.style.transform = 'translate(0px, 0px)';
+            joystickVector = { x: 0, y: 0 };
+        });
+
+        // 游戏状态变量
+        let gameState = 'start'; // 'start', 'playing', 'modal', 'gameover'
+        let gameTime = 0;
+        let killsCount = 0;
+        let playerLevel = 1;
+        let playerExp = 0;
+        let expToNextLevel = 10;
+        let pendingUpgrades = 0; // 升级排队队列，防止多重升级错乱
+        let equippedSkills = []; // [{lessonId, level}]
+
+        // 主角属性
+        const player = {
+            x: 0, y: 0,
+            radius: 18,
+            speed: 3.5,
+            hp: 100, maxHp: 100,
+            pickupRange: 100,
+            critChance: 0.05,
+            damageMultiplier: 1.0,
+            reinforcementCount: 0,
+            facingRight: true,
+            walkFrame: 0
+        };
+
+        // 云朵AI机器人 (点点)
+        const dianDian = {
+            x: 0, y: 0,
+            angle: 0
+        };
+
+        // 实体数组
+        let enemies = [];
+        let bullets = [];
+        let expGems = [];
+        let particles = [];
+        let chestBoxes = [];
+
+        // 技能冷却与触发器
+        const skillCooldowns = {};
+
+        // 初始化游戏
+        function initGame() {
+            player.x = 0;
+            player.y = 0;
+            player.hp = 100;
+            player.maxHp = 100;
+            player.speed = 3.5;
+            player.pickupRange = 100;
+            player.critChance = 0.05;
+            player.damageMultiplier = 1.0;
+            player.reinforcementCount = 0;
+
+            gameTime = 0;
+            killsCount = 0;
+            playerLevel = 1;
+            playerExp = 0;
+            expToNextLevel = 10;
+            pendingUpgrades = 0;
+            equippedSkills = [];
+
+            enemies = [];
+            bullets = [];
+            expGems = [];
+            particles = [];
+            chestBoxes = [];
+
+            // 重置操作状态
+            for (let k in keys) keys[k] = false;
+            joystickActive = false;
+            joystickVector = { x: 0, y: 0 };
+
+            // 初始装备 01二进制波
+            addSkill(2);
+
+            updateUI();
+            gameState = 'playing';
+            document.getElementById('start-modal').classList.add('hidden');
+            document.getElementById('upgrade-modal').classList.add('hidden');
+            document.getElementById('quiz-modal').classList.add('hidden');
+        }
+
+        function addExp(val) {
+            playerExp += val;
+            let leveledUp = false;
+            while (playerExp >= expToNextLevel) {
+                playerExp -= expToNextLevel;
+                playerLevel++;
+                expToNextLevel = Math.floor(expToNextLevel * 1.4);
+                pendingUpgrades++;
+                leveledUp = true;
+            }
+
+            if (leveledUp) {
+                sound.playLevelUp();
+                // 只有当当前不在弹窗状态时才主动拉起升级选择
+                if (gameState !== 'modal') {
+                    openNextUpgradeModal();
+                }
+            }
+            updateUI();
+        }
+
+        function addSkill(lessonId) {
+            const existing = equippedSkills.find(s => s.lessonId === lessonId);
+            if (existing) {
+                existing.level++;
+            } else {
+                equippedSkills.push({ lessonId, level: 1 });
+            }
+            const lesson = LESSONS_DATABASE.find(l => l.id === lessonId);
+            
+            // 被动技能加成
+            if (lessonId === 1) player.pickupRange += 40;
+            if (lessonId === 4) { 
+                player.maxHp += 25; 
+                player.hp += 25; 
+                document.getElementById('hp-bar').style.width = `${(player.hp / player.maxHp) * 100}%`;
+            }
+            if (lessonId === 14) player.critChance += 0.15;
+
+            showToast(`获得AI技能：${lesson ? lesson.skillName : '能力强化'} (Lv.${existing ? existing.level : 1})`);
+            renderSkillBar();
+        }
+
+        function renderSkillBar() {
+            const container = document.getElementById('skills-container');
+            container.innerHTML = '';
+            equippedSkills.forEach(s => {
+                const lesson = LESSONS_DATABASE.find(l => l.id === s.lessonId);
+                if (!lesson) return;
+                const badge = document.createElement('div');
+                badge.className = "w-8 h-8 rounded-lg bg-slate-800 border border-slate-600 flex items-center justify-center text-xs relative";
+                badge.innerHTML = `<i class="fa-solid ${lesson.icon} ${lesson.color}"></i>
+                    <span class="absolute -bottom-1 -right-1 bg-cyan-500 text-slate-950 text-[9px] font-black px-1 rounded-full">${s.level}</span>`;
+                container.appendChild(badge);
+            });
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('knowledge-toast');
+            document.getElementById('toast-text').innerText = msg;
+            toast.classList.remove('opacity-0', 'translate-y-10');
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-10');
+            }, 2500);
+        }
+
+        // --- 4. 生成敌人与技能弹幕碰撞逻辑 ---
+        function spawnEnemies() {
+            if (enemies.length > 150) return;
+
+            const spawnDist = Math.max(canvas.width, canvas.height) / 2 + 50;
+            const angle = Math.random() * Math.PI * 2;
+            const ex = player.x + Math.cos(angle) * spawnDist;
+            const ey = player.y + Math.sin(angle) * spawnDist;
+
+            let type = 'bug';
+            let hp = 15 + gameTime * 0.2;
+            let speed = 1.8 + Math.random() * 0.5;
+            let radius = 14;
+            let color = '#f43f5e';
+            let label = 'BUG';
+
+            const rand = Math.random();
+            if (gameTime > 30 && rand < 0.3) {
+                type = 'noise';
+                label = '噪声干扰';
+                color = '#a855f7';
+                radius = 16;
+                hp *= 1.3;
+            } else if (gameTime > 60 && rand < 0.15) {
+                type = 'parrot';
+                label = '过拟合鹦鹉';
+                color = '#eab308';
+                speed *= 1.4;
+                hp *= 0.8;
+            } else if (gameTime > 120 && rand < 0.05 && !enemies.some(e => e.type === 'boss')) {
+                type = 'boss';
+                label = '偏见巨兽BOSS';
+                color = '#dc2626';
+                radius = 40;
+                hp = 800 + gameTime * 5;
+                speed = 1.2;
+            }
+
+            enemies.push({
+                x: ex, y: ey,
+                hp, maxHp: hp,
+                speed, radius,
+                color, label, type,
+                hitTimer: 0
+            });
+        }
+
+        // 自动使用已装备的技能攻击
+        function handleSkills(dt) {
+            equippedSkills.forEach(skill => {
+                const lessonId = skill.lessonId;
+                const level = skill.level;
+                if (!skillCooldowns[lessonId]) skillCooldowns[lessonId] = 0;
+                skillCooldowns[lessonId] -= dt;
+
+                if (skillCooldowns[lessonId] <= 0) {
+                    switch (lessonId) {
+                        case 2: // 01二进制脉冲
+                            sound.playShoot();
+                            for (let i = 0; i < 4 + level * 2; i++) {
+                                const ang = (Math.PI * 2 / (4 + level * 2)) * i + Math.random() * 0.2;
+                                bullets.push({
+                                    x: player.x, y: player.y,
+                                    vx: Math.cos(ang) * 6, vy: Math.sin(ang) * 6,
+                                    radius: 8, damage: 15 * player.damageMultiplier * level,
+                                    life: 1.5, text: Math.random() > 0.5 ? '1' : '0', color: '#10b981'
+                                });
+                            }
+                            skillCooldowns[lessonId] = 1.8 - level * 0.15;
+                            break;
+
+                        case 3: // 密码加密护盾
+                            if (!bullets.some(b => b.type === 'shield')) {
+                                for (let i = 0; i < 2 + level; i++) {
+                                    bullets.push({
+                                        type: 'shield',
+                                        orbitAngle: (Math.PI * 2 / (2 + level)) * i,
+                                        radius: 12, damage: 10 * player.damageMultiplier,
+                                        life: 999, color: '#f59e0b'
+                                    });
+                                }
+                            }
+                            break;
+
+                        case 5: // 像素方块解构
+                            enemies.forEach(e => {
+                                const dist = Math.hypot(e.x - player.x, e.y - player.y);
+                                if (dist < 150 + level * 20) {
+                                    e.hp -= 20 * level * player.damageMultiplier;
+                                    e.hitTimer = 0.2;
+                                    createParticles(e.x, e.y, '#ec4899', 4);
+                                }
+                            });
+                            skillCooldowns[lessonId] = 3.5;
+                            break;
+
+                        case 6: // RGB三原色激光
+                            sound.playShoot();
+                            for (let i = 0; i < 3; i++) {
+                                const colors = ['#ef4444', '#10b981', '#3b82f6'];
+                                const ang = (Math.PI * 2 / 3) * i + gameTime * 2;
+                                bullets.push({
+                                    x: player.x, y: player.y,
+                                    vx: Math.cos(ang) * 8, vy: Math.sin(ang) * 8,
+                                    radius: 10, damage: 25 * level * player.damageMultiplier,
+                                    life: 1.0, color: colors[i]
+                                });
+                            }
+                            skillCooldowns[lessonId] = 2.0;
+                            break;
+
+                        case 9: // 红绿灯判定场
+                            const isGreen = Math.floor(gameTime) % 4 < 2;
+                            if (isGreen) {
+                                player.speed = 5.2;
+                            } else {
+                                player.speed = 3.5;
+                                enemies.forEach(e => {
+                                    if (Math.hypot(e.x - player.x, e.y - player.y) < 180) {
+                                        e.x -= Math.cos(Math.atan2(e.y - player.y, e.x - player.x)) * e.speed;
+                                        e.y -= Math.sin(Math.atan2(e.y - player.y, e.x - player.x)) * e.speed;
+                                    }
+                                });
+                            }
+                            skillCooldowns[lessonId] = 0.5;
+                            break;
+
+                        case 12: // Debug重锤
+                            if (enemies.length > 0) {
+                                let closest = enemies[0];
+                                let minD = Infinity;
+                                enemies.forEach(e => {
+                                    const d = Math.hypot(e.x - player.x, e.y - player.y);
+                                    if (d < minD) { minD = d; closest = e; }
+                                });
+                                if (minD < 250) {
+                                    closest.hp -= 60 * level * player.damageMultiplier;
+                                    closest.hitTimer = 0.3;
+                                    createParticles(closest.x, closest.y, '#f43f5e', 8);
+                                }
+                            }
+                            skillCooldowns[lessonId] = 2.5 - level * 0.2;
+                            break;
+
+                        case 21: // 神经网络电弧
+                            if (enemies.length >= 2) {
+                                sound.playHit();
+                                for (let i = 0; i < Math.min(enemies.length - 1, 3 + level); i++) {
+                                    const e1 = enemies[i];
+                                    const e2 = enemies[i + 1];
+                                    if (Math.hypot(e1.x - e2.x, e1.y - e2.y) < 200) {
+                                        e1.hp -= 15 * player.damageMultiplier;
+                                        e2.hp -= 15 * player.damageMultiplier;
+                                        particles.push({
+                                            x: (e1.x + e2.x) / 2, y: (e1.y + e2.y) / 2,
+                                            vx: 0, vy: 0, life: 0.2, color: '#06b6d4', radius: 4
+                                        });
+                                    }
+                                }
+                            }
+                            skillCooldowns[lessonId] = 2.2;
+                            break;
+
+                        case 26: // 提示词天雷轰炸
+                            if (enemies.length > 0) {
+                                sound.playShoot();
+                                const target = enemies[Math.floor(Math.random() * enemies.length)];
+                                createParticles(target.x, target.y, '#f59e0b', 12);
+                                enemies.forEach(e => {
+                                    if (Math.hypot(e.x - target.x, e.y - target.y) < 120) {
+                                        e.hp -= 80 * level * player.damageMultiplier;
+                                    }
+                                });
+                            }
+                            skillCooldowns[lessonId] = 4.0;
+                            break;
+
+                        case 31: // 超级搭档合体激光
+                            if (enemies.length > 0) {
+                                sound.playShoot();
+                                const ang = Math.atan2(enemies[0].y - player.y, enemies[0].x - player.x);
+                                bullets.push({
+                                    x: player.x, y: player.y,
+                                    vx: Math.cos(ang) * 12, vy: Math.sin(ang) * 12,
+                                    radius: 20, damage: 100 * level * player.damageMultiplier,
+                                    life: 1.2, color: '#fbbf24', text: 'AI搭档'
+                                });
+                            }
+                            skillCooldowns[lessonId] = 5.0;
+                            break;
+                    }
+                }
+            });
+        }
+
+        function createParticles(x, y, color, count = 6) {
+            for (let i = 0; i < count; i++) {
+                particles.push({
+                    x, y,
+                    vx: (Math.random() - 0.5) * 5,
+                    vy: (Math.random() - 0.5) * 5,
+                    radius: Math.random() * 3 + 2,
+                    life: 0.4, color
+                });
+            }
+        }
+
+        // --- 5. 主更新与绘制循环 ---
+        let lastTime = performance.now();
+        function gameLoop(now) {
+            const dt = (now - lastTime) / 1000;
+            lastTime = now;
+
+            // 只有处于 playing 运行状态时才更新计算游戏逻辑，确保弹窗时完美暂停！
+            if (gameState === 'playing') {
+                update(dt);
+            }
+            render();
+
+            requestAnimationFrame(gameLoop);
+        }
+
+        function update(dt) {
+            gameTime += dt;
+            document.getElementById('time-display').innerText = 
+                `${String(Math.floor(gameTime / 60)).padStart(2, '0')}:${String(Math.floor(gameTime % 60)).padStart(2, '0')}`;
+
+            // 1. 玩家移动控制
+            let dx = 0, dy = 0;
+            if (keys['w'] || keys['arrowup']) dy -= 1;
+            if (keys['s'] || keys['arrowdown']) dy += 1;
+            if (keys['a'] || keys['arrowleft']) dx -= 1;
+            if (keys['d'] || keys['arrowright']) dx += 1;
+
+            if (joystickActive) {
+                dx = joystickVector.x;
+                dy = joystickVector.y;
+            }
+
+            if (dx !== 0 || dy !== 0) {
+                const len = Math.hypot(dx, dy);
+                player.x += (dx / len) * player.speed;
+                player.y += (dy / len) * player.speed;
+                player.facingRight = dx >= 0;
+                player.walkFrame += dt * 8;
+            }
+
+            // 2. 点点机器人跟随
+            dianDian.angle += dt * 2;
+            const targetDx = player.x + Math.cos(dianDian.angle) * 35 - dianDian.x;
+            const targetDy = player.y - 25 + Math.sin(dianDian.angle * 2) * 10 - dianDian.y;
+            dianDian.x += targetDx * 0.1;
+            dianDian.y += targetDy * 0.1;
+
+            // 3. 敌人生成与逻辑
+            if (Math.random() < 0.05 + gameTime * 0.0005) {
+                spawnEnemies();
+            }
+
+            enemies.forEach((e) => {
+                const angle = Math.atan2(player.y - e.y, player.x - e.x);
+                e.x += Math.cos(angle) * e.speed;
+                e.y += Math.sin(angle) * e.speed;
+                if (e.hitTimer > 0) e.hitTimer -= dt;
+
+                // 与玩家碰撞伤害
+                const distToPlayer = Math.hypot(player.x - e.x, player.y - e.y);
+                if (distToPlayer < player.radius + e.radius) {
+                    let hurt = 0.2;
+                    // 隐私盾牌减伤 (第29课)
+                    if (equippedSkills.some(s => s.lessonId === 29)) hurt *= 0.75;
+                    player.hp = Math.max(0, player.hp - hurt);
+                    document.getElementById('hp-bar').style.width = `${(player.hp / player.maxHp) * 100}%`;
+
+                    if (player.hp <= 0) {
+                        gameOver();
+                    }
+                }
+            });
+
+            // 4. 技能攻击逻辑
+            handleSkills(dt);
+
+            // 5. 子弹飞行与碰撞
+            bullets.forEach((b) => {
+                if (b.type === 'shield') {
+                    b.orbitAngle += dt * 3;
+                    b.x = player.x + Math.cos(b.orbitAngle) * 60;
+                    b.y = player.y + Math.sin(b.orbitAngle) * 60;
+                } else {
+                    b.x += b.vx;
+                    b.y += b.vy;
+                    b.life -= dt;
+                }
+
+                // 子弹击中敌人
+                enemies.forEach(e => {
+                    if (Math.hypot(e.x - b.x, e.y - b.y) < e.radius + b.radius) {
+                        let isCrit = Math.random() < player.critChance;
+                        let dmg = b.damage * (isCrit ? 1.8 : 1.0);
+                        e.hp -= dmg;
+                        e.hitTimer = 0.15;
+                        sound.playHit();
+                        createParticles(b.x, b.y, b.color, 3);
+
+                        if (b.type !== 'shield') b.life = 0;
+                    }
+                });
+            });
+            bullets = bullets.filter(b => b.life > 0);
+
+            // 6. 清理死亡敌人并掉落经验
+            enemies = enemies.filter(e => {
+                if (e.hp <= 0) {
+                    killsCount++;
+                    document.getElementById('kills-display').innerText = killsCount;
+
+                    // 强化学习统计 (第18课)
+                    if (equippedSkills.some(s => s.lessonId === 18)) {
+                        player.reinforcementCount++;
+                        if (player.reinforcementCount % 20 === 0) {
+                            player.damageMultiplier += 0.05;
+                        }
+                    }
+
+                    // 掉落经验线索包
+                    expGems.push({
+                        x: e.x, y: e.y,
+                        value: e.type === 'boss' ? 50 : 5
+                    });
+
+                    // 几率掉落宝箱
+                    if (Math.random() < 0.02 || e.type === 'boss') {
+                        chestBoxes.push({ x: e.x, y: e.y });
+                    }
+
+                    createParticles(e.x, e.y, e.color, 8);
+                    return false;
+                }
+                return true;
+            });
+
+            // 7. 经验水晶拾取
+            expGems.forEach((g, gIdx) => {
+                const dist = Math.hypot(player.x - g.x, player.y - g.y);
+                if (dist < player.pickupRange) {
+                    g.x += (player.x - g.x) * 0.15;
+                    g.y += (player.y - g.y) * 0.15;
+                    if (dist < player.radius + 8) {
+                        addExp(g.value);
+                        expGems.splice(gIdx, 1);
+                    }
+                }
+            });
+
+            // 8. 宝箱拾取 (触发AI知识问答，防多重碰撞)
+            for (let i = chestBoxes.length - 1; i >= 0; i--) {
+                const cb = chestBoxes[i];
+                if (Math.hypot(player.x - cb.x, player.y - cb.y) < player.radius + 15) {
+                    chestBoxes.splice(i, 1);
+                    openQuizModal();
+                    break; // 每次只拉起一个问答
+                }
+            }
+
+            // 9. 粒子更新
+            particles.forEach(p => {
+                p.x += p.vx;
+                p.y += p.vy;
+                p.life -= dt;
+            });
+            particles = particles.filter(p => p.life > 0);
+        }
+
+        function updateUI() {
+            document.getElementById('level-display').innerText = `Lv.${playerLevel}`;
+            document.getElementById('exp-bar').style.width = `${Math.min(100, (playerExp / expToNextLevel) * 100)}%`;
+            document.getElementById('exp-text').innerText = `${playerExp} / ${expToNextLevel} 信息卡包`;
+        }
+
+        // --- 6. 渲染绘制 ---
+        function render() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // 摄像机居中跟踪玩家
+            ctx.save();
+            ctx.translate(canvas.width / 2 - player.x, canvas.height / 2 - player.y);
+
+            // 绘制数据荒原：网格、数据节点和像素植物
+            const gridSize = 80;
+            const startX = Math.floor((player.x - canvas.width / 2) / gridSize) * gridSize;
+            const endX = startX + canvas.width + gridSize * 2;
+            const startY = Math.floor((player.y - canvas.height / 2) / gridSize) * gridSize;
+            const endY = startY + canvas.height + gridSize * 2;
+
+            ctx.strokeStyle = '#1e293b';
+            ctx.lineWidth = 1;
+            for (let x = startX; x < endX; x += gridSize) {
+                ctx.beginPath(); ctx.moveTo(x, startY); ctx.lineTo(x, endY); ctx.stroke();
+            }
+            for (let y = startY; y < endY; y += gridSize) {
+                ctx.beginPath(); ctx.moveTo(startX, y); ctx.lineTo(endX, y); ctx.stroke();
+            }
+            ctx.fillStyle = 'rgba(34, 211, 238, 0.13)';
+            for (let x = startX; x < endX; x += gridSize * 2) {
+                for (let y = startY; y < endY; y += gridSize * 2) {
+                    const seed = Math.abs(Math.sin(x * 0.013 + y * 0.017));
+                    if (seed > 0.45) {
+                        ctx.fillRect(x + 18, y + 26, 5, 18);
+                        ctx.fillRect(x + 10, y + 30, 13, 5);
+                        ctx.fillRect(x + 22, y + 20, 11, 5);
+                        ctx.beginPath(); ctx.arc(x + 21, y + 44, 4, 0, Math.PI * 2); ctx.fill();
+                    }
+                }
+            }
+
+            // 绘制拾取范围光环
+            ctx.strokeStyle = 'rgba(6, 182, 212, 0.15)';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.arc(player.x, player.y, player.pickupRange, 0, Math.PI * 2);
+            ctx.stroke();
+
+            // 绘制经验水晶光包
+            expGems.forEach(g => {
+                ctx.fillStyle = '#06b6d4';
+                ctx.shadowColor = '#22d3ee';
+                ctx.shadowBlur = 8;
+                ctx.beginPath();
+                ctx.arc(g.x, g.y, 4, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.shadowBlur = 0;
+            });
+
+            // 绘制宝箱
+            chestBoxes.forEach(cb => {
+                ctx.fillStyle = '#f59e0b';
+                ctx.fillRect(cb.x - 10, cb.y - 10, 20, 20);
+                ctx.fillStyle = '#ffffff';
+                ctx.font = 'bold 12px sans-serif';
+                ctx.fillText('?', cb.x - 3, cb.y + 4);
+            });
+
+            // 绘制敌人：不同类型使用不同轮廓，避免只显示为圆点
+            enemies.forEach(e => {
+                const color = e.hitTimer > 0 ? '#ffffff' : e.color;
+                ctx.save();
+                ctx.translate(e.x, e.y);
+                ctx.fillStyle = color;
+                ctx.strokeStyle = 'rgba(255,255,255,.55)';
+                ctx.lineWidth = Math.max(1.5, e.radius * 0.1);
+                if (e.type === 'noise') {
+                    ctx.rotate(gameTime * 1.4);
+                    ctx.beginPath();
+                    for (let i = 0; i < 12; i++) {
+                        const a = i * Math.PI / 6;
+                        const r = i % 2 ? e.radius * .62 : e.radius * 1.18;
+                        ctx.lineTo(Math.cos(a) * r, Math.sin(a) * r);
+                    }
+                    ctx.closePath(); ctx.fill(); ctx.stroke();
+                } else if (e.type === 'parrot') {
+                    ctx.beginPath(); ctx.ellipse(0, 0, e.radius, e.radius * .8, 0, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+                    ctx.fillStyle = '#fb923c'; ctx.beginPath(); ctx.moveTo(e.radius * .65, -2); ctx.lineTo(e.radius * 1.25, 2); ctx.lineTo(e.radius * .65, 7); ctx.fill();
+                    ctx.strokeStyle = '#fde047'; ctx.beginPath(); ctx.moveTo(-5, -e.radius * .7); ctx.lineTo(-9, -e.radius * 1.2); ctx.moveTo(0, -e.radius * .72); ctx.lineTo(-1, -e.radius * 1.3); ctx.stroke();
+                } else if (e.type === 'boss') {
+                    ctx.beginPath();
+                    for (let i = 0; i < 16; i++) {
+                        const a = i * Math.PI / 8;
+                        const r = i % 2 ? e.radius : e.radius * 1.18;
+                        ctx.lineTo(Math.cos(a) * r, Math.sin(a) * r);
+                    }
+                    ctx.closePath(); ctx.fill(); ctx.stroke();
+                    ctx.fillStyle = '#7f1d1d'; ctx.fillRect(-e.radius * .75, e.radius * .42, e.radius * 1.5, e.radius * .26);
+                } else {
+                    ctx.beginPath(); ctx.roundRect(-e.radius, -e.radius * .72, e.radius * 2, e.radius * 1.45, e.radius * .55); ctx.fill(); ctx.stroke();
+                    ctx.strokeStyle = color;
+                    for (let i = -1; i <= 1; i += 2) {
+                        ctx.beginPath(); ctx.moveTo(i * e.radius * .6, e.radius * .45); ctx.lineTo(i * e.radius * 1.15, e.radius * .95); ctx.stroke();
+                        ctx.beginPath(); ctx.moveTo(i * e.radius * .6, -e.radius * .35); ctx.lineTo(i * e.radius * 1.12, -e.radius * .85); ctx.stroke();
+                    }
+                }
+                ctx.fillStyle = '#0f172a';
+                ctx.beginPath(); ctx.arc(-e.radius * .28, -e.radius * .12, Math.max(2, e.radius * .11), 0, Math.PI * 2); ctx.fill();
+                ctx.beginPath(); ctx.arc(e.radius * .28, -e.radius * .12, Math.max(2, e.radius * .11), 0, Math.PI * 2); ctx.fill();
+                ctx.restore();
+
+                ctx.fillStyle = '#0f172a';
+                ctx.beginPath();
+                ctx.roundRect(e.x - e.radius, e.y - e.radius - 16, e.radius * 2, 4, 2);
+                ctx.fill();
+                ctx.fillStyle = '#22c55e';
+                ctx.fillRect(e.x - e.radius, e.y - e.radius - 16, e.radius * 2 * Math.max(0, e.hp / e.maxHp), 4);
+
+                // 敌人标签
+                ctx.fillStyle = '#cbd5e1';
+                ctx.font = '10px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText(e.label, e.x, e.y - e.radius - 4);
+            });
+
+            // 绘制子弹弹幕
+            bullets.forEach(b => {
+                ctx.fillStyle = b.color;
+                if (b.text) {
+                    ctx.font = 'bold 14px monospace';
+                    ctx.fillText(b.text, b.x - 4, b.y + 4);
+                } else {
+                    ctx.beginPath();
+                    ctx.arc(b.x, b.y, b.radius, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            });
+
+            // 绘制粒子
+            particles.forEach(p => {
+                ctx.fillStyle = p.color;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                ctx.fill();
+            });
+
+            // 绘制主角：使用项目内统一角色素材
+            ctx.save();
+            ctx.translate(player.x, player.y);
+            if (!player.facingRight) ctx.scale(-1, 1);
+            ctx.shadowColor = '#22d3ee'; ctx.shadowBlur = 14;
+            if (tuantuanImage.complete) ctx.drawImage(tuantuanImage, -25, -38, 50, 56);
+            ctx.restore();
+
+            // 绘制点点 (云朵AI机器人)
+            ctx.save();
+            ctx.translate(dianDian.x, dianDian.y);
+            ctx.shadowColor = '#38bdf8';
+            ctx.shadowBlur = 10;
+            if (diandianImage.complete) ctx.drawImage(diandianImage, -22, -22, 44, 44);
+            ctx.shadowBlur = 0;
+
+            ctx.restore();
+
+            ctx.restore();
+
+            // 如果处于 modal 状态，在画布顶部绘制冻结水印
+            if (gameState === 'modal') {
+                ctx.save();
+                ctx.fillStyle = 'rgba(15, 23, 42, 0.3)';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.fillStyle = '#f59e0b';
+                ctx.font = 'bold 16px system-ui, sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText('探险暂停中 - 请进行选择或答题', canvas.width / 2, 36);
+                ctx.restore();
+            }
+        }
+
+        // --- 7. 升级与问答模态框逻辑 ---
+        function openNextUpgradeModal() {
+            gameState = 'modal';
+            const modal = document.getElementById('upgrade-modal');
+            const container = document.getElementById('upgrade-options');
+            container.innerHTML = '';
+
+            // 筛选未满级的技能选项
+            const availableLessons = LESSONS_DATABASE.filter(item => {
+                const existing = equippedSkills.find(s => s.lessonId === item.id);
+                return !existing || existing.level < 5;
+            });
+
+            let options = [...availableLessons].sort(() => 0.5 - Math.random()).slice(0, 3);
+
+            // 极端情况保底选项（全部满级时）
+            if (options.length === 0) {
+                options = [
+                    { id: 991, title: "系统修复", skillName: "生命值恢复", icon: "fa-heart", color: "text-rose-400", desc: "立即恢复 50 点生命值", detail: "保持系统健康运行！", isStat: true },
+                    { id: 992, title: "算力超频", skillName: "全阵列增伤", icon: "fa-bolt", color: "text-amber-400", desc: "永久提升 15% 伤害乘数", detail: "提升全阵列算力输出！", isStat: true }
+                ];
+            }
+
+            options.forEach(item => {
+                const existing = equippedSkills.find(s => s.lessonId === item.id);
+                const curLvl = existing ? existing.level : 0;
+
+                const card = document.createElement('div');
+                card.className = "bg-slate-900 border-2 border-slate-700 hover:border-cyan-400 p-5 rounded-2xl cursor-pointer transition-all duration-200 hover:-translate-y-1 flex flex-col justify-between shadow-xl";
+                card.innerHTML = `
+                    <div>
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-[10px] font-bold bg-slate-800 text-cyan-300 px-2 py-0.5 rounded border border-slate-700">${item.isStat ? '系统补给' : '第' + item.id + '课'}</span>
+                            <span class="text-xs font-bold text-amber-400">${item.isStat ? '属性加成' : (curLvl > 0 ? '升级 Lv.' + (curLvl + 1) : '新解锁')}</span>
+                        </div>
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="w-12 h-12 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center text-2xl">
+                                <i class="fa-solid ${item.icon} ${item.color}"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-white text-base">${item.skillName}</h4>
+                                <p class="text-xs text-slate-400">${item.title}</p>
+                            </div>
+                        </div>
+                        <p class="text-xs text-slate-300 leading-relaxed bg-slate-950/50 p-2.5 rounded-xl border border-slate-800 mb-3">${item.desc}</p>
+                    </div>
+                    <div class="text-[11px] text-amber-300/80 italic border-t border-slate-800 pt-2 flex items-center gap-1">
+                        <i class="fa-solid fa-graduation-cap"></i> ${item.detail}
+                    </div>
+                `;
+                card.onclick = () => {
+                    if (item.id === 991) {
+                        player.hp = Math.min(player.maxHp, player.hp + 50);
+                        document.getElementById('hp-bar').style.width = `${(player.hp / player.maxHp) * 100}%`;
+                        showToast("恢复了 50 点生命值！");
+                    } else if (item.id === 992) {
+                        player.damageMultiplier += 0.15;
+                        showToast("全阵列伤害提升 15%！");
+                    } else {
+                        addSkill(item.id);
+                    }
+
+                    pendingUpgrades--;
+                    if (pendingUpgrades > 0) {
+                        // 如果仍有积压的升级，接着显示下一个升级弹窗
+                        openNextUpgradeModal();
+                    } else {
+                        modal.classList.add('hidden');
+                        gameState = 'playing'; // 只有升级排队清空后，才解冻恢复游戏！
+                    }
+                };
+                container.appendChild(card);
+            });
+
+            modal.classList.remove('hidden');
+        }
+
+        function openQuizModal() {
+            gameState = 'modal'; // 强制游戏暂停
+            const modal = document.getElementById('quiz-modal');
+            const quiz = QUIZ_BANK[Math.floor(Math.random() * QUIZ_BANK.length)];
+
+            document.getElementById('quiz-lesson-tag').innerText = quiz.lesson;
+            document.getElementById('quiz-question').innerText = quiz.question;
+            const answersContainer = document.getElementById('quiz-answers');
+            const feedback = document.getElementById('quiz-feedback');
+            feedback.className = "hidden mt-4 p-3 rounded-xl text-center text-sm font-bold";
+            answersContainer.innerHTML = '';
+
+            quiz.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = "w-full text-left bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold p-3 rounded-xl text-sm transition-all border border-slate-700 cursor-pointer";
+                btn.innerText = opt;
+                btn.onclick = () => {
+                    // 点击后禁用所有选项按钮，防止重复选择
+                    const btns = answersContainer.querySelectorAll('button');
+                    btns.forEach(b => b.disabled = true);
+
+                    if (idx === quiz.correct) {
+                        feedback.innerText = "回答正确！获得双倍AI线索经验！";
+                        feedback.className = "mt-4 p-3 rounded-xl text-center text-sm font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500";
+                        setTimeout(() => {
+                            modal.classList.add('hidden');
+                            addExp(quiz.expReward); // 发放经验奖励
+                            
+                            if (pendingUpgrades > 0) {
+                                openNextUpgradeModal(); // 答题奖励导致升级，顺畅过渡到升级弹窗并保持暂停
+                            } else {
+                                gameState = 'playing'; // 未升级时解冻游戏
+                            }
+                        }, 1200);
+                    } else {
+                        feedback.innerText = "答错了哦，继续加油！";
+                        feedback.className = "mt-4 p-3 rounded-xl text-center text-sm font-bold bg-rose-500/20 text-rose-300 border border-rose-500";
+                        setTimeout(() => {
+                            modal.classList.add('hidden');
+                            if (pendingUpgrades > 0) {
+                                openNextUpgradeModal();
+                            } else {
+                                gameState = 'playing';
+                            }
+                        }, 1200);
+                    }
+                };
+                answersContainer.appendChild(btn);
+            });
+
+            modal.classList.remove('hidden');
+        }
+
+        function gameOver() {
+            gameState = 'gameover';
+            stopBGM();
+            window.parent.postMessage({
+                type: 'aibook-featured-game-progress',
+                gameId: 'code-survivor',
+                seconds: Math.floor(gameTime),
+                score: killsCount,
+                completed: gameTime >= 180
+            }, '*');
+            const modal = document.getElementById('start-modal');
+            modal.querySelector('h1').innerText = "代码爆破 - 探险结束";
+            modal.querySelector('p').innerText = `生存时间: ${document.getElementById('time-display').innerText} | 消除BUG: ${killsCount}`;
+            document.getElementById('start-btn').innerText = "重新开启探险";
+            modal.classList.remove('hidden');
+        }
+
+        // --- 8. 事件监听注册 ---
+        document.getElementById('start-btn').onclick = () => {
+            sound.init();
+            startBGM();
+            initGame();
+        };
+
+        document.getElementById('sound-btn').onclick = () => {
+            sound.enabled = !sound.enabled;
+            if (sound.enabled) startBGM(); else stopBGM();
+            document.getElementById('sound-btn').innerHTML = sound.enabled ? 
+                '<i class="fa-solid fa-volume-high"></i>' : '<i class="fa-solid fa-volume-xmark text-rose-400"></i>';
+        };
+
+        // 启动程序主循环
+        requestAnimationFrame(gameLoop);
+    </script>
+</body>
+</html>

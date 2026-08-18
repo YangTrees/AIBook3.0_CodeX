@@ -41,3 +41,48 @@
 .fa-ear-listen::before { content: "听"; font-size: .7em; }
 .fa-magnifying-glass::before { content: "查"; font-size: .7em; }
 .fa-puzzle-piece::before { content: "拼"; font-size: .7em; }
+.fa-cloud-bolt::before { content: "AI"; font-size: .65em; }
+.fa-bolt::before,
+.fa-bolt-lightning::before { content: "↯"; }
+.fa-heart::before { content: "♥"; }
+.fa-pause::before { content: "Ⅱ"; }
+.fa-play::before { content: "▶"; }
+.fa-house::before { content: "⌂"; }
+.fa-xmark::before { content: "×"; }
+.fa-burst::before { content: "✦"; }
+.fa-lightbulb::before { content: "灯"; font-size: .68em; }
+.fa-skull-crossbones::before { content: "危"; font-size: .68em; }
+.fa-graduation-cap::before { content: "学"; font-size: .68em; }
+.fa-chart-line::before { content: "↗"; }
+.fa-brain::before { content: "智"; font-size: .68em; }
+.fa-shield-cat::before,
+.fa-user-shield::before { content: "盾"; font-size: .68em; }
+.fa-rocket::before { content: "出"; font-size: .68em; }
+.fa-medal::before,
+.fa-award::before { content: "章"; font-size: .68em; }
+.fa-trash-can::before { content: "删"; font-size: .68em; }
+.fa-rotate::before { content: "↻"; }
+.fa-box-open::before,
+.fa-boxes-stacked::before { content: "箱"; font-size: .68em; }
+.fa-toggle-on::before { content: "01"; font-size: .62em; }
+.fa-key::before { content: "码"; font-size: .68em; }
+.fa-cubes::before { content: "块"; font-size: .68em; }
+.fa-palette::before { content: "色"; font-size: .68em; }
+.fa-compress::before { content: "压"; font-size: .68em; }
+.fa-wind::before { content: "净"; font-size: .68em; }
+.fa-traffic-light::before { content: "判"; font-size: .68em; }
+.fa-code-branch::before { content: "支"; font-size: .68em; }
+.fa-bug::before,
+.fa-bug-slash::before { content: "修"; font-size: .68em; }
+.fa-network-wired::before { content: "网"; font-size: .68em; }
+.fa-wand-magic-sparkles::before { content: "生"; font-size: .68em; }
+.fa-handshake-angle::before { content: "伴"; font-size: .68em; }
+.fa-icicles::before { content: "征"; font-size: .68em; }
+.fa-crosshairs::before { content: "◎"; }
+.fa-gauge::before { content: "表"; font-size: .68em; }
+.fa-tag::before { content: "类"; font-size: .68em; }
+.fa-link::before { content: "链"; font-size: .68em; }
+.fa-fire::before { content: "强"; font-size: .68em; }
+.fa-volcano::before { content: "爆"; font-size: .68em; }
+.fa-volume-high::before { content: "音"; font-size: .68em; }
+.fa-volume-xmark::before { content: "静"; font-size: .68em; }

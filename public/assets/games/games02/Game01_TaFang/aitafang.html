@@ -1,0 +1,3470 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI知识保卫战：团团点点AI探险记</title>
+    <script src="/assets/libs/libs/tailwind.min.js"></script>
+    <link rel="stylesheet" href="/assets/libs/libs/game-icon-fallback.css">
+    <style>
+        body {
+            font-family: "Microsoft YaHei", "PingFang SC", system-ui, sans-serif;
+            background: #0f172a;
+            color: #f8fafc;
+            user-select: none;
+            overflow: hidden;
+        }
+
+        .glass-panel {
+            background: rgba(30, 41, 59, 0.75);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        .btn-glow {
+            transition: all 0.2s ease;
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.4);
+        }
+        .btn-glow:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 0 25px rgba(59, 130, 246, 0.8);
+        }
+        .btn-glow:active {
+            transform: translateY(1px);
+        }
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: rgba(15, 23, 42, 0.6); }
+        ::-webkit-scrollbar-thumb { background: #3b82f6; border-radius: 3px; }
+
+        @keyframes pulse-glow {
+            0%, 100% { filter: drop-shadow(0 0 8px rgba(59, 130, 246, 0.6)); }
+            50% { filter: drop-shadow(0 0 18px rgba(59, 130, 246, 1)); }
+        }
+        .animate-glow { animation: pulse-glow 2s infinite; }
+        canvas { touch-action: none; }
+    </style>
+</head>
+<body class="w-screen h-screen flex flex-col justify-between items-center relative bg-slate-950 text-white">
+
+    <header class="w-full max-w-7xl px-4 py-2 mt-2 flex justify-between items-center z-20 flex-wrap gap-2">
+        <div class="flex items-center gap-3 glass-panel px-4 py-2 rounded-2xl">
+            <div class="flex items-center gap-2">
+                <i class="fa-solid fa-cloud-bolt text-2xl text-cyan-400 animate-bounce"></i>
+                <span class="font-bold text-lg bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent hidden sm:inline">AI知识保卫战</span>
+            </div>
+            <div class="h-6 w-[1px] bg-slate-700 mx-1"></div>
+            <div class="flex items-center gap-2 text-yellow-400 font-bold text-base sm:text-lg" title="数据能量（金币）">
+                <i class="fa-solid fa-bolt text-yellow-400 text-lg"></i>
+                <span id="ui-energy">300</span>
+            </div>
+            <div class="flex items-center gap-2 text-rose-400 font-bold text-base sm:text-lg ml-3" title="AI核心生命值">
+                <i class="fa-solid fa-heart text-rose-500 text-lg"></i>
+                <span id="ui-hp">20</span>
+            </div>
+            <div class="flex items-center gap-2 text-amber-300 font-bold text-base sm:text-lg ml-3" title="本局累计星星">
+                <i class="fa-solid fa-star text-amber-400 text-lg"></i>
+                <span id="ui-stars">0</span>
+            </div>
+        </div>
+
+        <div class="glass-panel px-5 py-2 rounded-2xl flex items-center gap-4">
+            <div class="text-center">
+                <div class="text-xs text-slate-400 font-medium">当前关卡</div>
+                <div id="ui-level-name" class="text-sm font-bold text-cyan-300">模块A：信息侦探</div>
+            </div>
+            <div class="h-6 w-[1px] bg-slate-700"></div>
+            <div class="text-center">
+                <div class="text-xs text-slate-400 font-medium">威胁波次</div>
+                <div id="ui-wave" class="text-sm font-bold text-emerald-400">1 / 5</div>
+            </div>
+        </div>
+
+        <div class="flex items-center gap-2">
+            <button id="btn-quiz" class="glass-panel px-3 py-2 rounded-2xl bg-slate-800/40 text-slate-400 border border-slate-700/50 flex items-center gap-2 font-bold cursor-not-allowed opacity-80" title="每波防御成功后将自动解锁答题奖励">
+                <i class="fa-solid fa-graduation-cap text-lg text-amber-400"></i>
+                <span class="hidden md:inline">每波防御奖励答题</span>
+            </button>
+            <button id="btn-badges" class="glass-panel w-10 h-10 rounded-2xl flex items-center justify-center text-slate-300 hover:text-white transition relative" title="勋章墙">
+                <i class="fa-solid fa-trophy text-amber-400"></i>
+                <span id="badge-count" class="absolute -top-1 -right-1 w-5 h-5 bg-rose-500 text-white text-[10px] font-extrabold rounded-full flex items-center justify-center hidden">0</span>
+            </button>
+            <button id="btn-speed" class="glass-panel w-10 h-10 rounded-2xl flex items-center justify-center text-slate-300 hover:text-white font-bold transition">1x</button>
+            <button id="btn-sound" class="glass-panel w-10 h-10 rounded-2xl flex items-center justify-center text-slate-300 hover:text-white transition">
+                <i class="fa-solid fa-volume-high"></i>
+            </button>
+            <button id="btn-pause" class="glass-panel w-10 h-10 rounded-2xl flex items-center justify-center text-slate-300 hover:text-white transition">
+                <i class="fa-solid fa-pause"></i>
+            </button>
+            <button id="btn-home" class="glass-panel w-10 h-10 rounded-2xl flex items-center justify-center text-slate-300 hover:text-white transition" title="返回主菜单">
+                <i class="fa-solid fa-house"></i>
+            </button>
+        </div>
+    </header>
+
+    <main class="relative w-full max-w-7xl flex-1 my-1 flex justify-center items-center px-2 min-h-0">
+        <div class="relative w-full h-full glass-panel rounded-3xl overflow-hidden border border-slate-700 flex justify-center items-center shadow-2xl">
+            <canvas id="game-canvas" class="w-full h-full block"></canvas>
+
+            <div id="tower-info-hover" class="absolute pointer-events-none hidden glass-panel p-3 rounded-2xl border border-cyan-400/50 text-xs text-slate-200 z-30 shadow-2xl backdrop-blur-md w-56 transition-opacity">
+                <div class="flex justify-between items-center border-b border-slate-700 pb-1 mb-1.5 font-bold">
+                    <span id="hover-tower-name" class="text-cyan-300 text-sm">--</span>
+                    <span id="hover-tower-level" class="text-amber-400 font-extrabold bg-amber-500/20 px-1.5 py-0.5 rounded">Lvl 1</span>
+                </div>
+                <div class="space-y-1 text-[11px] text-slate-300">
+                    <p id="hover-tower-desc" class="text-slate-400 italic">--</p>
+                    <div class="grid grid-cols-2 gap-1 pt-1 border-t border-slate-800/80">
+                        <div><i class="fa-solid fa-burst text-rose-400"></i> 伤害: <b id="hover-tower-dmg" class="text-white">0</b></div>
+                        <div><i class="fa-solid fa-bullseye text-emerald-400"></i> 射程: <b id="hover-tower-range" class="text-white">0</b></div>
+                    </div>
+                    <div class="text-[10px] text-amber-300 pt-1 flex items-center gap-1 font-bold">
+                        <i class="fa-solid fa-arrow-up"></i> <span id="hover-tower-upgrade">点击塔升至下一级</span>
+                    </div>
+                </div>
+            </div>
+
+            <div id="game-banner" class="absolute pointer-events-none transition-all duration-500 transform scale-0 opacity-0 flex flex-col items-center justify-center bg-slate-900/80 backdrop-blur-md px-8 py-4 rounded-3xl border border-cyan-500/50">
+                <h2 id="banner-title" class="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">第一波防御准备！</h2>
+                <p id="banner-subtitle" class="text-sm text-slate-300 mt-1">阻止垃圾数据侵害AI核心</p>
+            </div>
+
+            <div id="lesson-card" class="absolute pointer-events-none transition-all duration-300 transform scale-0 opacity-0 top-6 left-1/2 -translate-x-1/2 flex flex-col items-center justify-center bg-gradient-to-br from-amber-500/20 to-pink-500/20 backdrop-blur-md px-6 py-3 rounded-2xl border-2 border-amber-400/50 shadow-2xl max-w-lg">
+                <div class="flex items-center gap-2 mb-1">
+                    <i class="fa-solid fa-lightbulb text-amber-400 text-lg"></i>
+                    <span id="lesson-card-tag" class="text-xs font-bold text-amber-300">第1课 知识点</span>
+                </div>
+                <p id="lesson-card-text" class="text-sm text-white text-center font-medium leading-relaxed">信息是帮助我们做判断和决定的线索。</p>
+            </div>
+
+            <!-- 敌人清单展示 -->
+            <div id="enemy-preview" class="absolute pointer-events-none transition-all duration-500 transform scale-0 opacity-0 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-slate-900/95 backdrop-blur-md px-6 py-5 rounded-3xl border-2 border-rose-500/50 shadow-2xl max-w-2xl w-[600px]">
+                <button id="enemy-preview-close" class="absolute top-3 right-3 w-8 h-8 rounded-lg bg-slate-800/80 hover:bg-rose-500/30 text-slate-400 hover:text-white flex items-center justify-center transition pointer-events-auto" title="关闭预览">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+                <div class="flex items-center gap-3 mb-3 border-b border-slate-700 pb-2 pr-10">
+                    <i class="fa-solid fa-skull-crossbones text-rose-400 text-2xl"></i>
+                    <div>
+                        <h3 id="enemy-preview-title" class="text-xl font-black text-rose-300">第 1 波 · 威胁情报</h3>
+                        <p class="text-xs text-slate-400">知己知彼，提前布置防线！</p>
+                    </div>
+                </div>
+                <div id="enemy-preview-list" class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                    <!-- 动态生成敌人卡片 -->
+                </div>
+                <div class="mt-3 pt-3 border-t border-slate-700 flex justify-end items-center">
+                    <button id="enemy-preview-start" class="px-4 py-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 font-bold text-white text-sm cursor-pointer hover:scale-105 transition">
+                        <i class="fa-solid fa-check mr-1"></i> 知道了
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="ui-dock-tooltip" class="fixed pointer-events-none hidden glass-panel p-3.5 rounded-2xl border border-cyan-400/50 text-xs text-slate-200 z-50 shadow-2xl backdrop-blur-xl w-72 transition-opacity duration-150"></div>
+
+    <footer class="w-full max-w-7xl px-2 sm:px-4 py-1.5 mb-2 flex justify-between items-center gap-2 z-20">
+        <div class="flex-1 min-w-0 flex items-center glass-panel p-1.5 rounded-2xl overflow-x-auto overflow-y-hidden" id="tower-dock" style="scrollbar-width: thin;"></div>
+
+        <div class="flex items-center gap-2 shrink-0">
+            <button id="skill-gradient" class="relative group p-1.5 sm:p-2 rounded-xl bg-cyan-900/40 border border-cyan-500/30 hover:bg-cyan-800/50 flex items-center gap-1.5 transition disabled:opacity-50">
+                <div class="w-7 h-7 sm:w-9 sm:h-9 rounded-lg bg-cyan-500/20 text-cyan-300 flex items-center justify-center font-bold text-base sm:text-lg">
+                    <i class="fa-solid fa-chart-line"></i>
+                </div>
+                <div class="text-left pr-1 hidden sm:block">
+                    <div class="text-xs font-bold text-cyan-200 whitespace-nowrap">梯度加速</div>
+                    <div class="text-[10px] text-slate-400 whitespace-nowrap">攻速+100% (100能量)</div>
+                </div>
+            </button>
+
+            <button id="btn-next-wave" class="btn-glow px-3 sm:px-5 py-2 sm:py-3 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 font-extrabold text-white text-xs sm:text-sm flex items-center gap-1.5 sm:gap-2 shadow-lg cursor-pointer whitespace-nowrap">
+                <span id="btn-next-wave-text">出击！第 1 波</span>
+                <i class="fa-solid fa-play text-xs"></i>
+            </button>
+        </div>
+    </footer>
+
+    <div id="modal-quiz" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex justify-center items-center p-4 hidden">
+        <div class="glass-panel w-full max-w-xl p-6 rounded-3xl border border-cyan-500/30 flex flex-col gap-4 relative animate-fade-in">
+            <button id="quiz-close" class="absolute top-4 right-4 text-slate-400 hover:text-white text-xl">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-2xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400 text-2xl">
+                    <i class="fa-solid fa-brain"></i>
+                </div>
+                <div>
+                    <h3 class="text-xl font-black text-amber-300">团团点点知识大考场</h3>
+                    <p class="text-xs text-slate-400">答对题目可获得 <span class="text-yellow-400 font-bold">+100 数据能量</span>！</p>
+                </div>
+            </div>
+
+            <div class="my-2 p-4 rounded-2xl bg-slate-900/80 border border-slate-700">
+                <div id="quiz-lesson-tag" class="text-xs text-cyan-400 font-bold mb-1">第1课《小侦探找线索》</div>
+                <p id="quiz-question" class="text-base font-bold text-slate-100 leading-relaxed">加载中...</p>
+            </div>
+
+            <div id="quiz-options" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
+
+            <div id="quiz-feedback" class="hidden p-3 rounded-xl text-center text-sm font-bold"></div>
+        </div>
+    </div>
+
+    <div id="modal-stage" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-50 flex justify-center items-center p-4" style="background:linear-gradient(90deg,rgba(2,8,23,.94),rgba(2,8,23,.58)),url('../covers/game01-tower-defense.png') center/cover no-repeat;">
+        <div class="glass-panel w-full max-w-2xl p-8 rounded-3xl border border-cyan-500/40 text-center flex flex-col items-center gap-5" style="background:rgba(15,23,42,.9)">
+            <div class="w-20 h-20 rounded-3xl bg-gradient-to-tr from-cyan-500 to-blue-600 flex items-center justify-center text-4xl text-white shadow-lg animate-glow">
+                <i class="fa-solid fa-shield-cat"></i>
+            </div>
+            <div>
+                <h2 id="stage-modal-title" class="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-blue-400 to-indigo-300">
+                    团团点点AI探险记：塔防大冒险
+                </h2>
+                <p id="stage-modal-desc" class="text-sm text-slate-300 mt-2 max-w-md mx-auto leading-relaxed">
+                    恶意Bug与乱七八糟的噪声数据正在入侵AI小世界！建造AI思维防御塔，回答AI小问答收集能量，保护核心！
+                </p>
+            </div>
+
+            <div id="stage-list" class="grid grid-cols-2 sm:grid-cols-4 gap-3 w-full my-2"></div>
+
+            <button id="btn-start-game" class="btn-glow px-8 py-3.5 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 font-black text-white text-base flex items-center gap-3">
+                <span>开启AI保卫战</span>
+                <i class="fa-solid fa-rocket"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- 勋章墙模态框 -->
+    <div id="modal-badges" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-50 flex justify-center items-center p-4 hidden">
+        <div class="glass-panel w-full max-w-3xl max-h-[90vh] overflow-y-auto p-6 rounded-3xl border border-amber-500/30 flex flex-col gap-5 relative">
+            <button id="badges-close" class="absolute top-4 right-4 w-9 h-9 rounded-xl bg-slate-800/80 hover:bg-rose-500/30 text-slate-400 hover:text-white flex items-center justify-center transition" title="关闭">
+                <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
+
+            <div class="flex items-center gap-3">
+                <div class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-amber-500 to-yellow-600 flex items-center justify-center text-3xl text-white shadow-lg shadow-amber-500/30">
+                    <i class="fa-solid fa-trophy"></i>
+                </div>
+                <div>
+                    <h2 class="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-300 to-yellow-400">勋章墙</h2>
+                    <p class="text-xs text-slate-400">记录你的每一次胜利！</p>
+                </div>
+            </div>
+
+            <!-- 统计信息 -->
+            <div id="badges-stats" class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                <div class="bg-slate-800/60 border border-amber-500/30 rounded-xl p-3 text-center">
+                    <div class="text-2xl font-black text-amber-300" id="stat-stars">0</div>
+                    <div class="text-[10px] text-slate-400">总星星</div>
+                </div>
+                <div class="bg-slate-800/60 border border-cyan-500/30 rounded-xl p-3 text-center">
+                    <div class="text-2xl font-black text-cyan-300" id="stat-stages">0/8</div>
+                    <div class="text-[10px] text-slate-400">通关模块</div>
+                </div>
+                <div class="bg-slate-800/60 border border-rose-500/30 rounded-xl p-3 text-center">
+                    <div class="text-2xl font-black text-rose-300" id="stat-bosses">0</div>
+                    <div class="text-[10px] text-slate-400">击杀Boss</div>
+                </div>
+                <div class="bg-slate-800/60 border border-emerald-500/30 rounded-xl p-3 text-center">
+                    <div class="text-2xl font-black text-emerald-300" id="stat-correct">0</div>
+                    <div class="text-[10px] text-slate-400">答对题目</div>
+                </div>
+            </div>
+
+            <!-- 关卡星星 -->
+            <div class="border-t border-slate-700 pt-4">
+                <h3 class="text-sm font-bold text-slate-300 mb-3 flex items-center gap-2">
+                    <i class="fa-solid fa-star text-amber-400"></i> 关卡星级
+                </h3>
+                <div id="badges-stage-list" class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                    <!-- 动态生成 -->
+                </div>
+            </div>
+
+            <!-- 勋章网格 -->
+            <div class="border-t border-slate-700 pt-4">
+                <h3 class="text-sm font-bold text-slate-300 mb-3 flex items-center gap-2">
+                    <i class="fa-solid fa-medal text-amber-400"></i> 成就勋章
+                </h3>
+                <div id="badges-grid" class="grid grid-cols-3 sm:grid-cols-5 gap-3">
+                    <!-- 动态生成 -->
+                </div>
+            </div>
+
+            <button id="badges-reset" class="text-xs text-slate-500 hover:text-rose-400 self-center mt-2 transition" title="清空所有进度">
+                <i class="fa-solid fa-trash-can mr-1"></i> 重置所有进度
+            </button>
+        </div>
+    </div>
+
+    <!-- 游戏结束模态框 -->
+    <div id="modal-gameover" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-50 flex justify-center items-center p-4 hidden">
+        <div class="glass-panel max-w-md w-full p-8 rounded-3xl border-2 border-rose-500/40 flex flex-col items-center gap-5 relative">
+            <div class="text-rose-300 text-2xl font-black tracking-widest">💔 AI核心失守</div>
+            <div id="gameover-reason" class="text-sm text-slate-300 text-center">AI被恶意数据彻底攻陷！</div>
+            <div id="gameover-stats" class="w-full bg-slate-800/60 rounded-xl p-4 border border-slate-700 grid grid-cols-3 gap-3 text-center">
+                <div>
+                    <div id="gameover-wave" class="text-2xl font-black text-cyan-300">0</div>
+                    <div class="text-[10px] text-slate-400">通关波次</div>
+                </div>
+                <div>
+                    <div id="gameover-stars" class="text-2xl">⭐⭐⭐</div>
+                    <div class="text-[10px] text-slate-400">本局总星</div>
+                </div>
+                <div>
+                    <div id="gameover-kills" class="text-2xl font-black text-rose-300">0</div>
+                    <div class="text-[10px] text-slate-400">击杀敌数</div>
+                </div>
+            </div>
+            <div id="gameover-message" class="text-base text-slate-200 font-bold text-center">不要灰心，复习知识点再战！</div>
+            <div class="flex gap-3 w-full">
+                <button id="gameover-retry" class="btn-glow flex-1 px-6 py-3 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 font-black text-white text-sm flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-rotate"></i>
+                    <span>重新挑战</span>
+                </button>
+                <button id="gameover-back" class="flex-1 px-6 py-3 rounded-2xl bg-slate-800 hover:bg-slate-700 border border-slate-600 font-bold text-slate-200 text-sm flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-house"></i>
+                    <span>返回首页</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 关卡胜利评分模态框 -->
+    <div id="modal-stars" class="fixed inset-0 bg-slate-950/85 backdrop-blur-md z-50 flex justify-center items-center p-4 hidden">
+        <div class="glass-panel max-w-md w-full p-8 rounded-3xl border-2 border-amber-500/40 flex flex-col items-center gap-5 relative">
+            <div class="text-amber-300 text-2xl font-black tracking-widest">胜利！</div>
+            <div id="stars-stage-name" class="text-sm text-slate-300">模块A：信息与数据</div>
+            <div id="stars-total-score" class="text-xs text-slate-400">本关得分：<span id="stars-total-value" class="text-amber-300 font-black">0</span> / <span id="stars-total-max">0</span></div>
+            <div id="stars-row" class="flex gap-3 justify-center">
+                <svg class="star w-14 h-14 transition-all" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                <svg class="star w-14 h-14 transition-all" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                <svg class="star w-14 h-14 transition-all" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            </div>
+            <div id="stars-message" class="text-base text-center text-slate-200 font-bold"></div>
+            <div id="stars-new-badge" class="hidden flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-amber-500/30 to-yellow-500/30 border border-amber-400/50">
+                <span class="text-2xl">🏅</span>
+                <span class="text-sm text-amber-200 font-bold" id="stars-new-badge-text">解锁新勋章！</span>
+            </div>
+            <div class="flex gap-3 w-full mt-2">
+                <button id="stars-back-home" class="flex-1 px-6 py-3 rounded-2xl bg-slate-800 hover:bg-slate-700 border border-slate-600 font-bold text-slate-200 text-sm flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-house"></i>
+                    <span>返回主菜单</span>
+                </button>
+                <button id="stars-continue" class="btn-glow flex-1 px-6 py-3 rounded-2xl bg-gradient-to-r from-amber-500 to-yellow-600 font-black text-white text-sm flex items-center justify-center gap-2">
+                    <span>继续挑战</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-confirm-home" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-[60] flex justify-center items-center p-4 hidden">
+        <div class="glass-panel max-w-sm w-full p-6 rounded-3xl border-2 border-amber-500/40 flex flex-col items-center gap-5 relative">
+            <div class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-amber-500 to-orange-600 flex items-center justify-center text-2xl text-white shadow-lg">
+                <i class="fa-solid fa-house"></i>
+            </div>
+            <div class="text-amber-300 text-xl font-black tracking-widest">返回主菜单？</div>
+            <div class="text-sm text-slate-300 text-center leading-relaxed">
+                当前对局进度将丢失，已获得的星星和勋章会保留。<br>确定要返回主菜单选关吗？
+            </div>
+            <div class="flex gap-3 w-full">
+                <button id="confirm-home-cancel" class="flex-1 px-5 py-3 rounded-2xl bg-slate-800 hover:bg-slate-700 border border-slate-600 font-bold text-slate-200 text-sm flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-xmark"></i>
+                    <span>继续游戏</span>
+                </button>
+                <button id="confirm-home-ok" class="btn-glow flex-1 px-5 py-3 rounded-2xl bg-gradient-to-r from-amber-500 to-orange-600 font-black text-white text-sm flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-house"></i>
+                    <span>确认返回</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <audio id="bgm" src="bgm.mp3" loop preload="auto"></audio>
+
+    <script>
+        // --- Web Audio API Synth Engine ---
+        class SoundEngine {
+            constructor() { this.ctx = null; this.enabled = true; this.bgmEnabled = true; }
+            init() { if (!this.ctx) { this.ctx = new (window.AudioContext || window.webkitAudioContext)(); } }
+            playTone(freq, duration, type = 'sine', volume = 0.1) {
+                if (!this.enabled || !this.ctx) return;
+                try {
+                    const osc = this.ctx.createOscillator();
+                    const gain = this.ctx.createGain();
+                    osc.type = type;
+                    osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+                    gain.gain.setValueAtTime(volume, this.ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + duration);
+                    osc.connect(gain); gain.connect(this.ctx.destination);
+                    osc.start(); osc.stop(this.ctx.currentTime + duration);
+                } catch (e) {}
+            }
+            playPew() { this.playTone(600, 0.1, 'square', 0.05); }
+            playLaser() { this.playTone(900, 0.15, 'sawtooth', 0.04); }
+            playExplosion() { this.playTone(120, 0.3, 'triangle', 0.15); }
+            playCrit() { this.playTone(1200, 0.1, 'square', 0.08); }
+            playCorrect() {
+                this.playTone(523.25, 0.1, 'sine', 0.1);
+                setTimeout(() => this.playTone(659.25, 0.1, 'sine', 0.1), 100);
+                setTimeout(() => this.playTone(783.99, 0.2, 'sine', 0.1), 200);
+            }
+            playWrong() { this.playTone(200, 0.2, 'sawtooth', 0.1); }
+        }
+        const sound = new SoundEngine();
+
+        // 🎵 BGM 背景音乐控制（用户首次交互后才能播放，自动重试）
+        const bgmEl = document.getElementById('bgm');
+        bgmEl.volume = 0.5;  // 适中音量
+        bgmEl.loop = true;   // 确保循环
+
+        // 一次性用户交互监听器 - 解决浏览器自动播放策略
+        let bgmUnlockBound = false;
+        function unlockBGMonFirstInteraction() {
+            if (bgmUnlockBound) return;
+            bgmUnlockBound = true;
+            const tryStart = () => {
+                if (!sound.bgmEnabled) return;
+                bgmEl.play().then(() => {
+                    console.log('🎵 BGM 开始播放');
+                }).catch(err => {
+                    console.warn('BGM播放失败:', err.message);
+                });
+            };
+            // 监听任何首次用户交互
+            const events = ['click', 'touchstart', 'keydown', 'pointerdown'];
+            const handler = () => {
+                tryStart();
+                events.forEach(ev => document.removeEventListener(ev, handler, true));
+            };
+            events.forEach(ev => document.addEventListener(ev, handler, { capture: true, once: true }));
+            // 也尝试立即播放（部分浏览器可能允许）
+            tryStart();
+        }
+
+        function tryPlayBGM() {
+            if (!sound.bgmEnabled) return;
+            bgmEl.play().then(() => {
+                console.log('🎵 BGM 播放中');
+            }).catch(err => {
+                console.warn('BGM启动需要用户交互:', err.message);
+                unlockBGMonFirstInteraction();
+            });
+        }
+        function pauseBGM() { bgmEl.pause(); }
+        function resumeBGM() { if (sound.bgmEnabled) bgmEl.play().catch(() => {}); }
+
+        // 页面加载时立即尝试解锁
+        unlockBGMonFirstInteraction();
+
+        // ===== 完整32课知识点题库（带正确答案解析）=====
+        const QUIZ_DATABASE = [
+            { lesson: "第1课《小侦探找线索》", question: "信息对我们做决定有什么帮助？", options: ["信息是帮助我们做决定的线索", "信息只会让我们更困惑", "靠猜就行，没什么用", "信息只能大人用"], answer: 0, explanation: "信息就像小侦探的线索，能帮助我们做出更好的决定。AI也是这样工作的——收集线索（数据），再根据线索做判断。没有信息，AI什么决定也做不了！" },
+            { lesson: "第2课《开关城的两兄弟》", question: "电脑内部是用什么符号表达和传递信息的？", options: ["中文和英文", "0 和 1", "颜料与画笔", "音乐符"], answer: 1, explanation: "电脑只认识0和1两个符号！0代表『关』，1代表『开』。多个0和1排队就能表示复杂信息——你玩的游戏、看的动画、听的音乐，在电脑里面全都是0和1组成的！" },
+            { lesson: "第2课《开关城的两兄弟》", question: "5个0和1排在一起最多能组合多少种不同的信息？", options: ["5种", "10种", "32种", "100种"], answer: 2, explanation: "2×2×2×2×2=32种！0和1虽然只有两个符号，但5个组合起来就有32种不同的排列方式。位数越多，能表示的信息就越丰富！" },
+            { lesson: "第3课《小邮差的密码信》", question: "把信息变成另一种样子来传递（如苹果写成apple），这叫什么？", options: ["压缩", "删除", "编码", "噪声"], answer: 2, explanation: "编码就是给信息『穿外套』变成另一种样子。比如『苹果』用英文写成apple，用手语比就是握拳再张开。信息还是那条，但表示方法变了！" },
+            { lesson: "第3课《小邮差的密码信》", question: "编码和解码必须满足什么条件才能正确传达信息？", options: ["只需要一个人记住规则", "用同一套规则", "用不同的规则", "不需要规则"], answer: 1, explanation: "写信人和读信人必须用同一套规则！如果你们约定『眨两下眼=快跑』，但朋友以为那是『我困了』，就会闹笑话。电脑世界里也一样——规则不一样就会出现乱码！" },
+            { lesson: "第4课《仓库管理员机器人》", question: "信息在电脑里住在哪里？", options: ["人的脑子里", "格子（存储器）里", "空气中", "水里"], answer: 1, explanation: "信息需要『住在』格子里！电脑里有一个『存储器』，每个小格子可以存一小条信息（0或1）。格子越多=容量越大=能存的信息越多。手机提示存储空间不足就像玩具柜满了塞不进去！" },
+            { lesson: "第5课《小方块拼出大世界》", question: "图片在电脑里是由许许多多什么拼出来的？", options: ["像素（小方块）", "光线", "真实颜料", "线条"], answer: 0, explanation: "图片是由许许多多小方块（像素）拼出来的！就像乐高积木——远看是画，近看是一块块的小方块。像素越多、越小，画面就越清晰。手机照片由几百万到几千万个像素组成！" },
+            { lesson: "第5课《小方块拼出大世界》", question: "把模糊照片放大会变清楚吗？", options: ["会，放大就更清楚了", "不会，放大只是把小方块变大了", "会变成视频", "会变成图片"], answer: 1, explanation: "不会变清楚！放大只是把原来的像素变大了——就像把乐高积木换成大块头，方块更大了但数量还是那么多。想要更清楚，需要更多更小的像素，而不是把原来的像素放大！" },
+            { lesson: "第6课《红绿蓝灯的合唱团》", question: "屏幕上的RGB三原色指的是哪三种颜色？", options: ["红、黄、蓝", "红、绿、蓝", "黄、绿、紫", "黑、白、灰"], answer: 1, explanation: "RGB三原色是红(Red)、绿(Green)、蓝(Blue)！这三种光的灯泡可以混合出几乎所有颜色。每个像素点里都藏着这三个小灯，靠调节亮度来变出千千万万种颜色！" },
+            { lesson: "第6课《红绿蓝灯的合唱团》", question: "红光和绿光混合会变成什么颜色？", options: ["紫色", "青色", "黄色", "白色"], answer: 2, explanation: "红光+绿光=黄光！这是RGB混色的基本规律。另外：绿+蓝=青色，红+蓝=紫色，红+绿+蓝=白色。你看到的彩色照片都是这三个小灯合唱出来的！" },
+            { lesson: "第7课《行李箱装不下啦》", question: "压缩是什么意思？", options: ["把文件删掉", "让文件变小节省存储空间", "把文件变大", "把文件复制一份"], answer: 1, explanation: "压缩就像整理行李箱——让文件变小，节省存储空间！无损压缩像把衣服卷紧了放（东西没少），有损压缩像不带『也许用得上』的外套（少了一些细节）。不过压缩太多重要的细节可能丢失哦！" },
+            { lesson: "第8课《雾气里的照片》", question: "混在信息里的乱七八糟干扰（如照片变糊、录音杂音）叫什么？", options: ["编码", "像素", "噪声", "循环"], answer: 2, explanation: "噪声就是混在信息里的干扰！就像大雾天看不清人——照片拍糊了、录音有杂音、数据写错了都是噪声。给AI学习错误数据，它也会做出错误判断（垃圾进，垃圾出）！" },
+            { lesson: "第9课《红灯停绿灯行》", question: '『如果是绿灯，就往前走』属于哪种程序结构？', options: ["条件判断", "循环", "压缩", "调试"], answer: 0, explanation: "这就是条件判断！用『如果……就……』的格式，根据条件做决定。电脑里装满了这样的规则：自动门『如果有人靠近就打开』，智能音箱『如果听到你好小爱就回答』。" },
+            { lesson: "第10课《会数数的刷牙机器人》", question: "重复执行同一个步骤直到牙齿刷干净，这叫什么？", options: ["编码", "循环", "分类", "噪声"], answer: 1, explanation: "这就是循环！循环就是重复做同一个步骤，直到把事情做好做完整。电脑最厉害的本事就是不嫌烦、不偷懒地重复做一件事——比如游戏角色一直走路，打印机重复打印！" },
+            { lesson: "第11课《做披萨的流水线》", question: "把大任务切成小步骤，多人同时做不同的事，这叫什么？", options: ["串行", "循环", "并行", "压缩"], answer: 2, explanation: "这就是并行！同时做不同的事，速度更快。任务分解是把大任务切成小步骤，而并行就是让多个步骤同时进行。比如烤披萨的同时准备饮料——这就是并行！" },
+            { lesson: "第12课《找bug的小修理工》", question: "程序中的错误导致结果不对，这个错误叫什么？", options: ["Bug", "Tag", "RGB", "Pixel"], answer: 0, explanation: "Bug就是程序中的错误！这个词来源于一个故事——很久以前一台电脑出了故障，人们发现里面卡着一只真的飞蛾，从此程序错误就叫Bug了。调试就是『找Bug→改Bug→再试』的过程！" },
+            { lesson: "第13课《袜子大整理》", question: "AI靠什么来认识世界？", options: ["靠做梦", "靠分类", "靠魔法", "靠猜测"], answer: 1, explanation: "AI靠分类认识世界！它把看到的东西分门别类：这是猫、那是狗、这个是花、那个是树。但分类标准很重要——按『有没有毛』分，猫和毛绒玩具就分到一起了！" },
+            { lesson: "第14课《特征放大镜》", question: "区分猫和狗，下面哪个特征最有用？", options: ["都有四条腿", "叫声不同（喵喵vs汪汪）", "都有尾巴", "都是动物"], answer: 1, explanation: "叫声不同（喵喵vs汪汪）最有区分度！好的特征就是能区分不同事物的线索。『都有四条腿』『都有尾巴』这些特征两者都有，没办法区分。特征越有区分度，越容易识别！" },
+            { lesson: "第15课《猜一猜明天带伞吗》", question: "预测是什么？", options: ["确定未来会发生什么", "根据过去的规律来猜未来", "只能大人做", "随便猜一个答案"], answer: 1, explanation: "预测是根据过去的规律来猜未来！就像看到乌云猜可能会下雨。预测不是100%确定的——天气预报也偶尔不准。信息越多、规律越清楚，预测就越靠谱！" },
+            { lesson: "第16课《背答案的鹦鹉》", question: "AI只背下了练习题答案，遇到没见过的新题就不会了，这叫什么？", options: ["超级聪明", "过拟合", "真正理解", "无监督"], answer: 1, explanation: "这就是过拟合！只记住答案不理解方法，遇到新题就傻眼了。真正学会是理解规律、能举一反三——比如理解加法是『把两个数合起来』，就能算任何加法题，不用背答案！" },
+            { lesson: "第17课《学校里的AI同学》", question: "用来学习的大量练习题叫什么？", options: ["测试集", "训练集", "考试集", "作业集"], answer: 1, explanation: "训练集就是AI的『练习题』！AI通过大量练习题（训练集）来学习，然后再用没见过的考试题（测试集）检验是否真学会。如果考试题和练习题太像，可能只是背答案哦！" },
+            { lesson: "第18课《小狗学握手》", question: "强化学习是通过什么来学习的？", options: ["看书", "通过奖励来学会行为", "听老师讲课", "抄答案"], answer: 1, explanation: "强化学习是通过『奖励』来学习的！做对了得奖励（比如小狗得到零食），下次还这么做；做错了没奖励，下次就不这么做。核心循环是：试一试→得反馈→再调整！" },
+            { lesson: "第19课《贴标签的老师》", question: "监督学习中'标签'是什么？", options: ["名字牌", "价格标签", "每条数据的正确答案", "衣服标签"], answer: 2, explanation: "标签就是每条数据的『正确答案』！监督学习就像老师手把手教你——每条数据都有标签，AI根据标签学习。但标签错了AI就学错，所以标签一定要准确清楚！" },
+            { lesson: "第20课《没有标签的玩具箱》", question: "没有标准答案，让AI自己按相似性分组的学习叫什么？", options: ["监督学习", "无监督学习", "强化学习", "循环"], answer: 1, explanation: "无监督学习就是没有标准答案，让AI自己观察数据，按相似性分组。这种学习能发现隐藏的规律——比如AI发现『买尿布的人经常也买啤酒』，这种关联是无监督学习自己找出来的！" },
+            { lesson: "第21课《点亮聪明灯》", question: "人工神经网络中的基本信息处理单元叫什么？", options: ["像素", "节点（神经元）", "开关", "密码"], answer: 1, explanation: "节点（神经元）是神经网络的基本单元！就像大脑里的小灯泡——一个灯泡只做很简单的事，但千千万万个连在一起，就能做超级复杂的事情。信息从一个节点传到下一个节点！" },
+            { lesson: "第22课《从边边角角到整张脸》", question: "神经网络是如何处理复杂任务的？", options: ["一次性处理", "分层处理", "随机处理", "跳过不处理"], answer: 1, explanation: "神经网络分层处理！第一层看最简单的局部特征（线条、角角），后面的层把局部组合成整体（从边边角角到整张脸）。分层让复杂任务变得简单——像拼图从碎片慢慢拼出完整画面！" },
+            { lesson: "第23课《音量旋钮决定谁更重要》", question: "神经网络中决定每个输入重要程度的参数叫什么？", options: ["音量", "权重", "亮度", "色温"], answer: 1, explanation: "权重就像音量旋钮！每个连接都有一个权重旋钮，控制『这条线索有多重要』。AI学习就是不断调整权重——把重要的线索拧大，把没用的拧小。旋钮调得越准，AI就越聪明！" },
+            { lesson: "第24课《慢慢调准的小箭头》", question: "AI学习过程中一步一步找到最优解的方法叫什么？", options: ["梯度下降", "随机下降", "瞬间移动", "原地跳跃"], answer: 0, explanation: "梯度下降！听起来复杂其实很简单：每次只调整一点点，朝着对的方向，慢慢就越来越准。蒙眼走向桌子——小步微调比大步乱走更精准。坚持小步前进就能成功！" },
+            { lesson: "第25课《会接话的鹦鹉2.0》", question: "语言模型的核心能力是什么？", options: ["画画", "预测下一个词", "唱歌", "跳舞"], answer: 1, explanation: "语言模型的核心是预测下一个词！它读了海量文字，学会了词语之间的概率关系。上下文不同，预测也不同——『今天我生日想吃』猜蛋糕，『今天好热想吃』猜冰淇淋。AI不是真的懂，是在做接话预测！" },
+            { lesson: "第26课《给AI的清楚指令》", question: "给AI的指令（提示词）怎样才能让回答更靠谱？", options: ["越模糊越好", "设定明确的角色、目标和限制", "只说一个字", "随便乱打字"], answer: 1, explanation: "好的提示词包含三要素：角色（你是谁）+目标（做什么）+限制（有什么要求）！指令越清楚，AI的回答越靠谱。『给我讲个故事』很模糊；『讲一个适合5岁小朋友听的、关于小兔子的睡前故事』就很清楚！" },
+            { lesson: "第27课《从乱点点到清图画》", question: "生成式AI是如何生成内容的？", options: ["一次性生成", "一步一步生成", "复制粘贴", "随机抓取"], answer: 1, explanation: "生成式AI是『一步一步』生成的！就像窗户上的雾慢慢散去——AI从一张全是噪点的乱图开始，每步去掉一点噪声，画面就清楚一点。从一片乱点点，到最后变成一张清晰的画！" },
+            { lesson: "第28课《会编故事的机器人》", question: "AI有时编出听起来很顺但事实完全不对的内容，这叫什么？", options: ["AI幻觉", "AI降温", "AI断网", "AI升级"], answer: 0, explanation: "这就是AI幻觉！AI根据概率猜下一个词，有时猜得听起来很通顺但事实错误。比如AI说『恐龙300年前灭绝』——听起来很对，但恐龙是6500万年前灭绝的！不要AI说什么就信什么，要学会多方验证！" },
+            { lesson: "第29课《不要随便给陌生人》", question: "下面哪种个人信息绝对不能随便告诉网上的陌生人或AI？", options: ["我喜欢吃苹果", "家庭住址与父母电话", "我喜欢蓝色", "今天天气很好"], answer: 1, explanation: "家庭住址和父母电话绝对不能随便告诉！隐私就像一扇门，钥匙在你手里，你有权决定让谁进来。『信息红绿灯』：绿灯可以说（兴趣爱好），黄灯问问大人，红灯绝对不说（住址、爸妈电话）！" },
+            { lesson: "第30课《同样努力却分数不同》", question: "AI因为学习数据不公平而产生的错误偏好叫什么？", options: ["AI偏好", "AI偏见", "AI个性", "AI性格"], answer: 1, explanation: "这就是AI偏见！数据不公平会让AI的结果偏心。比如AI学的数据里『科学家』几乎都是男性，它就会给画男性的科学画高分。偏见不是AI坏，是它『见识不够广』。解决：给AI看更多样、更平衡的数据！" },
+            { lesson: "第31课《超级搭档》", question: "人类和AI最理想的关系是怎样的？", options: ["AI替代所有人", "完全不使用AI", "人类与AI成为超级搭档分工合作", "AI当人类的老板"], answer: 2, explanation: "最好的方式是人和AI搭档！AI擅长：快速处理大量数据、不知疲倦地重复。人擅长：创造力、情感理解、道德判断。各做自己擅长的事，加起来比单独做更厉害！你是AI的助手，AI也是你的助手！" },
+            { lesson: "第32课《小小AI研究员毕业啦》", question: "关于学习，下面哪种说法是对的？", options: ["学习很轻松不会遇到困难", "学习会遇到困难，但知识是慢慢积累的", "毕业了就不用再学习", "只有小孩子才需要学习"], answer: 1, explanation: "学习会遇到困难，但知识是慢慢积累的！32节课你学到了信息、规则、学习、神经网络、安全伦理……保持好奇心和批判性思维——『这是真的吗？这公平吗？这安全吗？』。AI世界在变化，学习是终身过程！" }
+        ];
+
+        // ===== 8大模块关卡 =====
+        const STAGES = [
+            { id: 0, name: "模块A：信息与数据", bg: "#0f172a", pathColor: "#1e293b", waves: 4, startHp: 15, startEnergy: 250, availableTowers: ['switch', 'pixel', 'decoder', 'rgb'], lesson: "第1-4课：信息、0和1、编码、存储" },
+            { id: 1, name: "模块B：像素与颜色", bg: "#022c22", pathColor: "#064e3b", waves: 4, startHp: 15, startEnergy: 280, availableTowers: ['switch', 'pixel', 'decoder', 'rgb', 'magnifier'], lesson: "第5-8课：像素、RGB、压缩、噪声" },
+            { id: 2, name: "模块C：算法思维", bg: "#1e1b4b", pathColor: "#312e81", waves: 4, startHp: 15, startEnergy: 420, availableTowers: ['switch', 'pixel', 'decoder', 'rgb', 'magnifier', 'loop'], lesson: "第9-12课：条件判断、循环、任务分解、调试" },
+            { id: 3, name: "模块D：分类预测", bg: "#311021", pathColor: "#581c87", waves: 5, startHp: 20, startEnergy: 460, availableTowers: ['switch', 'pixel', 'decoder', 'rgb', 'magnifier', 'loop', 'classifier'], lesson: "第13-17课：分类、特征、预测、过拟合、训练测试集" },
+            { id: 4, name: "模块E：机器学习", bg: "#1c1917", pathColor: "#7c2d12", waves: 5, startHp: 22, startEnergy: 620, availableTowers: ['switch', 'pixel', 'decoder', 'rgb', 'magnifier', 'loop', 'classifier', 'predictor'], lesson: "第18-20课：强化学习、监督学习、无监督学习" },
+            { id: 5, name: "模块F：神经网络", bg: "#0c0a09", pathColor: "#7e22ce", waves: 5, startHp: 25, startEnergy: 660, availableTowers: ['switch', 'pixel', 'decoder', 'rgb', 'magnifier', 'loop', 'classifier', 'predictor', 'neural'], lesson: "第21-24课：神经网络、分层、权重、梯度下降" },
+            { id: 6, name: "模块G：语言模型", bg: "#0f172a", pathColor: "#0e7490", waves: 5, startHp: 28, startEnergy: 700, availableTowers: ['switch', 'pixel', 'decoder', 'rgb', 'magnifier', 'loop', 'classifier', 'predictor', 'neural', 'reinforce'], lesson: "第25-28课：语言模型、提示词、生成式AI、AI幻觉" },
+            { id: 7, name: "模块H：AI伦理协作", bg: "#450a0a", pathColor: "#991b1b", waves: 6, startHp: 30, startEnergy: 740, availableTowers: ['switch', 'pixel', 'decoder', 'rgb', 'magnifier', 'loop', 'classifier', 'predictor', 'neural', 'reinforce', 'prompt'], lesson: "第29-32课：隐私、偏见、人机协作、终身学习" }
+        ];
+
+        // ===== 12种防御塔数据 =====
+        const TOWER_TYPES = {
+            // 第2课 开关城
+            switch: {
+                name: "01 开关发射塔", cost: 100, range: 120, damage: 18, cooldown: 20,
+                color: "#3b82f6", icon: "01", lesson: "第2课《开关城》",
+                desc: "电脑内部用二进制0和1表示与传输所有信息。",
+                category: "binary"
+            },
+            // 第5课 像素
+            pixel: {
+                name: "像素瞄准塔", cost: 120, range: 140, damage: 14, cooldown: 18,
+                color: "#06b6d4", icon: "▦", lesson: "第5课《像素》",
+                desc: "像素越多画面越清晰，像素塔能精准打击模糊敌人。",
+                category: "precision"
+            },
+            // 第6课 RGB
+            rgb: {
+                name: "RGB调色塔", cost: 180, range: 130, damage: 22, cooldown: 24,
+                color: "#ec4899", icon: "RGB", lesson: "第6课《RGB》",
+                desc: "RGB三原色：红+绿=黄，绿+蓝=青，红+蓝=紫！",
+                category: "color"
+            },
+            // 第3课 编码
+            decoder: {
+                name: "密码破译塔", cost: 140, range: 110, damage: 20, cooldown: 28,
+                color: "#8b5cf6", icon: "码", lesson: "第3课《编码》",
+                desc: "编码和解码必须用同一套规则！破译密码锁敌人护盾。",
+                category: "decoder"
+            },
+            // 第14课 特征
+            magnifier: {
+                name: "特征放大镜", cost: 150, range: 140, damage: 8, cooldown: 30,
+                color: "#10b981", icon: "征", slow: 0.5, lesson: "第14课《特征》",
+                desc: "减速50%并破除数据噪声的隐藏隐身。",
+                category: "support"
+            },
+            // 第10课 循环
+            loop: {
+                name: "循环炮塔", cost: 160, range: 130, damage: 12, cooldown: 22,
+                color: "#f59e0b", icon: "环", multishot: 3, lesson: "第10课《循环》",
+                desc: "重复执行同一个步骤！一次发射3发子弹。",
+                category: "rapid"
+            },
+            // 第13课 分类
+            classifier: {
+                name: "分类扫描塔", cost: 200, range: 150, damage: 16, cooldown: 26,
+                color: "#14b8a6", icon: "类", markBonus: 0.5, lesson: "第13课《分类》",
+                desc: "AI靠分类认识世界！标记敌人弱点，被标记敌人受所有塔+50%伤害。",
+                category: "support"
+            },
+            // 第15课 预测
+            predictor: {
+                name: "预测水晶塔", cost: 220, range: 170, damage: 28, cooldown: 32,
+                color: "#a855f7", icon: "测", critRate: 0.3, lesson: "第15课《预测》",
+                desc: "根据过去规律猜未来！30%概率暴击，但预测不是100%准确。",
+                category: "burst"
+            },
+            // 第21课 神经网络
+            neural: {
+                name: "神经网络塔", cost: 220, range: 160, damage: 14, cooldown: 25,
+                color: "#a855f7", chain: true, icon: "网", lesson: "第21课《神经网络》",
+                desc: "模仿大脑神经元多层节点连结！发射连锁脉冲，在3个敌人间弹射递增伤害。",
+                category: "chain"
+            },
+            // 第18课 强化学习
+            reinforce: {
+                name: "强化学习塔", cost: 240, range: 140, damage: 15, cooldown: 30,
+                color: "#facc15", icon: "奖", comboBonus: 1.5, lesson: "第18课《强化学习》",
+                desc: "做对了得奖励，下次还这么做！连续击杀奖励递增伤害。",
+                category: "combo"
+            },
+            // 第26课 提示词
+            prompt: {
+                name: "提示词魔导", cost: 300, range: 180, damage: 50, cooldown: 55,
+                color: "#f59e0b", splash: 70, icon: "令", lesson: "第26课《提示词》",
+                desc: "设定明确的角色、目标与限制！发射高能魔法爆破球，70px范围AOE伤害。",
+                category: "splash"
+            },
+            // 第12课 调试
+            debugger: {
+                name: "Debug调试塔", cost: 180, range: 120, damage: 10, cooldown: 20,
+                color: "#84cc16", icon: "修", trueDamage: true, lesson: "第12课《调试》",
+                desc: "调试四步骤：发现问题→找到原因→修改→再试！造成真实伤害无视护盾。",
+                category: "pierce"
+            }
+        };
+
+        // ===== 敌人数据（难度提升：HP+50% 奖励+30%）=====
+        const ENEMY_TYPES = {
+            // 第1课 信息
+            bug: { name: "程序Bug", hp: 80, speed: 1.6, reward: 18, radius: 12, color: "#f43f5e", icon: "BUG", lesson: "第12课《调试》" },
+            // 第2课 0和1
+            bitmonster: { name: "0/1比特怪", hp: 55, speed: 2.4, reward: 15, radius: 11, color: "#06b6d4", icon: "01", lesson: "第2课《开关城》" },
+            // 第3课 编码
+            lockmonster: { name: "密码锁怪", hp: 110, speed: 1.1, reward: 30, radius: 13, color: "#8b5cf6", icon: "码", shield: 60, lesson: "第3课《编码》" },
+            // 第5课 像素
+            blurry: { name: "模糊怪", hp: 65, speed: 1.5, reward: 18, radius: 13, color: "#94a3b8", icon: "糊", dodge: 0.25, lesson: "第5课《像素》" },
+            // 第7课 压缩
+            compress: { name: "压缩怪", hp: 35, speed: 2.1, reward: 22, radius: 11, color: "#10b981", icon: "压", expands: true, lesson: "第7课《压缩》" },
+            // 第8课 噪声
+            noise: { name: "数据噪声", hp: 110, speed: 1.3, reward: 25, radius: 14, color: "#64748b", icon: "噪", stealth: true, lesson: "第8课《噪声》" },
+            // 第9课 条件
+            traffic: { name: "红绿信号怪", hp: 140, speed: 1.1, reward: 28, radius: 14, color: "#ef4444", icon: "灯", stopGo: true, lesson: "第9课《条件判断》" },
+            // 第10课 循环
+            loopmonster: { name: "循环重复怪", hp: 90, speed: 1.4, reward: 25, radius: 13, color: "#f59e0b", icon: "环", split: 2, splitHp: 25, lesson: "第10课《循环》" },
+            // 第11课 任务分解
+            pipeline: { name: "流水线怪", hp: 200, speed: 0.85, reward: 45, radius: 16, color: "#0ea5e9", icon: "线", segments: 3, lesson: "第11课《任务分解》" },
+            // 第13课 分类
+            chaos: { name: "混乱怪", hp: 120, speed: 1.6, reward: 26, radius: 14, color: "#a3e635", icon: "乱", lesson: "第13课《分类》" },
+            // 第14课 特征
+            parrot: { name: "死记硬背鹦鹉", hp: 180, speed: 1.9, reward: 38, radius: 15, color: "#10b981", icon: "鹦", lesson: "第16课《过拟合》" },
+            // 第16课 过拟合
+            memorize: { name: "背题怪", hp: 170, speed: 1.7, reward: 35, radius: 14, color: "#facc15", icon: "背", fixedRoute: true, lesson: "第16课《过拟合》" },
+            // 第18课 强化学习
+            puppy: { name: "乱试小狗", hp: 100, speed: 1.6, reward: 28, radius: 13, color: "#fb923c", icon: "试", lesson: "第18课《强化学习》" },
+            // 第19课 监督学习
+            tagged: { name: "标签怪", hp: 160, speed: 1.3, reward: 33, radius: 14, color: "#fb7185", icon: "签", lesson: "第19课《监督学习》" },
+            // 第21课 神经网络
+            neuron: { name: "神经元怪", hp: 220, speed: 1.4, reward: 42, radius: 16, color: "#a78bfa", icon: "元", lesson: "第21课《神经网络》" },
+            // 第24课 梯度
+            gradient: { name: "梯度怪", hp: 320, speed: 1.0, reward: 55, radius: 17, color: "#f97316", icon: "梯", lesson: "第24课《梯度下降》" },
+            // 第25课 语言模型
+            tongue: { name: "话痨怪", hp: 150, speed: 1.5, reward: 30, radius: 14, color: "#22d3ee", icon: "话", lesson: "第25课《语言模型》" },
+            // 第26课 提示词
+            vague: { name: "含糊指令怪", hp: 200, speed: 1.2, reward: 38, radius: 15, color: "#fbbf24", icon: "?", lesson: "第26课《提示词》" },
+            // 第28课 幻觉
+            phantom: { name: "AI幻觉怪", hp: 320, speed: 2.1, reward: 50, radius: 16, color: "#a855f7", icon: "幻", illusion: true, lesson: "第28课《AI幻觉》" },
+            // 第29课 隐私
+            thief: { name: "隐私窃贼", hp: 380, speed: 0.95, reward: 60, radius: 17, color: "#1e293b", icon: "私", shield: 180, lesson: "第29课《隐私保护》" },
+            // 第30课 偏见
+            bias: { name: "数据偏见巨兽", hp: 550, speed: 0.8, reward: 100, radius: 22, color: "#e11d48", icon: "偏", bias: true, lesson: "第30课《偏见》" },
+            // ===== 8大关卡Boss =====
+            bossA: { name: "数据聚合巨兽", hp: 1200, speed: 0.7, reward: 200, radius: 28, color: "#0ea5e9", icon: "聚", isBoss: true, bossModule: 0, bossPhase: 3, bossSkill: "召唤数据怪", summonType: "bug", summonInterval: 8, lesson: "第1课《信息》" },
+            bossB: { name: "RGB混沌王", hp: 1500, speed: 0.8, reward: 220, radius: 30, color: "#ec4899", icon: "RGB", isBoss: true, bossModule: 1, bossPhase: 3, bossSkill: "颜色轮换护盾", colorShield: true, lesson: "第6课《RGB》" },
+            bossC: { name: "死循环魔王", hp: 1800, speed: 0.6, reward: 250, radius: 30, color: "#f59e0b", icon: "循环", isBoss: true, bossModule: 2, bossPhase: 3, bossSkill: "无限分裂", bossSplit: 3, bossSplitHp: 80, lesson: "第10课《循环》" },
+            bossD: { name: "鹦鹉之王", hp: 2200, speed: 0.7, reward: 280, radius: 32, color: "#10b981", icon: "鹦", isBoss: true, bossModule: 3, bossPhase: 3, bossSkill: "复制模仿", bossClone: true, lesson: "第16课《过拟合》" },
+            bossE: { name: "偏见巨像", hp: 2500, speed: 0.6, reward: 320, radius: 34, color: "#be123c", icon: "偏", isBoss: true, bossModule: 4, bossPhase: 3, bossSkill: "4塔全抗", resistTypes: ['switch', 'pixel', 'rgb', 'decoder'], lesson: "第30课《偏见》" },
+            bossF: { name: "神经元主宰", hp: 3000, speed: 0.7, reward: 380, radius: 36, color: "#a855f7", icon: "神经", isBoss: true, bossModule: 5, bossPhase: 3, bossSkill: "召唤神经怪", summonType: "neuron", summonInterval: 6, lesson: "第21课《神经网络》" },
+            bossG: { name: "幻觉魔王", hp: 3500, speed: 0.8, reward: 450, radius: 38, color: "#9333ea", icon: "幻", isBoss: true, bossModule: 6, bossPhase: 3, bossSkill: "真假分身×2", bossClone: true, illusion: true, lesson: "第28课《AI幻觉》" },
+            bossH: { name: "终极Bug王", hp: 5000, speed: 0.7, reward: 800, radius: 42, color: "#dc2626", icon: "AI", isBoss: true, bossModule: 7, bossPhase: 3, bossSkill: "全技能+召唤", summonType: "bug", summonInterval: 5, bossClone: true, colorShield: true, lesson: "第31课《人机协作》" }
+        };
+
+        // ===== 关卡波次配置（难度全面提升 + 每关Boss）=====
+        const STAGE_WAVES = {
+            0: [ // 模块A - 信息与数据
+                { bug: 12, bitmonster: 6 },
+                { bug: 18, bitmonster: 10, lockmonster: 4 },
+                { bug: 25, bitmonster: 15, lockmonster: 8 },
+                { bug: 20, bitmonster: 12, lockmonster: 6, bossA: 1 }
+            ],
+            1: [ // 模块B - 像素与颜色
+                { blurry: 15, compress: 5 },
+                { blurry: 18, compress: 10, noise: 8 },
+                { blurry: 25, compress: 15, noise: 12 },
+                { blurry: 20, compress: 12, noise: 10, bossB: 1 }
+            ],
+            2: [ // 模块C - 算法思维
+                { traffic: 12, loopmonster: 8 },
+                { traffic: 18, loopmonster: 12, pipeline: 5 },
+                { traffic: 22, loopmonster: 15, pipeline: 10 },
+                { traffic: 25, loopmonster: 20, pipeline: 12, bossC: 1 }
+            ],
+            3: [ // 模块D - 分类预测（🔧 第一波怪数 -25%，起步更平滑）
+                { chaos: 12, parrot: 4 },
+                { chaos: 20, parrot: 12, memorize: 10 },
+                { chaos: 25, parrot: 15, memorize: 15 },
+                { chaos: 30, parrot: 20, memorize: 18 },
+                { chaos: 25, parrot: 18, memorize: 15, bossD: 1 }
+            ],
+            4: [ // 模块E - 机器学习（🔧 第一波怪数 -22%）
+                { puppy: 12, tagged: 6 },
+                { puppy: 20, tagged: 15, parrot: 8 },
+                { puppy: 25, tagged: 20, parrot: 12 },
+                { puppy: 30, tagged: 25, parrot: 15 },
+                { puppy: 25, tagged: 20, parrot: 15, bossE: 1 }
+            ],
+            5: [ // 模块F - 神经网络（🔧 第一波怪数 -24%）
+                { neuron: 10, gradient: 3 },
+                { neuron: 18, gradient: 10, puppy: 8 },
+                { neuron: 25, gradient: 15, tagged: 12 },
+                { neuron: 30, gradient: 20, tagged: 18 },
+                { neuron: 25, gradient: 18, tagged: 15, bossF: 1 }
+            ],
+            6: [ // 模块G - 语言模型（🔧 第一波怪数 -22%）
+                { tongue: 12, vague: 6 },
+                { tongue: 20, vague: 15, phantom: 8 },
+                { tongue: 25, vague: 20, phantom: 15 },
+                { tongue: 30, vague: 25, phantom: 20 },
+                { tongue: 35, vague: 30, phantom: 25 },
+                { tongue: 25, vague: 20, phantom: 20, bossG: 1 }
+            ],
+            7: [ // 模块H - AI伦理协作（终极）（🔧 第一波怪数 -27%）
+                { thief: 9, bias: 2 },
+                { thief: 18, bias: 6, phantom: 10 },
+                { thief: 25, bias: 10, phantom: 18 },
+                { thief: 30, bias: 15, phantom: 25 },
+                { thief: 35, bias: 20, phantom: 30 },
+                { thief: 40, bias: 25, phantom: 35, bossH: 1 }
+            ]
+        };
+
+        // ===== 勋章墙 & 星级系统 =====
+        // 🔧 v2: 改用百分比星级，旧 v1 存档的 3 星记录无法重算（HP 未保存），故清档重启
+        const STORAGE_KEY = 'ai_tower_defense_progress_v2';
+
+        // 勋章定义：ID、名称、描述、图标、颜色、稀有度
+        const BADGES = {
+            module_a: { name: "信息侦探", desc: "通关模块A·信息与数据", icon: "📜", color: "#3b82f6", rarity: "common" },
+            module_b: { name: "像素画师", desc: "通关模块B·像素与颜色", icon: "🎨", color: "#10b981", rarity: "common" },
+            module_c: { name: "算法大师", desc: "通关模块C·算法思维", icon: "🧮", color: "#f59e0b", rarity: "common" },
+            module_d: { name: "分类专家", desc: "通关模块D·分类预测", icon: "🏷️", color: "#a855f7", rarity: "common" },
+            module_e: { name: "学习之星", desc: "通关模块E·机器学习", icon: "🎯", color: "#eab308", rarity: "common" },
+            module_f: { name: "神经先知", desc: "通关模块F·神经网络", icon: "🧠", color: "#a78bfa", rarity: "common" },
+            module_g: { name: "语言工匠", desc: "通关模块G·语言模型", icon: "💬", color: "#22d3ee", rarity: "common" },
+            module_h: { name: "AI守护者", desc: "通关模块H·AI伦理协作（最终关）", icon: "🛡️", color: "#dc2626", rarity: "rare" },
+            first_victory: { name: "初次胜利", desc: "首次通关任意关卡", icon: "🎖️", color: "#fbbf24", rarity: "common" },
+            three_stars_one: { name: "完美首秀", desc: "任意一关获得3星", icon: "🌟", color: "#fbbf24", rarity: "common" },
+            three_stars_all: { name: "完美大师", desc: "所有关卡获得3星", icon: "👑", color: "#f59e0b", rarity: "legendary" },
+            two_stars_all: { name: "熟练玩家", desc: "所有关卡获得2星以上", icon: "⚔️", color: "#06b6d4", rarity: "rare" },
+            boss_slayer: { name: "Boss猎人", desc: "击败所有8个Boss", icon: "🐲", color: "#dc2626", rarity: "rare" },
+            ai_scholar: { name: "AI学者", desc: "答题答对10次", icon: "🎓", color: "#a855f7", rarity: "common" },
+            ai_expert: { name: "AI专家", desc: "答题答对30次", icon: "📚", color: "#7c3aed", rarity: "rare" },
+            ai_master: { name: "AI之巅", desc: "答题答对50次", icon: "🏆", color: "#facc15", rarity: "legendary" },
+            boss_first_kill: { name: "初战Boss", desc: "首次击败Boss", icon: "⚡", color: "#f59e0b", rarity: "common" },
+            champion: { name: "无敌玩家", desc: "解锁所有勋章", icon: "🌈", color: "#ec4899", rarity: "legendary" }
+        };
+
+        // 关卡模块勋章映射
+        const STAGE_BADGE_MAP = ['module_a', 'module_b', 'module_c', 'module_d', 'module_e', 'module_f', 'module_g', 'module_h'];
+
+        // 默认进度
+        function getDefaultProgress() {
+            return {
+                stageStars: [0, 0, 0, 0, 0, 0, 0, 0],   // 每关星星数（0-3）
+                badges: [],                              // 已获得的勋章ID
+                bossKilled: [false, false, false, false, false, false, false, false],  // 每个Boss是否击杀
+                stats: {
+                    totalQuizzesCorrect: 0,              // 答题答对次数
+                    totalBossKills: 0                    // Boss击杀总数
+                }
+            };
+        }
+
+        // 加载进度
+        function loadProgress() {
+            try {
+                const raw = localStorage.getItem(STORAGE_KEY);
+                if (!raw) return getDefaultProgress();
+                const data = JSON.parse(raw);
+                // 兼容性合并
+                const def = getDefaultProgress();
+                return {
+                    stageStars: data.stageStars || def.stageStars,
+                    badges: data.badges || def.badges,
+                    bossKilled: data.bossKilled || def.bossKilled,
+                    stats: { ...def.stats, ...(data.stats || {}) }
+                };
+            } catch (e) {
+                return getDefaultProgress();
+            }
+        }
+
+        // 保存进度
+        function saveProgress(progress) {
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
+            } catch (e) {}
+        }
+
+        // 全局进度对象
+        let playerProgress = loadProgress();
+
+        // ⭐ 星级评定标准（唯一真源 — 百分比，避免与关卡 startHp 耦合）
+        const STAR_THRESHOLDS = { three: 0.85, two: 0.55 };
+
+        // 🔧 取关卡满血值（供星级/UI统一使用，杜绝硬编码 15）
+        function getStageMaxHp(level) {
+            const stg = STAGES[level];
+            return (stg && typeof stg.startHp === 'number') ? stg.startHp : 15;
+        }
+
+        // 计算星级（基于剩余HP百分比，关卡通用）
+        function calculateStars(remainingHP, maxHP) {
+            // 🔧 修复：原实现硬编码 12/6 绝对HP阈值，与关卡 startHp(15~30) 无关，
+            //    导致 D~H 关"惨胜"也判 3 星。改为百分比判定。
+            if (remainingHP <= 0) return 0;
+            const cap = (typeof maxHP === 'number' && maxHP > 0) ? maxHP : 15;
+            const pct = Math.max(0, Math.min(1, remainingHP / cap));
+            if (pct >= STAR_THRESHOLDS.three) return 3;
+            if (pct >= STAR_THRESHOLDS.two) return 2;
+            return 1;
+        }
+
+        // ⭐ 单波星星计算（与终评同一套百分比标准）
+        function calculateWaveStars(remainingHP, maxHP) {
+            return calculateStars(remainingHP, maxHP);
+        }
+
+        // ⭐ 浮空星星动画（波次结束时短暂显示）
+        function showWaveStarsToast(stars, hp, maxHP) {
+            if (stars === 0) return;
+            const colors = { 3: '#fbbf24', 2: '#06b6d4', 1: '#10b981' };
+            const labels = { 3: '完美！', 2: '良好', 1: '及格' };
+            const toast = document.createElement('div');
+            toast.className = 'fixed left-1/2 -translate-x-1/2 z-40 glass-panel px-6 py-3 rounded-2xl border-2 flex flex-col items-center gap-2';
+            toast.style.borderColor = colors[stars];
+            toast.style.boxShadow = `0 0 30px ${colors[stars]}66`;
+            // 直接显示，无rAF依赖
+            toast.style.top = '96px';
+            toast.style.opacity = '1';
+            toast.innerHTML = `
+                <div class="text-xs font-bold" style="color:${colors[stars]}">本波评级 · ${labels[stars]}</div>
+                <div class="flex gap-2">
+                    ${[1,2,3].map(i => `<svg style="color:${i <= stars ? colors[stars] : '#334155'}; width:${i <= stars ? '36px' : '32px'}; height:${i <= stars ? '36px' : '32px'}" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>`).join('')}
+                </div>
+                <div class="text-xs text-slate-300">剩余生命: <b class="text-white">${hp}/${maxHP}</b></div>
+            `;
+            document.body.appendChild(toast);
+            // 1.6秒后淡出移除
+            setTimeout(() => {
+                toast.style.transition = 'top 0.5s ease, opacity 0.5s ease';
+                toast.style.opacity = '0';
+                toast.style.top = '-30px';
+                setTimeout(() => toast.remove(), 500);
+            }, 1600);
+        }
+
+        // 授予勋章（去重）
+        function awardBadge(badgeId) {
+            if (!BADGES[badgeId]) return false;
+            if (playerProgress.badges.includes(badgeId)) return false;
+            playerProgress.badges.push(badgeId);
+            saveProgress(playerProgress);
+            updateBadgeCount();
+            return true;
+        }
+
+        // 更新勋章按钮上的角标
+        function updateBadgeCount() {
+            const badgeCount = document.getElementById('badge-count');
+            if (badgeCount) {
+                const count = playerProgress.badges.length;
+                if (count > 0) {
+                    badgeCount.innerText = count;
+                    badgeCount.classList.remove('hidden');
+                } else {
+                    badgeCount.classList.add('hidden');
+                }
+            }
+        }
+
+        // 打开勋章墙模态框
+        function openBadgeWall() {
+            const modal = document.getElementById('modal-badges');
+            modal.classList.remove('hidden');
+
+            // 更新统计
+            const totalStars = playerProgress.stageStars.reduce((a, b) => a + b, 0);
+            const clearedStages = playerProgress.stageStars.filter(s => s > 0).length;
+            const totalBosses = playerProgress.bossKilled.filter(b => b).length;
+            document.getElementById('stat-stars').innerText = `${totalStars}/24`;
+            document.getElementById('stat-stages').innerText = `${clearedStages}/8`;
+            document.getElementById('stat-bosses').innerText = totalBosses;
+            document.getElementById('stat-correct').innerText = playerProgress.stats.totalQuizzesCorrect;
+
+            // 关卡星星列表
+            const stageList = document.getElementById('badges-stage-list');
+            stageList.innerHTML = '';
+            STAGES.forEach((stage, idx) => {
+                const stars = playerProgress.stageStars[idx] || 0;
+                const starHtml = [1, 2, 3].map(i =>
+                    i <= stars
+                        ? `<svg class="inline w-5 h-5 text-amber-400" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>`
+                        : `<svg class="inline w-5 h-5 text-slate-700" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>`
+                ).join('');
+                const card = document.createElement('div');
+                card.className = `p-2 rounded-xl border ${stars > 0 ? 'border-amber-500/40 bg-slate-800/80' : 'border-slate-700 bg-slate-900/40'} text-center`;
+                card.innerHTML = `
+                    <div class="text-[10px] text-slate-400 mb-1">${stage.name.replace(/模块[A-Z]：/, '')}</div>
+                    <div class="flex justify-center gap-0.5 text-sm">${starHtml}</div>
+                    <div class="text-[10px] text-slate-500 mt-1">${stars}/3</div>
+                `;
+                stageList.appendChild(card);
+            });
+
+            // 勋章网格
+            const grid = document.getElementById('badges-grid');
+            grid.innerHTML = '';
+            Object.keys(BADGES).forEach(badgeId => {
+                const badge = BADGES[badgeId];
+                const owned = playerProgress.badges.includes(badgeId);
+                const card = document.createElement('div');
+                card.className = `p-3 rounded-xl border text-center transition ${owned ? `${ownedStyle(badge.rarity)} hover:scale-105` : 'border-slate-700/50 bg-slate-900/40 opacity-50 grayscale'}`;
+                card.title = owned ? badge.desc : '??? 未解锁';
+                card.innerHTML = `
+                    <div class="text-3xl mb-1 ${owned ? '' : 'blur-sm'}">${badge.icon}</div>
+                    <div class="text-[10px] font-bold ${owned ? 'text-slate-100' : 'text-slate-600'} truncate">${owned ? badge.name : '未解锁'}</div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // 稀有度样式
+        function ownedStyle(rarity) {
+            if (rarity === 'legendary') return 'border-yellow-400/60 bg-gradient-to-br from-amber-500/20 to-yellow-500/20 shadow-lg shadow-amber-500/20';
+            if (rarity === 'rare') return 'border-cyan-500/40 bg-cyan-500/10';
+            return 'border-slate-500/40 bg-slate-700/30';
+        }
+
+        // 显示关卡胜利星级
+        function showStageStars(stageIdx, stageName, remainingHP, maxHP, cumulativeStars, maxPossible) {
+            // ⭐ 新规则：每波独立计分，最终星级 = 所有波次星星综合
+            // cumulativeStars = 各波星星之和；maxPossible = waves × 3（满星）
+            // 视觉星级 0-3：基于 cumulativeStars 占 maxPossible 的百分比
+            const totalScore = (typeof cumulativeStars === 'number') ? cumulativeStars : 0;
+            const cap = (typeof maxPossible === 'number' && maxPossible > 0) ? maxPossible : 12;
+            const pct = (cap > 0) ? Math.max(0, Math.min(1, totalScore / cap)) : 0;
+
+            let stars;
+            if (totalScore <= 0 || pct <= 0) stars = 0;
+            else if (pct >= STAR_THRESHOLDS.three) stars = 3;
+            else if (pct >= STAR_THRESHOLDS.two) stars = 2;
+            else stars = 1;
+
+            const newBadges = [];
+
+            // 更新进度
+            if (stars > playerProgress.stageStars[stageIdx]) {
+                playerProgress.stageStars[stageIdx] = stars;
+            }
+
+            // 授予关卡勋章（任何星级都授予）
+            const stageBadgeId = STAGE_BADGE_MAP[stageIdx];
+            if (stageBadgeId && awardBadge(stageBadgeId)) {
+                newBadges.push(stageBadgeId);
+            }
+
+            // 首次通关勋章
+            if (stars > 0 && !playerProgress.badges.includes('first_victory')) {
+                if (awardBadge('first_victory')) newBadges.push('first_victory');
+            }
+
+            // 3星勋章
+            if (stars === 3) {
+                if (!playerProgress.badges.includes('three_stars_one')) {
+                    if (awardBadge('three_stars_one')) newBadges.push('three_stars_one');
+                }
+            }
+
+            // 全3星勋章
+            const allThreeStars = playerProgress.stageStars.every(s => s === 3);
+            if (allThreeStars && playerProgress.stageStars.filter(s => s === 3).length === 8) {
+                if (awardBadge('three_stars_all')) newBadges.push('three_stars_all');
+            }
+
+            // 全2星以上
+            const allTwoPlus = playerProgress.stageStars.filter(s => s >= 2).length === 8;
+            if (allTwoPlus) {
+                if (awardBadge('two_stars_all')) newBadges.push('two_stars_all');
+            }
+
+            // Boss 击杀
+            if (!playerProgress.bossKilled[stageIdx]) {
+                playerProgress.bossKilled[stageIdx] = true;
+                playerProgress.stats.totalBossKills++;
+                if (awardBadge('boss_first_kill')) newBadges.push('boss_first_kill');
+            }
+            const allBossesKilled = playerProgress.bossKilled.every(b => b);
+            if (allBossesKilled) {
+                if (awardBadge('boss_slayer')) newBadges.push('boss_slayer');
+            }
+
+            // 全部勋章解锁 = champion
+            const allOwned = Object.keys(BADGES).every(id => playerProgress.badges.includes(id));
+            if (allOwned) {
+                if (awardBadge('champion')) newBadges.push('champion');
+            }
+
+            saveProgress(playerProgress);
+            updateBadgeCount();
+
+            // 显示模态
+            const modal = document.getElementById('modal-stars');
+            document.getElementById('stars-stage-name').innerText = stageName;
+            document.getElementById('stars-total-value').innerText = totalScore;
+            document.getElementById('stars-total-max').innerText = cap;
+
+            // 设置星星动画
+            const starEls = document.querySelectorAll('#stars-row .star');
+            starEls.forEach((el, i) => {
+                el.classList.remove('text-amber-400', 'text-amber-300', 'text-amber-200', 'scale-125');
+                el.classList.add('text-slate-700');
+                el.style.transform = 'scale(1)';
+                if (i < stars) {
+                    setTimeout(() => {
+                        el.classList.remove('text-slate-700');
+                        el.classList.add('text-amber-300');
+                        el.style.transform = 'scale(1.25)';
+                        el.style.transition = 'all 0.4s';
+                    }, 200 + i * 250);
+                }
+            });
+
+            // 提示文字
+            const msgEl = document.getElementById('stars-message');
+            if (stars === 3) msgEl.innerHTML = '<span class="text-amber-300">完美通关！🎉</span>';
+            else if (stars === 2) msgEl.innerHTML = '<span class="text-cyan-300">优秀！⚔️</span>';
+            else msgEl.innerHTML = '<span class="text-emerald-300">通关成功！🎖️</span>';
+
+            // 新勋章
+            const badgeEl = document.getElementById('stars-new-badge');
+            const badgeTextEl = document.getElementById('stars-new-badge-text');
+            if (newBadges.length > 0) {
+                badgeEl.classList.remove('hidden');
+                badgeEl.classList.add('flex');
+                const names = newBadges.map(id => BADGES[id]?.name || id).join('、');
+                badgeTextEl.innerText = `解锁新勋章：${names}`;
+            } else {
+                badgeEl.classList.add('hidden');
+                badgeEl.classList.remove('flex');
+            }
+
+            modal.classList.remove('hidden');
+
+            return newBadges;
+        }
+
+        class GameEngine {
+            constructor(canvas) {
+                this.canvas = canvas;
+                this.ctx = canvas.getContext('2d');
+
+                this.energy = 250;
+                this.hp = 15;
+                this.level = 0;
+                this.wave = 1;
+                this.maxWaves = 5;
+                this.waveInProgress = false;
+                this.waveCleared = false;
+                this.speed = 1;
+                this.paused = false;
+                this.gameLoopId = null;
+
+                this.selectedTowerType = 'switch';
+                this.towers = [];
+                this.enemies = [];
+                this.projectiles = [];
+                this.particles = [];
+                this.floatingTexts = [];
+
+                this.path = [];
+                this.gridSize = 48;
+                this.hoverGrid = { x: -1, y: -1 };
+                this.hoveredTower = null;
+
+                this.spawnTimer = null;
+                this.gradientBoostTimer = 0;
+                this.comboCounter = 0;
+                this.lastKillTime = 0;
+                this.cumulativeStars = 0;   // 本局累计星星
+                this.totalKills = 0;        // 本局累计击杀
+                this.gameOverActive = false;
+                this.quizHandled = false;   // 🔧 防答题回调与关闭按钮双重触发
+                this.quizOpenedThisSession = false; // 🔧 会话级标记：本次游戏是否开过答题（重置后清零，防止关闭按钮误触发 wave++）
+                this.explosions = [];        // 🔧 提示词爆破冲击波动画
+                this.frozenShards = [];      // 🔧 冰冻粒子（每帧动态绘制）
+                this.pendingTimers = [];     // 🔧 跟踪所有延迟任务，gameOver时清理
+
+                // Boss系统
+                this.bossActive = false;
+                this.bossSkillTimer = 0;
+
+                this.initResize();
+                this.bindEvents();
+            }
+
+            start() {
+                if (!this.gameLoopId) {
+                    const loop = () => {
+                        if (!this.paused) {
+                            for (let i = 0; i < this.speed; i++) {
+                                this.update();
+                            }
+                        }
+                        this.render();
+                        this.gameLoopId = requestAnimationFrame(loop);
+                    };
+                    this.gameLoopId = requestAnimationFrame(loop);
+                }
+            }
+
+            createParticles(x, y, color, count = 10) {
+                for (let i = 0; i < count; i++) {
+                    const angle = Math.random() * Math.PI * 2;
+                    const speed = 1 + Math.random() * 3;
+                    this.particles.push({ x, y, vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed, life: 20 + Math.random() * 15, size: 2 + Math.random() * 3, color });
+                }
+            }
+
+            addFloatingText(text, x, y, color = "#ffffff") {
+                this.floatingTexts.push({ text, x, y, life: 40, color });
+            }
+
+            initResize() {
+                let prevW = 0, prevH = 0;
+                const resize = () => {
+                    const rect = this.canvas.parentElement.getBoundingClientRect();
+                    const newW = rect.width;
+                    const newH = rect.height;
+
+                    // 🔧 窗口缩放时，根据新旧比例等比例平移已存在的实体坐标，避免敌人"脱轨"
+                    if (prevW > 0 && prevH > 0 && (newW !== prevW || newH !== prevH)) {
+                        const scaleX = newW / prevW;
+                        const scaleY = newH / prevH;
+                        this.enemies.forEach(e => {
+                            e.x *= scaleX;
+                            e.y *= scaleY;
+                        });
+                        this.projectiles.forEach(p => {
+                            p.x *= scaleX;
+                            p.y *= scaleY;
+                            if (p.targetX !== undefined) p.targetX *= scaleX;
+                            if (p.targetY !== undefined) p.targetY *= scaleY;
+                        });
+                        this.particles.forEach(pt => {
+                            pt.x *= scaleX;
+                            pt.y *= scaleY;
+                        });
+                        this.floatingTexts.forEach(ft => {
+                            ft.x *= scaleX;
+                            ft.y *= scaleY;
+                        });
+                        if (this.explosions) {
+                            this.explosions.forEach(exp => {
+                                exp.x *= scaleX;
+                                exp.y *= scaleY;
+                            });
+                        }
+                    }
+
+                    prevW = newW;
+                    prevH = newH;
+                    this.canvas.width = newW;
+                    this.canvas.height = newH;
+                    this.generatePath();
+                };
+                window.addEventListener('resize', resize);
+                resize();
+            }
+
+            generatePath() {
+                const w = this.canvas.width;
+                const h = this.canvas.height;
+                const P = (x, y) => ({ x: x * w, y: y * h });
+
+                // 🔧 8 关 8 条独立主题路径：每关用归一化坐标（0-1），按 this.level 切换
+                const PATHS = {
+                    // A 信息侦探：横贯3段直路，最易
+                    0: [P(0, 0.50), P(0.30, 0.50), P(0.30, 0.25), P(0.70, 0.25), P(0.70, 0.75), P(1, 0.75)],
+                    // B 像素与颜色：栅格Z字扫描（5列3行）
+                    1: [P(0, 0.20), P(0.20, 0.20), P(0.20, 0.40), P(0.40, 0.40), P(0.40, 0.20), P(0.60, 0.20), P(0.60, 0.40), P(0.80, 0.40), P(0.80, 0.20), P(1, 0.20)],
+                    // C 算法思维：S锯齿，5次扫动
+                    2: [P(0, 0.15), P(0.25, 0.15), P(0.25, 0.50), P(0.50, 0.50), P(0.50, 0.15), P(0.75, 0.15), P(0.75, 0.85), P(0.85, 0.85), P(1, 0.85)],
+                    // D 分类预测：决策树形（分支汇合）
+                    3: [P(0, 0.50), P(0.30, 0.50), P(0.30, 0.25), P(0.55, 0.25), P(0.55, 0.75), P(0.30, 0.75), P(0.30, 0.50), P(0.70, 0.50), P(0.70, 0.25), P(1, 0.25)],
+                    // E 机器学习：Sigmoid 曲线近似
+                    4: [P(0, 0.30), P(0.20, 0.30), P(0.35, 0.70), P(0.50, 0.70), P(0.65, 0.30), P(0.80, 0.30), P(0.90, 0.55), P(1, 0.55)],
+                    // F 神经网络：4层横线（层-边-层折线）
+                    5: [P(0, 0.20), P(0.25, 0.20), P(0.25, 0.80), P(0.50, 0.80), P(0.50, 0.20), P(0.75, 0.20), P(0.75, 0.80), P(1, 0.80)],
+                    // G 语言模型：正弦波形振荡
+                    6: [P(0, 0.50), P(0.10, 0.20), P(0.25, 0.80), P(0.40, 0.20), P(0.55, 0.80), P(0.70, 0.20), P(0.85, 0.80), P(1, 0.50)],
+                    // H AI伦理（最终Boss）：螺旋+中央回环
+                    7: [P(0, 0.50), P(0.20, 0.50), P(0.20, 0.20), P(0.80, 0.20), P(0.80, 0.80), P(0.20, 0.80), P(0.20, 0.35), P(0.65, 0.35), P(0.65, 0.65), P(0.50, 0.65), P(0.50, 0.50), P(1, 0.50)]
+                };
+
+                this.path = PATHS[this.level] || PATHS[0];
+            }
+
+            bindEvents() {
+                this.canvas.addEventListener('mousemove', (e) => {
+                    const rect = this.canvas.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    this.hoverGrid = {
+                        x: Math.floor(x / this.gridSize) * this.gridSize,
+                        y: Math.floor(y / this.gridSize) * this.gridSize,
+                        rawX: x, rawY: y
+                    };
+                    this.hoveredTower = this.towers.find(t => Math.hypot(t.x - x, t.y - y) < 24) || null;
+                    this.updateTowerHoverTooltip(rect, x, y);
+                });
+
+                this.canvas.addEventListener('mouseleave', () => {
+                    document.getElementById('tower-info-hover').classList.add('hidden');
+                });
+
+                this.canvas.addEventListener('click', () => {
+                    sound.init();
+                    tryPlayBGM();
+                    if (this.paused) return;
+                    this.tryBuildTower();
+                });
+
+                document.addEventListener('keydown', (e) => {
+                    // 🔧 任何模态框开启时，禁止快捷键触发建造塔（防止答题/勋章墙中按数字键误操作）
+                    const quizVisible = !document.getElementById('modal-quiz').classList.contains('hidden');
+                    const badgesVisible = !document.getElementById('modal-badges').classList.contains('hidden');
+                    const starsVisible = !document.getElementById('modal-stars').classList.contains('hidden');
+                    const stageVisible = !document.getElementById('modal-stage').classList.contains('hidden');
+                    if (quizVisible || badgesVisible || starsVisible || stageVisible) return;
+
+                    if (e.key === '1') this.selectTower('switch');
+                    else if (e.key === '2') this.selectTower('pixel');
+                    else if (e.key === '3') this.selectTower('magnifier');
+                    else if (e.key === '4') this.selectTower('neural');
+                    else if (e.key === '5') this.selectTower('prompt');
+                    else if (e.key === 'q' || e.key === 'Q') this.selectTower('rgb');
+                    else if (e.key === 'w' || e.key === 'W') this.selectTower('decoder');
+                    else if (e.key === 'e' || e.key === 'E') this.selectTower('loop');
+                    else if (e.key === 'r' || e.key === 'R') this.selectTower('classifier');
+                    else if (e.key === 'a' || e.key === 'A') this.selectTower('predictor');
+                    else if (e.key === 's' || e.key === 'S') this.selectTower('reinforce');
+                    else if (e.key === 'd' || e.key === 'D') this.selectTower('debugger');
+                });
+            }
+
+            selectTower(type) {
+                if (!TOWER_TYPES[type]) return;
+                const stage = STAGES[this.level];
+                if (!stage.availableTowers.includes(type)) {
+                    this.addFloatingText(`该塔在本模块未解锁！`, this.canvas.width / 2, 80, "#f43f5e");
+                    return;
+                }
+                this.selectedTowerType = type;
+                document.querySelectorAll('.tower-card').forEach(c => c.classList.remove('border-cyan-400', 'bg-slate-700/90'));
+                const card = document.querySelector(`[data-tower="${type}"]`);
+                if (card) card.classList.add('border-cyan-400', 'bg-slate-700/90');
+            }
+
+            updateTowerHoverTooltip(rect, mouseX, mouseY) {
+                const hoverCard = document.getElementById('tower-info-hover');
+                if (this.hoveredTower) {
+                    const t = this.hoveredTower;
+                    const config = TOWER_TYPES[t.type];
+                    document.getElementById('hover-tower-name').innerText = config.name;
+                    document.getElementById('hover-tower-level').innerText = `Lvl ${t.level}`;
+                    document.getElementById('hover-tower-desc').innerText = config.desc;
+                    document.getElementById('hover-tower-dmg').innerText = t.damage;
+                    document.getElementById('hover-tower-range').innerText = `${t.range}px`;
+                    const upgradeCost = Math.floor(config.cost * 0.8);
+                    document.getElementById('hover-tower-upgrade').innerText = t.level < 3 ? `点击升级 (+50%伤害, 耗能${upgradeCost})` : "已达到最高等级 Max";
+                    const leftPos = Math.min(rect.width - 240, Math.max(10, mouseX + 15));
+                    const topPos = Math.min(rect.height - 130, Math.max(10, mouseY - 70));
+                    hoverCard.style.left = `${leftPos}px`;
+                    hoverCard.style.top = `${topPos}px`;
+                    hoverCard.classList.remove('hidden');
+                } else {
+                    hoverCard.classList.add('hidden');
+                }
+            }
+
+            tryBuildTower() {
+                const type = TOWER_TYPES[this.selectedTowerType];
+                if (!type) return;
+
+                const stage = STAGES[this.level];
+                if (!stage.availableTowers.includes(this.selectedTowerType)) {
+                    this.addFloatingText(`该塔未解锁！`, this.canvas.width / 2, this.canvas.height / 2, "#f43f5e");
+                    return;
+                }
+
+                const gx = this.hoverGrid.x + this.gridSize / 2;
+                const gy = this.hoverGrid.y + this.gridSize / 2;
+
+                if (gx <= 0 || gy <= 0 || gx >= this.canvas.width || gy >= this.canvas.height) return;
+                if (this.isNearPath(gx, gy, 35)) return;
+
+                const existing = this.towers.find(t => Math.hypot(t.x - gx, t.y - gy) < 22);
+                if (existing) {
+                    const upgradeCost = Math.floor(type.cost * 0.8);
+                    if (existing.level >= 3) {
+                        this.addFloatingText("已强化到极限!", existing.x, existing.y - 20, '#f59e0b');
+                        return;
+                    }
+                    if (this.energy >= upgradeCost) {
+                        this.energy -= upgradeCost;
+                        existing.level++;
+                        existing.damage = Math.floor(existing.damage * 1.5);
+                        existing.range = Math.floor(existing.range * 1.15);
+                        this.addFloatingText(`升级 Lvl ${existing.level}!`, existing.x, existing.y - 20, '#38bdf8');
+                        sound.playCorrect();
+                        this.updateUI();
+                    } else {
+                        this.addFloatingText("能量不足升级!", existing.x, existing.y - 20, "#f43f5e");
+                        sound.playWrong();
+                    }
+                    return;
+                }
+
+                if (this.energy >= type.cost) {
+                    this.energy -= type.cost;
+                    this.towers.push({
+                        type: this.selectedTowerType,
+                        x: gx, y: gy,
+                        level: 1,
+                        range: type.range,
+                        damage: type.damage,
+                        cooldownTimer: 0,
+                        angle: 0
+                    });
+                    sound.playPew();
+                    this.createParticles(gx, gy, type.color, 12);
+                    this.addFloatingText(`+ ${type.name}`, gx, gy - 30, type.color);
+                    this.updateUI();
+                } else {
+                    this.addFloatingText("能量不足!", gx, gy - 20, "#f43f5e");
+                    sound.playWrong();
+                }
+            }
+
+            isNearPath(x, y, minDist) {
+                for (let i = 0; i < this.path.length - 1; i++) {
+                    const p1 = this.path[i];
+                    const p2 = this.path[i + 1];
+                    const l2 = (p2.x - p1.x)**2 + (p2.y - p1.y)**2;
+                    let t = ((x - p1.x) * (p2.x - p1.x) + (y - p1.y) * (p2.y - p1.y)) / l2;
+                    t = Math.max(0, Math.min(1, t));
+                    const projX = p1.x + t * (p2.x - p1.x);
+                    const projY = p1.y + t * (p2.y - p1.y);
+                    if (Math.hypot(x - projX, y - projY) < minDist) return true;
+                }
+                return false;
+            }
+
+            startNextWave() {
+                if (this.waveInProgress) {
+                    showBanner("威胁入侵中！", "请先清除地图上的恶意代码敌人");
+                    return;
+                }
+
+                // 波次编号在答题后已自动递增，直接执行波次
+                const maxWavesInStage = STAGES[this.level].waves;
+                if (this.wave > maxWavesInStage) {
+                    this.stageVictory();
+                    return;
+                }
+
+                this.executeWave();
+            }
+
+            startWave() {
+                // 保留兼容方法
+                this.executeWave();
+            }
+
+            executeWave() {
+                // 真正开始生成敌人
+                this.waveInProgress = true;
+                this.waveCleared = false;
+
+                const maxWavesInStage = STAGES[this.level].waves;
+                const waveConfigs = STAGE_WAVES[this.level] || [{ bug: 10 }];
+                const config = waveConfigs[Math.min(this.wave - 1, waveConfigs.length - 1)];
+
+                let spawnQueue = [];
+                Object.keys(config).forEach(typeKey => {
+                    for (let i = 0; i < config[typeKey]; i++) {
+                        spawnQueue.push(typeKey);
+                    }
+                });
+
+                let spawnIdx = 0;
+                if (this.spawnTimer) clearInterval(this.spawnTimer);
+
+                this.spawnTimer = setInterval(() => {
+                    if (this.paused) return;
+                    if (spawnIdx < spawnQueue.length) {
+                        this.spawnEnemy(spawnQueue[spawnIdx]);
+                        spawnIdx++;
+                    } else {
+                        clearInterval(this.spawnTimer);
+                        this.spawnTimer = null;
+                    }
+                }, 800 / this.speed);
+
+                showBanner(`第 ${this.wave} / ${maxWavesInStage} 波威胁出击！`, `AI核心防御工事全面启用`);
+                this.updateUI();
+            }
+
+            spawnEnemy(typeKey) {
+                const proto = ENEMY_TYPES[typeKey];
+                if (!proto) return;
+
+                // ⚖️ 难度曲线 v5：首波教学难度（Module 3-8 更低）→ 后续更陡曲棍球杆
+                //  - Module 3-8 (level≥2) 首波用 FIRST_WAVE_LEVEL_COEF=0.30（更平缓）
+                //  - Module 1-2 首波仍用 LEVEL_COEF=0.45
+                //  - Boss 按 (1 + level*BOSS_LV + waveMult*BOSS_WV) 缩放
+                const LEVEL_COEF             = 0.45;  // 关卡间成长（普通怪，波次≥2）
+                const FIRST_WAVE_LEVEL_COEF  = 0.30;  // 🔧 Module 3-8 首波专用关卡系数（约 -30%）
+                const FIRST_WAVE_FROM_LEVEL  = 2;     // 从 Module 3 (id=2) 开始应用首波专属系数
+                const WAVE_COEF              = 0.46;  // 波次增长幅度（v3: 0.38 → +21%）
+                const WAVE_EXP               = 1.55;  // 波次陡度（v3: 1.35 → 更陡曲棍球杆）
+                const BOSS_LV                = 0.50;  // Boss 关卡系数（略高于普通怪）
+                const BOSS_WV                = 1.15;  // Boss 波次增益倍数（确保末波 boss 显著提升）
+                const BOSS_REWARD_LV         = 0.45;  // Boss 奖励关卡系数
+                const BOSS_REWARD_WV         = 0.65;  // Boss 奖励波次增益（< BOSS_WV，避免打 boss 暴富）
+
+                const waveMult = this.wave <= 1 ? 0 : Math.pow(this.wave - 1, WAVE_EXP) * WAVE_COEF;
+
+                let difficultyMult, rewardMult;
+                if (proto.isBoss) {
+                    difficultyMult = 1 + this.level * BOSS_LV + waveMult * BOSS_WV;
+                    rewardMult     = 1 + this.level * BOSS_REWARD_LV + waveMult * BOSS_REWARD_WV;
+                } else {
+                    // 🔧 首波且关卡≥Module 3，使用更低关卡系数；其余情况用标准 LEVEL_COEF
+                    const isFirstWaveOfLateStage = this.wave <= 1 && this.level >= FIRST_WAVE_FROM_LEVEL;
+                    const lvCoef = isFirstWaveOfLateStage ? FIRST_WAVE_LEVEL_COEF : LEVEL_COEF;
+                    difficultyMult = 1 + this.level * lvCoef + waveMult;
+                    rewardMult     = 1;  // 普通怪奖励保持不变（用户未要求）
+                }
+                const e = {
+                    type: typeKey,
+                    hp: Math.round(proto.hp * difficultyMult),
+                    maxHp: Math.round(proto.hp * difficultyMult),
+                    speed: proto.speed,
+                    baseSpeed: proto.speed,
+                    reward: Math.round(proto.reward * rewardMult),
+                    color: proto.color,
+                    radius: proto.radius,
+                    icon: proto.icon,
+                    name: proto.name,
+                    pathIdx: 0,
+                    x: this.path[0].x,
+                    y: this.path[0].y,
+                    slowTimer: 0,
+                    marked: false,
+                    stealth: proto.stealth || false,
+                    revealed: false,
+                    shield: proto.shield || 0,
+                    dodge: proto.dodge || 0,
+                    expands: proto.expands || false,
+                    expanded: false,
+                    split: proto.split || 0,
+                    splitHp: proto.splitHp || 0,
+                    hasSplit: false,
+                    segments: proto.segments || 0,
+                    fixedRoute: proto.fixedRoute || false,
+                    illusion: proto.illusion || false,
+                    isBoss: proto.isBoss || false,
+                    stopGo: proto.stopGo || false,
+                    bias: proto.bias || false,
+                    stopTimer: 0,
+                    // Boss专属
+                    bossModule: proto.bossModule || null,
+                    bossSkill: proto.bossSkill || '',
+                    bossSkillTimer: 0,
+                    bossCurrentPhase: 1,
+                    colorShield: proto.colorShield || false,
+                    colorShieldTimer: 0,
+                    summonType: proto.summonType || null,
+                    summonInterval: proto.summonInterval || 0,
+                    bossSplit: proto.bossSplit || 0,
+                    bossSplitHp: proto.bossSplitHp || 0,
+                    bossClone: proto.bossClone || false
+                };
+
+                // 偏见怪对部分塔类型有抗性
+                if (proto.bias) {
+                    e.resistTypes = ['switch', 'pixel'];
+                }
+
+                // Boss有resistTypes时使用Boss专属抗性
+                if (proto.resistTypes) {
+                    e.resistTypes = proto.resistTypes;
+                }
+
+                // 标记Boss出场
+                if (proto.isBoss) {
+                    this.bossActive = true;
+                    setTimeout(() => {
+                        if (this.paused) return;
+                        showBanner(`☠️ ${proto.name} 出现了！`, proto.bossSkill);
+                        sound.playCrit();
+                    }, 800);
+                }
+
+                this.enemies.push(e);
+            }
+
+            update() {
+                if (this.gradientBoostTimer > 0) this.gradientBoostTimer--;
+
+                // 连击计时器
+                if (Date.now() - this.lastKillTime > 3000) {
+                    this.comboCounter = 0;
+                }
+
+                // 特征放大镜效果：减速+破隐身
+                this.towers.filter(t => t.type === 'magnifier').forEach(mag => {
+                    this.enemies.forEach(e => {
+                        if (Math.hypot(e.x - mag.x, e.y - mag.y) <= mag.range) {
+                            e.slowTimer = 10;
+                            if (e.stealth) e.revealed = true;
+                        }
+                    });
+                });
+
+                // 红绿信号怪 - 走走停停（演示条件判断）
+                this.enemies.forEach(e => {
+                    if (e.stopGo) {
+                        e.stopTimer++;
+                        if (e.stopTimer > 80 && e.stopTimer < 100) {
+                            e.speed = 0;
+                        } else if (e.stopTimer >= 100) {
+                            e.stopTimer = 0;
+                            e.speed = e.baseSpeed;
+                        }
+                    }
+                });
+
+                // ===== Boss技能系统 =====
+                this.enemies.forEach(e => {
+                    if (!e.isBoss) return;
+
+                    // Boss阶段检测（基于HP百分比）
+                    const hpPct = e.hp / e.maxHp;
+                    const newPhase = hpPct > 0.66 ? 1 : (hpPct > 0.33 ? 2 : 3);
+                    if (newPhase !== e.bossCurrentPhase) {
+                        e.bossCurrentPhase = newPhase;
+                        const phaseNames = ['第一阶段', '狂暴阶段', '最终阶段'];
+                        this.addFloatingText(`⚠️ ${phaseNames[newPhase - 1]}！`, e.x, e.y - 50, '#ff0066');
+                        this.createParticles(e.x, e.y, '#ff0066', 20);
+                        sound.playCrit();
+                    }
+
+                    // 技能1: 召唤小怪
+                    if (e.summonType && e.summonInterval) {
+                        e.bossSkillTimer++;
+                        if (e.bossSkillTimer >= e.summonInterval * 60) {
+                            e.bossSkillTimer = 0;
+                            const summoned = ENEMY_TYPES[e.summonType];
+                            if (summoned) {
+                                const minion = {
+                                    ...summoned,
+                                    x: e.x - 30,
+                                    y: e.y,
+                                    pathIdx: e.pathIdx,
+                                    path: e.path,
+                                    hp: summoned.hp * 0.6,
+                                    maxHp: summoned.hp * 0.6,
+                                    speed: summoned.speed,
+                                    baseSpeed: summoned.speed,
+                                    reward: Math.floor(summoned.reward / 2),
+                                    isBoss: false,
+                                    radius: summoned.radius
+                                };
+                                this.enemies.push(minion);
+                                this.addFloatingText(`召唤!`, e.x, e.y - 30, e.color);
+                                sound.playPew();
+                            }
+                        }
+                    }
+
+                    // 技能2: 颜色护盾（吸收伤害）
+                    if (e.colorShield) {
+                        e.colorShieldTimer = (e.colorShieldTimer || 0) + 1;
+                        if (e.colorShieldTimer >= 200) {
+                            e.colorShieldTimer = 0;
+                            // 恢复HP
+                            const heal = e.maxHp * 0.1;
+                            e.hp = Math.min(e.maxHp, e.hp + heal);
+                            this.addFloatingText(`+${Math.floor(heal)}`, e.x, e.y - 30, '#10b981');
+                            this.createParticles(e.x, e.y, '#10b981', 8);
+                        }
+                    }
+
+                    // 技能3: Boss分裂（仅在最终阶段）
+                    if (e.bossSplit && e.bossCurrentPhase === 3 && !e.hasSplit) {
+                        e.hasSplit = true;
+                        for (let i = 0; i < e.bossSplit; i++) {
+                            const sub = {
+                                ...e,
+                                x: e.x + (i - 1) * 40,
+                                y: e.y,
+                                hp: e.bossSplitHp,
+                                maxHp: e.bossSplitHp,
+                                pathIdx: e.pathIdx,
+                                speed: e.baseSpeed * 1.4,
+                                baseSpeed: e.baseSpeed * 1.4,
+                                hasSplit: true,
+                                isBoss: false,
+                                bossSplit: 0,
+                                colorShield: false,
+                                summonType: null,
+                                bossClone: false,
+                                reward: Math.floor(e.reward / 3),
+                                radius: 18
+                            };
+                            this.enemies.push(sub);
+                        }
+                        this.addFloatingText(`分身! ×${e.bossSplit}`, e.x, e.y - 50, e.color);
+                        sound.playExplosion();
+                    }
+
+                    // 技能4: Boss复制（克隆）
+                    if (e.bossClone && e.bossCurrentPhase >= 2 && !e.hasSplit) {
+                        e.hasSplit = true;
+                        const clone = {
+                            ...e,
+                            x: e.x + 50,
+                            y: e.y,
+                            hp: e.maxHp * 0.5,
+                            maxHp: e.maxHp * 0.5,
+                            pathIdx: e.pathIdx,
+                            isBoss: false,
+                            bossClone: false,
+                            bossSplit: 0,
+                            colorShield: false,
+                            summonType: null,
+                            reward: Math.floor(e.reward / 2),
+                            radius: e.radius * 0.7
+                        };
+                        this.enemies.push(clone);
+                        this.addFloatingText(`克隆!`, e.x, e.y - 50, e.color);
+                    }
+                });
+
+                // 更新敌人位置
+                for (let i = this.enemies.length - 1; i >= 0; i--) {
+                    const e = this.enemies[i];
+                    let currentSpeed = e.speed;
+                    if (e.slowTimer > 0) {
+                        e.slowTimer--;
+                        currentSpeed *= 0.5;
+                    }
+
+                    // 压缩怪中点展开
+                    if (e.expands && !e.expanded && e.pathIdx >= Math.floor(this.path.length / 2)) {
+                        e.expanded = true;
+                        e.hp *= 3;
+                        e.maxHp *= 3;
+                        e.radius += 6;
+                        e.baseSpeed *= 0.5;
+                        e.speed = e.baseSpeed;
+                        this.addFloatingText(`解压! ×3 HP`, e.x, e.y - 20, '#10b981');
+                        sound.playCrit();
+                    }
+
+                    const target = this.path[e.pathIdx + 1];
+                    if (target) {
+                        const dx = target.x - e.x;
+                        const dy = target.y - e.y;
+                        const dist = Math.hypot(dx, dy);
+
+                        if (dist < currentSpeed) {
+                            e.x = target.x;
+                            e.y = target.y;
+                            e.pathIdx++;
+                        } else {
+                            e.x += (dx / dist) * currentSpeed;
+                            e.y += (dy / dist) * currentSpeed;
+                        }
+                    } else {
+                        this.hp--;
+                        this.createParticles(e.x, e.y, "#ef4444", 15);
+                        this.enemies.splice(i, 1);
+                        this.updateUI();
+                        sound.playWrong();
+                        if (this.hp <= 0) {
+                            this.gameOver();
+                        }
+                    }
+                }
+
+                // 塔射击
+                this.towers.forEach(t => {
+                    const config = TOWER_TYPES[t.type];
+                    if (t.cooldownTimer > 0) {
+                        t.cooldownTimer -= (this.gradientBoostTimer > 0 ? 2 : 1);
+                    }
+
+                    const targets = this.enemies.filter(e => {
+                        const d = Math.hypot(e.x - t.x, e.y - t.y);
+                        if (e.stealth && !e.revealed && t.type !== 'magnifier') return false;
+                        return d <= t.range;
+                    });
+
+                    if (targets.length > 0) {
+                        const target = targets[0];
+                        t.angle = Math.atan2(target.y - t.y, target.x - t.x);
+                        if (t.cooldownTimer <= 0) {
+                            t.cooldownTimer = config.cooldown;
+                            this.shootProjectile(t, target, targets);
+                        }
+                    }
+                });
+
+                // 更新子弹
+                for (let i = this.projectiles.length - 1; i >= 0; i--) {
+                    const p = this.projectiles[i];
+                    let target = p.targetEnemy;
+                    if (!target || target.hp <= 0) {
+                        // 找新目标
+                        const nearest = this.enemies
+                            .filter(e => e.hp > 0 && Math.hypot(e.x - p.x, e.y - p.y) < 100)
+                            .sort((a, b) => Math.hypot(a.x - p.x, a.y - p.y) - Math.hypot(b.x - p.x, b.y - p.y))[0];
+                        if (nearest) {
+                            p.targetEnemy = nearest;
+                            target = nearest;
+                        } else {
+                            this.projectiles.splice(i, 1);
+                            continue;
+                        }
+                    }
+                    const dx = target.x - p.x;
+                    const dy = target.y - p.y;
+                    const dist = Math.hypot(dx, dy);
+                    if (dist < p.speed) {
+                        this.hitTarget(p);
+                        this.projectiles.splice(i, 1);
+                    } else {
+                        p.x += (dx / dist) * p.speed;
+                        p.y += (dy / dist) * p.speed;
+                    }
+                }
+
+                // 更新粒子
+                for (let i = this.particles.length - 1; i >= 0; i--) {
+                    const pt = this.particles[i];
+                    pt.x += pt.vx;
+                    pt.y += pt.vy;
+                    pt.life--;
+                    if (pt.life <= 0) this.particles.splice(i, 1);
+                }
+
+                // 更新浮动文字
+                for (let i = this.floatingTexts.length - 1; i >= 0; i--) {
+                    const ft = this.floatingTexts[i];
+                    ft.y -= 0.8;
+                    ft.life--;
+                    if (ft.life <= 0) this.floatingTexts.splice(i, 1);
+                }
+
+                // 🔧 更新爆炸冲击波动画
+                for (let i = this.explosions.length - 1; i >= 0; i--) {
+                    const exp = this.explosions[i];
+                    exp.timer--;
+                    if (exp.timer <= 0) this.explosions.splice(i, 1);
+                }
+
+                // 波次完成
+                if (this.waveInProgress && !this.spawnTimer && this.enemies.length === 0) {
+                    this.waveInProgress = false;
+                    this.waveCleared = true;
+                    const maxWavesInStage = STAGES[this.level].waves;
+                    const isLastWave = this.wave >= maxWavesInStage;
+                    // ⚖️ 平衡：波次奖励降低，让玩家更紧迫地规划资源
+                    const bonusEnergy = (isLastWave ? 30 : 40) + this.wave * 12;
+                    this.energy += bonusEnergy;
+                    this.bossActive = false;
+                    this.addFloatingText(`波次防御成功 +${bonusEnergy}能量!`, this.canvas.width / 2, this.canvas.height / 2, "#38bdf8");
+                    sound.playCorrect();
+
+                    this.updateUI();
+
+                    if (isLastWave) {
+                        // ⭐ 最后一波也要算并累积星星（之前漏算，导致最后一波分数没计入综合）
+                        const _maxHp = getStageMaxHp(this.level);
+                        const waveStars = calculateWaveStars(this.hp, _maxHp);
+                        this.cumulativeStars = (this.cumulativeStars || 0) + waveStars;
+                        this.pendingTimers.push(setTimeout(() => showWaveStarsToast(waveStars, this.hp, _maxHp), 600));
+                        this.pendingTimers.push(setTimeout(() => this.stageVictory(), 2200));
+                    } else {
+                        // ⭐ 计算并显示本波星星
+                        const _maxHp = getStageMaxHp(this.level); // 🔧 用关卡实际满血值（之前硬编码 15 导致 D~H 关几乎都判 3 星）
+                        const waveStars = calculateWaveStars(this.hp, _maxHp);
+                        this.cumulativeStars = (this.cumulativeStars || 0) + waveStars;
+                        this.pendingTimers.push(setTimeout(() => showWaveStarsToast(waveStars, this.hp, _maxHp), 800));
+                        showBanner(`第 ${this.wave} 波防御成功！`, `解锁能量奖励小考答题机会！`);
+                        this.pendingTimers.push(setTimeout(() => {
+                            // 🔧 防御性检查：如果游戏已结束/重置中，不要打开答题
+                            if (this.gameOverActive || this.paused) return;
+                            openWaveQuizModal();
+                        }, 2200));
+                    }
+                }
+            }
+
+            shootProjectile(tower, target, nearbyTargets) {
+                const config = TOWER_TYPES[tower.type];
+                let baseDamage = tower.damage;
+
+                // 偏见怪抗性
+                if (target.resistTypes && target.resistTypes.includes(tower.type)) {
+                    baseDamage = Math.floor(baseDamage * 0.5);
+                }
+
+                // 被分类塔标记的敌人受额外伤害
+                if (target.marked) {
+                    baseDamage = Math.floor(baseDamage * 1.5);
+                }
+
+                // 强化学习塔连击加成
+                if (tower.type === 'reinforce') {
+                    baseDamage = Math.floor(baseDamage * (1 + this.comboCounter * 0.3));
+                }
+
+                // 预测塔暴击
+                let isCrit = false;
+                if (tower.type === 'predictor' && Math.random() < 0.3) {
+                    baseDamage *= 2;
+                    isCrit = true;
+                    sound.playCrit();
+                }
+
+                // 神经网络塔：连锁闪电
+                if (tower.type === 'neural') {
+                    const chainTargets = nearbyTargets.slice(0, 3);
+                    let chainDamage = baseDamage;
+                    chainTargets.forEach((enemy, idx) => {
+                        this.damageEnemy(enemy, chainDamage, tower.type);
+                        this.createParticles(enemy.x, enemy.y, "#a855f7", 6);
+                        chainDamage = Math.floor(chainDamage * 1.25);
+                    });
+                    sound.playLaser();
+                    return;
+                }
+
+                // 循环塔：多发
+                if (tower.type === 'loop' && config.multishot) {
+                    for (let s = 0; s < config.multishot; s++) {
+                        setTimeout(() => {
+                            if (this.enemies.includes(target)) {
+                                this.projectiles.push({
+                                    x: tower.x, y: tower.y,
+                                    targetEnemy: target,
+                                    damage: baseDamage,
+                                    color: config.color,
+                                    speed: 12,
+                                    symbol: '●'
+                                });
+                            }
+                        }, s * 80);
+                    }
+                    sound.playPew();
+                    return;
+                }
+
+                // 提示词魔导：范围爆炸
+                if (tower.type === 'prompt' && config.splash) {
+                    this.projectiles.push({
+                        x: tower.x, y: tower.y,
+                        targetX: target.x, targetY: target.y,
+                        targetEnemy: target,
+                        damage: baseDamage,
+                        color: config.color,
+                        speed: 9,
+                        splash: config.splash,
+                        symbol: '✦'
+                    });
+                    sound.playLaser();
+                    return;
+                }
+
+                // 默认直射
+                this.projectiles.push({
+                    x: tower.x, y: tower.y,
+                    targetEnemy: target,
+                    damage: baseDamage,
+                    color: config.color,
+                    speed: tower.type === 'switch' ? 14 : 10,
+                    symbol: tower.type === 'switch' ? (Math.random() > 0.5 ? '1' : '0') : null,
+                    isCrit
+                });
+
+                if (tower.type === 'switch') sound.playPew();
+                else sound.playLaser();
+            }
+
+            hitTarget(p) {
+                if (p.splash) {
+                    // 💥 提示词魔法爆破特效
+                    const ex = p.targetX || p.x;
+                    const ey = p.targetY || p.y;
+                    this.createParticles(ex, ey, "#fbbf24", 25);
+                    this.createParticles(ex, ey, "#f59e0b", 18);
+                    this.createParticles(ex, ey, "#fff", 10);
+
+                    // 🔧 爆炸环 - 向外辐射粒子（更密集、更远距离）
+                    for (let i = 0; i < 36; i++) {
+                        const angle = (Math.PI * 2 / 36) * i;
+                        const speed = 6 + Math.random() * 2;
+                        this.particles.push({
+                            x: ex, y: ey,
+                            vx: Math.cos(angle) * speed,
+                            vy: Math.sin(angle) * speed,
+                            life: 22,
+                            size: 3 + Math.random() * 2,
+                            color: i % 3 === 0 ? "#fbbf24" : (i % 3 === 1 ? "#f59e0b" : "#fef3c7")
+                        });
+                    }
+
+                    // 🔧 记录冲击波动画 - 用于绘制扩散环
+                    this.explosions.push({
+                        x: ex, y: ey,
+                        maxR: p.splash * 1.4,
+                        duration: 22,
+                        timer: 22,
+                        color: p.color || "#fbbf24"
+                    });
+
+                    // 范围伤害
+                    this.enemies.forEach(e => {
+                        if (Math.hypot(e.x - ex, e.y - ey) <= p.splash) {
+                            this.damageEnemy(e, p.damage, 'prompt');
+                        }
+                    });
+                    this.addFloatingText("💥", ex, ey, "#f59e0b");
+                    sound.playExplosion();
+                } else if (p.targetEnemy && this.enemies.includes(p.targetEnemy)) {
+                    this.createParticles(p.x, p.y, p.color, 8);
+                    this.damageEnemy(p.targetEnemy, p.damage, p.isCrit ? 'crit' : 'normal');
+                }
+            }
+
+            damageEnemy(enemy, dmg, srcType) {
+                // 闪避
+                if (enemy.dodge && Math.random() < enemy.dodge) {
+                    this.addFloatingText("闪避!", enemy.x, enemy.y - 20, "#94a3b8");
+                    return;
+                }
+
+                // 护盾处理
+                if (enemy.shield > 0) {
+                    const shieldDmg = Math.min(enemy.shield, dmg);
+                    enemy.shield -= shieldDmg;
+                    dmg -= shieldDmg;
+                    this.addFloatingText(`护盾-${shieldDmg}`, enemy.x, enemy.y - 30, "#8b5cf6");
+                    if (dmg <= 0) return;
+                }
+
+                enemy.hp -= dmg;
+
+                // 标记（分类塔）
+                if (srcType === 'classifier') enemy.marked = true;
+
+                // 显示伤害
+                if (srcType === 'crit') {
+                    this.addFloatingText(`暴击! -${dmg}`, enemy.x, enemy.y - 20, "#facc15");
+                } else {
+                    this.addFloatingText(`-${dmg}`, enemy.x, enemy.y - 20, "#ffffff");
+                }
+
+                if (enemy.hp <= 0) {
+                    this.killEnemy(enemy);
+                }
+            }
+
+            killEnemy(enemy) {
+                const idx = this.enemies.indexOf(enemy);
+                if (idx === -1) return;
+
+                this.energy += enemy.reward;
+                this.comboCounter++;
+                this.lastKillTime = Date.now();
+                this.totalKills = (this.totalKills || 0) + 1;
+
+                // 连击显示
+                if (this.comboCounter > 1) {
+                    this.addFloatingText(`${this.comboCounter}x 连击!`, enemy.x, enemy.y - 40, "#facc15");
+                }
+                this.addFloatingText(`+${enemy.reward} 能量`, enemy.x, enemy.y, "#facc15");
+                this.createParticles(enemy.x, enemy.y, enemy.color, 16);
+
+                // 循环怪分裂
+                if (enemy.split && !enemy.hasSplit) {
+                    enemy.hasSplit = true;
+                    for (let i = 0; i < enemy.split; i++) {
+                        const sub = {
+                            ...enemy,
+                            x: enemy.x + (i - 0.5) * 25,
+                            y: enemy.y,
+                            hp: enemy.splitHp,
+                            maxHp: enemy.splitHp,
+                            pathIdx: enemy.pathIdx,
+                            speed: enemy.baseSpeed * 1.3,
+                            baseSpeed: enemy.baseSpeed * 1.3,
+                            hasSplit: true,
+                            split: 0,
+                            reward: Math.floor(enemy.reward / 2),
+                            radius: enemy.radius - 2
+                        };
+                        this.enemies.push(sub);
+                    }
+                }
+
+                this.enemies.splice(idx, 1);
+                this.updateUI();
+                sound.playExplosion();
+            }
+
+            // 🔧 绘制Boss专属大型血条（全屏宽度）
+            renderBossBar(ctx, w) {
+                const boss = this.enemies.find(e => e.isBoss && e.hp > 0);
+                if (!boss) return;
+
+                const barWidth = Math.min(w * 0.7, 720);
+                const barHeight = 22;
+                const x = (w - barWidth) / 2;
+                const y = 10;
+                const hpPct = Math.max(0, boss.hp / boss.maxHp);
+
+                // 阶段配色
+                const phaseColors = { 1: '#fbbf24', 2: '#f97316', 3: '#dc2626' };
+                const phaseColor = phaseColors[boss.bossCurrentPhase] || '#fbbf24';
+                const phaseNames = ['', '第一阶段', '狂暴阶段', '最终阶段'];
+
+                // 背景外框
+                ctx.fillStyle = 'rgba(15, 23, 42, 0.92)';
+                ctx.fillRect(x - 6, y - 6, barWidth + 12, barHeight + 12);
+                ctx.strokeStyle = phaseColor;
+                ctx.lineWidth = 2;
+                ctx.strokeRect(x - 6, y - 6, barWidth + 12, barHeight + 12);
+
+                // 内部血条底
+                ctx.fillStyle = 'rgba(239, 68, 68, 0.18)';
+                ctx.fillRect(x, y, barWidth, barHeight);
+
+                // 血条填充（动态发光渐变）
+                const hpGrad = ctx.createLinearGradient(x, y, x + barWidth * hpPct, y);
+                hpGrad.addColorStop(0, phaseColor);
+                hpGrad.addColorStop(1, boss.color || phaseColor);
+                ctx.fillStyle = hpGrad;
+                ctx.fillRect(x, y, Math.max(2, barWidth * hpPct), barHeight);
+
+                // 高光条
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.25)';
+                ctx.fillRect(x, y + 2, Math.max(2, barWidth * hpPct), 4);
+
+                // 文字信息（血条中心）
+                ctx.fillStyle = '#fff';
+                ctx.font = 'bold 13px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                const infoText = `${boss.icon} ${boss.name}  ·  ${phaseNames[boss.bossCurrentPhase]}  ·  HP ${Math.floor(boss.hp).toLocaleString()} / ${Math.floor(boss.maxHp).toLocaleString()}`;
+                ctx.fillText(infoText, x + barWidth / 2, y + barHeight / 2);
+
+                // 技能描述（血条下方）
+                ctx.font = 'bold 10px sans-serif';
+                ctx.fillStyle = phaseColor;
+                ctx.fillText(`⚡ 技能: ${boss.bossSkill || '无'}`, x + barWidth / 2, y + barHeight + 14);
+
+                // 阶段进度点（右上角）
+                const dotSize = 6;
+                for (let i = 0; i < 3; i++) {
+                    const dotX = x + barWidth - 16 - i * 14;
+                    const dotY = y + 8;
+                    ctx.fillStyle = i < boss.bossCurrentPhase ? phaseColor : 'rgba(255,255,255,0.15)';
+                    if (i === boss.bossCurrentPhase - 1) {
+                        // 当前阶段闪烁
+                        ctx.shadowColor = phaseColor;
+                        ctx.shadowBlur = 10;
+                    }
+                    ctx.beginPath();
+                    ctx.arc(dotX, dotY, dotSize / 2, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.shadowBlur = 0;
+                }
+            }
+
+            render() {
+                const ctx = this.ctx;
+                const w = this.canvas.width;
+                const h = this.canvas.height;
+                const stage = STAGES[this.level];
+
+                ctx.fillStyle = stage.bg;
+                ctx.fillRect(0, 0, w, h);
+
+                // 网格
+                ctx.strokeStyle = "rgba(255, 255, 255, 0.03)";
+                ctx.lineWidth = 1;
+                for (let x = 0; x < w; x += this.gridSize) {
+                    ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke();
+                }
+                for (let y = 0; y < h; y += this.gridSize) {
+                    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
+                }
+
+                // 🔧 Boss专属大型血条（位于Canvas顶部，全屏宽度，醒目展示Boss战况）
+                this.renderBossBar(ctx, w);
+
+                // 路径
+                if (this.path.length > 1) {
+                    ctx.strokeStyle = stage.pathColor;
+                    ctx.lineWidth = 44;
+                    ctx.lineCap = "round";
+                    ctx.lineJoin = "round";
+                    ctx.beginPath();
+                    ctx.moveTo(this.path[0].x, this.path[0].y);
+                    for (let i = 1; i < this.path.length; i++) {
+                        ctx.lineTo(this.path[i].x, this.path[i].y);
+                    }
+                    ctx.stroke();
+                    ctx.strokeStyle = "rgba(56, 189, 248, 0.2)";
+                    ctx.lineWidth = 6;
+                    ctx.stroke();
+                }
+
+                // 建造预览
+                if (this.hoverGrid.x >= 0 && !this.hoveredTower) {
+                    const gx = this.hoverGrid.x + this.gridSize / 2;
+                    const gy = this.hoverGrid.y + this.gridSize / 2;
+                    const valid = !this.isNearPath(gx, gy, 35);
+                    const towerType = TOWER_TYPES[this.selectedTowerType];
+                    const unlocked = STAGES[this.level].availableTowers.includes(this.selectedTowerType);
+
+                    if (!unlocked) {
+                        ctx.fillStyle = "rgba(239, 68, 68, 0.3)";
+                        ctx.fillRect(this.hoverGrid.x, this.hoverGrid.y, this.gridSize, this.gridSize);
+                        ctx.fillStyle = "#f43f5e";
+                        ctx.font = "bold 20px sans-serif";
+                        ctx.textAlign = "center";
+                        ctx.fillText("锁", gx, gy + 7);
+                    } else {
+                        ctx.fillStyle = valid ? "rgba(16, 185, 129, 0.25)" : "rgba(239, 68, 68, 0.25)";
+                        ctx.fillRect(this.hoverGrid.x, this.hoverGrid.y, this.gridSize, this.gridSize);
+                        if (towerType && valid) {
+                            ctx.strokeStyle = "rgba(56, 189, 248, 0.4)";
+                            ctx.lineWidth = 1.5;
+                            ctx.beginPath();
+                            ctx.arc(gx, gy, towerType.range, 0, Math.PI * 2);
+                            ctx.stroke();
+                        }
+                    }
+                }
+
+                // 选中塔范围
+                if (this.hoveredTower) {
+                    ctx.strokeStyle = "rgba(56, 189, 248, 0.6)";
+                    ctx.lineWidth = 2;
+                    ctx.setLineDash([6, 6]);
+                    ctx.beginPath();
+                    ctx.arc(this.hoveredTower.x, this.hoveredTower.y, this.hoveredTower.range, 0, Math.PI * 2);
+                    ctx.stroke();
+                    ctx.setLineDash([]);
+                }
+
+                // 塔渲染 - 每个塔都有独特外观
+                this.towers.forEach(t => {
+                    const config = TOWER_TYPES[t.type];
+
+                    // 特征放大镜塔：范围磁场光晕
+                    if (t.type === 'magnifier') {
+                        ctx.fillStyle = "rgba(16, 185, 129, 0.08)";
+                        ctx.beginPath();
+                        ctx.arc(t.x, t.y, t.range, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.strokeStyle = "rgba(16, 185, 129, 0.25)";
+                        ctx.setLineDash([4, 4]);
+                        ctx.lineWidth = 1;
+                        ctx.beginPath();
+                        ctx.arc(t.x, t.y, t.range, 0, Math.PI * 2);
+                        ctx.stroke();
+                        ctx.setLineDash([]);
+                    }
+
+                    // 塔底光晕
+                    ctx.fillStyle = config.color;
+                    ctx.globalAlpha = 0.22;
+                    ctx.beginPath();
+                    ctx.arc(t.x, t.y, 22, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.globalAlpha = 1.0;
+
+                    ctx.save();
+                    ctx.translate(t.x, t.y);
+
+                    // ===== 各类塔独特造型 =====
+                    if (t.type === 'switch') {
+                        // 🔫 机关枪塔：长枪管+弹链+枪口闪光
+                        ctx.rotate(t.angle);
+                        ctx.fillStyle = "#1e293b";
+                        ctx.strokeStyle = config.color;
+                        ctx.lineWidth = 3;
+                        ctx.beginPath();
+                        ctx.arc(0, 0, 15, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.stroke();
+                        // 长枪管
+                        ctx.fillStyle = config.color;
+                        ctx.fillRect(0, -4, 28, 8);
+                        // 弹链
+                        ctx.fillStyle = "#fbbf24";
+                        ctx.fillRect(6, 5, 2, 3);
+                        ctx.fillRect(12, 5, 2, 3);
+                        ctx.fillRect(18, 5, 2, 3);
+                        // 枪口闪光（冷却即将结束时）
+                        if (t.cooldownTimer < config.cooldown * 0.3) {
+                            ctx.fillStyle = "#fef3c7";
+                            ctx.beginPath();
+                            ctx.arc(30, 0, 4 + Math.random() * 2, 0, Math.PI * 2);
+                            ctx.fill();
+                            ctx.fillStyle = "#fff";
+                            ctx.beginPath();
+                            ctx.arc(30, 0, 2, 0, Math.PI * 2);
+                            ctx.fill();
+                        }
+                    } else if (t.type === 'magnifier') {
+                        // 🔍 放大镜塔：放大镜造型
+                        ctx.rotate(t.angle);
+                        ctx.fillStyle = "#1e293b";
+                        ctx.strokeStyle = config.color;
+                        ctx.lineWidth = 3;
+                        ctx.beginPath();
+                        ctx.arc(0, 0, 14, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.stroke();
+                        // 镜片
+                        ctx.strokeStyle = config.color;
+                        ctx.lineWidth = 3;
+                        ctx.beginPath();
+                        ctx.arc(2, 0, 7, 0, Math.PI * 2);
+                        ctx.stroke();
+                        // 镜片高光
+                        ctx.fillStyle = "rgba(16, 185, 129, 0.25)";
+                        ctx.beginPath();
+                        ctx.arc(2, 0, 5, 0, Math.PI * 2);
+                        ctx.fill();
+                        // 手柄
+                        ctx.strokeStyle = config.color;
+                        ctx.lineWidth = 3;
+                        ctx.beginPath();
+                        ctx.moveTo(8, 5);
+                        ctx.lineTo(13, 10);
+                        ctx.stroke();
+                    } else if (t.type === 'rgb') {
+                        // 🎨 RGB塔：三色旋转
+                        const t_time = Date.now() * 0.002;
+                        ctx.fillStyle = "#1e293b";
+                        ctx.strokeStyle = "#fff";
+                        ctx.lineWidth = 2;
+                        ctx.beginPath();
+                        ctx.arc(0, 0, 16, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.stroke();
+                        // 旋转的三色点
+                        const rgbCols = ['#ef4444', '#10b981', '#3b82f6'];
+                        rgbCols.forEach((c, i) => {
+                            const ang = t_time + i * (Math.PI * 2 / 3);
+                            ctx.fillStyle = c;
+                            ctx.beginPath();
+                            ctx.arc(Math.cos(ang) * 10, Math.sin(ang) * 10, 4, 0, Math.PI * 2);
+                            ctx.fill();
+                        });
+                        // 中心
+                        ctx.fillStyle = "#fff";
+                        ctx.beginPath();
+                        ctx.arc(0, 0, 3, 0, Math.PI * 2);
+                        ctx.fill();
+                        // 炮口指向敌人
+                        ctx.rotate(t.angle - (Date.now() * 0.002 % (Math.PI * 2)));
+                        ctx.fillStyle = config.color;
+                        ctx.fillRect(0, -2, 12, 4);
+                    } else if (t.type === 'decoder') {
+                        // 🔓 密码破译塔：钥匙造型
+                        ctx.rotate(t.angle);
+                        ctx.fillStyle = "#1e293b";
+                        ctx.strokeStyle = config.color;
+                        ctx.lineWidth = 3;
+                        ctx.beginPath();
+                        ctx.arc(0, 0, 16, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.stroke();
+                        // 钥匙杆
+                        ctx.fillStyle = config.color;
+                        ctx.fillRect(0, -2.5, 22, 5);
+                        // 钥匙齿
+                        ctx.fillRect(20, 2.5, 2, 6);
+                        ctx.fillRect(16, 2.5, 2, 4);
+                        // 钥匙头圆圈
+                        ctx.strokeStyle = config.color;
+                        ctx.lineWidth = 2.5;
+                        ctx.beginPath();
+                        ctx.arc(-4, 0, 5, 0, Math.PI * 2);
+                        ctx.stroke();
+                    } else if (t.type === 'pixel') {
+                        // ▦ 像素塔：像素网格造型
+                        ctx.rotate(t.angle);
+                        ctx.fillStyle = "#1e293b";
+                        ctx.strokeStyle = config.color;
+                        ctx.lineWidth = 2;
+                        ctx.beginPath();
+                        ctx.arc(0, 0, 16, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.stroke();
+                        // 像素网格
+                        for (let r = 0; r < 3; r++) {
+                            for (let c = 0; c < 3; c++) {
+                                ctx.fillStyle = ((r + c) % 2 === 0) ? config.color : "#0f172a";
+                                ctx.fillRect(-6 + c * 4, -6 + r * 4, 4, 4);
+                            }
+                        }
+                        // 瞄准线
+                        ctx.fillStyle = config.color;
+                        ctx.fillRect(0, -1, 14, 2);
+                    } else if (t.type === 'loop') {
+                        // 🔄 循环塔：三管炮
+                        ctx.rotate(t.angle);
+                        ctx.fillStyle = "#1e293b";
+                        ctx.strokeStyle = config.color;
+                        ctx.lineWidth = 3;
+                        ctx.beginPath();
+                        ctx.arc(0, 0, 16, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.stroke();
+                        // 三个并排枪管
+                        for (let i = -1; i <= 1; i++) {
+                            ctx.fillStyle = config.color;
+                            ctx.fillRect(0, i * 6 - 1.5, 22, 3);
+                        }
+                    } else if (t.type === 'classifier') {
+                        // 🏷️ 分类塔：标签造型
+                        ctx.rotate(t.angle);
+                        ctx.fillStyle = "#1e293b";
+                        ctx.strokeStyle = config.color;
+                        ctx.lineWidth = 3;
+                        ctx.beginPath();
+                        ctx.arc(0, 0, 16, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.stroke();
+                        // 标签形状
+                        ctx.fillStyle = config.color;
+                        ctx.beginPath();
+                        ctx.moveTo(2, -7);
+                        ctx.lineTo(13, -7);
+                        ctx.lineTo(18, 0);
+                        ctx.lineTo(13, 7);
+                        ctx.lineTo(2, 7);
+                        ctx.closePath();
+                        ctx.fill();
+                        // 标签孔
+                        ctx.fillStyle = "#0f172a";
+                        ctx.beginPath();
+                        ctx.arc(5, 0, 1.8, 0, Math.PI * 2);
+                        ctx.fill();
+                        // 文字标记
+                        ctx.fillStyle = "#0f172a";
+                        ctx.font = "bold 6px sans-serif";
+                        ctx.textAlign = "center";
+                        ctx.fillText("L", 11, 2);
+                    } else if (t.type === 'predictor') {
+                        // 🔮 预测塔：水晶球
+                        ctx.rotate(t.angle);
+                        ctx.fillStyle = "#1e293b";
+                        ctx.strokeStyle = config.color;
+                        ctx.lineWidth = 3;
+                        ctx.beginPath();
+                        ctx.arc(0, 0, 16, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.stroke();
+                        // 水晶球渐变
+                        const grad = ctx.createRadialGradient(0, 0, 2, 0, 0, 10);
+                        grad.addColorStop(0, "rgba(255,255,255,0.85)");
+                        grad.addColorStop(1, config.color);
+                        ctx.fillStyle = grad;
+                        ctx.beginPath();
+                        ctx.arc(0, 0, 10, 0, Math.PI * 2);
+                        ctx.fill();
+                        // 高光
+                        ctx.fillStyle = "rgba(255,255,255,0.6)";
+                        ctx.beginPath();
+                        ctx.arc(-3, -3, 3, 0, Math.PI * 2);
+                        ctx.fill();
+                    } else if (t.type === 'neural') {
+                        // 🕸️ 神经网络塔：节点连接
+                        ctx.rotate(t.angle);
+                        ctx.fillStyle = "#1e293b";
+                        ctx.strokeStyle = config.color;
+                        ctx.lineWidth = 2;
+                        ctx.beginPath();
+                        ctx.arc(0, 0, 16, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.stroke();
+                        // 节点连接
+                        const nodes = [[-7, -7], [7, -7], [-7, 7], [7, 7], [0, 0]];
+                        ctx.strokeStyle = config.color;
+                        ctx.lineWidth = 1;
+                        ctx.globalAlpha = 0.5;
+                        for (let i = 0; i < nodes.length - 1; i++) {
+                            for (let j = i + 1; j < nodes.length; j++) {
+                                ctx.beginPath();
+                                ctx.moveTo(nodes[i][0], nodes[i][1]);
+                                ctx.lineTo(nodes[j][0], nodes[j][1]);
+                                ctx.stroke();
+                            }
+                        }
+                        ctx.globalAlpha = 1.0;
+                        nodes.forEach(([nx, ny]) => {
+                            ctx.fillStyle = config.color;
+                            ctx.beginPath();
+                            ctx.arc(nx, ny, 2, 0, Math.PI * 2);
+                            ctx.fill();
+                        });
+                    } else if (t.type === 'reinforce') {
+                        // 🎯 强化学习塔：五角星
+                        ctx.rotate(t.angle);
+                        ctx.fillStyle = "#1e293b";
+                        ctx.strokeStyle = config.color;
+                        ctx.lineWidth = 3;
+                        ctx.beginPath();
+                        ctx.arc(0, 0, 16, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.stroke();
+                        // 五角星
+                        ctx.fillStyle = config.color;
+                        ctx.beginPath();
+                        for (let i = 0; i < 5; i++) {
+                            const a = (i * 2 * Math.PI / 5) - Math.PI / 2;
+                            const x = Math.cos(a) * 10;
+                            const y = Math.sin(a) * 10;
+                            if (i === 0) ctx.moveTo(x, y);
+                            else ctx.lineTo(x, y);
+                            const ia = ((i + 0.5) * 2 * Math.PI / 5) - Math.PI / 2;
+                            ctx.lineTo(Math.cos(ia) * 4, Math.sin(ia) * 4);
+                        }
+                        ctx.closePath();
+                        ctx.fill();
+                    } else if (t.type === 'prompt') {
+                        // ✨ 提示词塔：六角星魔法
+                        const t_time = Date.now() * 0.002;
+                        ctx.rotate(t.angle + Math.sin(t_time) * 0.1);
+                        ctx.fillStyle = "#1e293b";
+                        ctx.strokeStyle = config.color;
+                        ctx.lineWidth = 3;
+                        ctx.beginPath();
+                        ctx.arc(0, 0, 16, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.stroke();
+                        // 六角星
+                        ctx.fillStyle = config.color;
+                        ctx.beginPath();
+                        for (let i = 0; i < 6; i++) {
+                            const a = i * Math.PI / 3;
+                            const x = Math.cos(a) * 10;
+                            const y = Math.sin(a) * 10;
+                            if (i === 0) ctx.moveTo(x, y);
+                            else ctx.lineTo(x, y);
+                        }
+                        ctx.closePath();
+                        ctx.fill();
+                        // 中心
+                        ctx.fillStyle = "#fff";
+                        ctx.beginPath();
+                        ctx.arc(0, 0, 3, 0, Math.PI * 2);
+                        ctx.fill();
+                    } else if (t.type === 'debugger') {
+                        // 🐛 调试塔：虫子+放大镜
+                        ctx.rotate(t.angle);
+                        ctx.fillStyle = "#1e293b";
+                        ctx.strokeStyle = config.color;
+                        ctx.lineWidth = 3;
+                        ctx.beginPath();
+                        ctx.arc(0, 0, 16, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.stroke();
+                        // 虫子身体
+                        ctx.fillStyle = config.color;
+                        ctx.beginPath();
+                        ctx.arc(2, 0, 6, 0, Math.PI * 2);
+                        ctx.fill();
+                        // 触角
+                        ctx.strokeStyle = config.color;
+                        ctx.lineWidth = 1;
+                        ctx.beginPath();
+                        ctx.moveTo(-3, -3); ctx.lineTo(-5, -5);
+                        ctx.moveTo(-3, 3); ctx.lineTo(-5, 5);
+                        ctx.stroke();
+                        // 背部纹路
+                        ctx.strokeStyle = "#0f172a";
+                        ctx.lineWidth = 1;
+                        ctx.beginPath();
+                        ctx.moveTo(-2, 0); ctx.lineTo(6, 0);
+                        ctx.stroke();
+                    } else {
+                        // 默认塔
+                        ctx.rotate(t.angle);
+                        ctx.fillStyle = "#1e293b";
+                        ctx.strokeStyle = config.color;
+                        ctx.lineWidth = 3;
+                        ctx.beginPath();
+                        ctx.arc(0, 0, 16, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.stroke();
+                        ctx.fillStyle = config.color;
+                        ctx.fillRect(0, -4, 18, 8);
+                    }
+
+                    ctx.restore();
+
+                    if (t.level > 1) {
+                        ctx.fillStyle = "#facc15";
+                        ctx.font = "bold 10px sans-serif";
+                        ctx.textAlign = "center";
+                        ctx.fillText(`Lvl ${t.level}`, t.x, t.y + 28);
+                    }
+                });
+
+                // 敌人渲染
+                this.enemies.forEach(e => {
+                    ctx.save();
+                    ctx.translate(e.x, e.y);
+
+                    if (e.stealth && !e.revealed) {
+                        ctx.fillStyle = "rgba(148, 163, 184, 0.5)";
+                        ctx.beginPath();
+                        ctx.arc(0, 0, e.radius + 4, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+
+                    if (e.marked) {
+                        ctx.strokeStyle = "#facc15";
+                        ctx.lineWidth = 2;
+                        ctx.setLineDash([4, 4]);
+                        ctx.beginPath();
+                        ctx.arc(0, 0, e.radius + 6, 0, Math.PI * 2);
+                        ctx.stroke();
+                        ctx.setLineDash([]);
+                    }
+
+                    if (e.shield > 0) {
+                        ctx.strokeStyle = "rgba(139, 92, 246, 0.6)";
+                        ctx.lineWidth = 2;
+                        ctx.beginPath();
+                        ctx.arc(0, 0, e.radius + 3, 0, Math.PI * 2);
+                        ctx.stroke();
+                    }
+
+                    // ❄️ 减速冰冻特效（特征放大镜造成）- 增强版：动态冰晶环+雪花飘落
+                    if (e.slowTimer > 0) {
+                        // 蓝色冰冻光环（脉冲呼吸效果）
+                        const pulseR = e.radius + 5 + Math.sin(Date.now() * 0.01) * 1.5;
+                        ctx.strokeStyle = "rgba(96, 165, 250, 0.85)";
+                        ctx.lineWidth = 3;
+                        ctx.beginPath();
+                        ctx.arc(0, 0, pulseR, 0, Math.PI * 2);
+                        ctx.stroke();
+
+                        // 外层淡蓝晕光
+                        ctx.strokeStyle = "rgba(147, 197, 253, 0.45)";
+                        ctx.lineWidth = 6;
+                        ctx.beginPath();
+                        ctx.arc(0, 0, pulseR + 3, 0, Math.PI * 2);
+                        ctx.stroke();
+
+                        // 内部浅蓝填充
+                        ctx.fillStyle = "rgba(147, 197, 253, 0.18)";
+                        ctx.beginPath();
+                        ctx.arc(0, 0, e.radius + 2, 0, Math.PI * 2);
+                        ctx.fill();
+
+                        // 雪花图标环绕（多个雪花围绕敌人旋转）
+                        const snowflakeCount = 3;
+                        for (let i = 0; i < snowflakeCount; i++) {
+                            const angle = Date.now() * 0.003 + (i * Math.PI * 2 / snowflakeCount);
+                            const orbitR = e.radius + 10 + Math.sin(Date.now() * 0.005 + i) * 3;
+                            const sx = Math.cos(angle) * orbitR;
+                            const sy = Math.sin(angle) * orbitR;
+                            ctx.fillStyle = "#dbeafe";
+                            ctx.font = `bold ${Math.max(8, e.radius * 0.7)}px sans-serif`;
+                            ctx.textAlign = "center";
+                            ctx.textBaseline = "middle";
+                            ctx.fillText("❄", sx, sy);
+                        }
+
+                        // 飘落的冰晶小点
+                        const shardCount = 4;
+                        for (let i = 0; i < shardCount; i++) {
+                            const t = (Date.now() * 0.001 + i * 0.7) % 2;  // 0-2循环
+                            const fallY = -e.radius - t * 14;
+                            const drift = Math.sin(Date.now() * 0.004 + i * 1.5) * 6;
+                            ctx.fillStyle = `rgba(219, 234, 254, ${1 - t * 0.5})`;
+                            ctx.beginPath();
+                            ctx.arc(drift + (i - 1.5) * 5, fallY, 1.5, 0, Math.PI * 2);
+                            ctx.fill();
+                        }
+                    }
+
+                    // 统一绘本怪物轮廓，替换平台相关Emoji字形
+                    ctx.fillStyle = e.slowTimer > 0 ? "#60a5fa" : e.color;
+                    ctx.strokeStyle = e.isBoss ? "#facc15" : "rgba(255,255,255,.55)";
+                    ctx.lineWidth = e.isBoss ? 3 : 1.5;
+                    ctx.beginPath();
+                    if (e.isBoss || e.bias) {
+                        const points = e.isBoss ? 18 : 12;
+                        for (let i = 0; i < points; i++) {
+                            const a = i * Math.PI * 2 / points;
+                            const r = i % 2 ? e.radius : e.radius * 1.18;
+                            if (i === 0) ctx.moveTo(Math.cos(a) * r, Math.sin(a) * r);
+                            else ctx.lineTo(Math.cos(a) * r, Math.sin(a) * r);
+                        }
+                    } else if (e.stealth || e.illusion) {
+                        ctx.moveTo(-e.radius, e.radius * .65);
+                        ctx.quadraticCurveTo(-e.radius * .65, -e.radius, 0, -e.radius);
+                        ctx.quadraticCurveTo(e.radius * .65, -e.radius, e.radius, e.radius * .65);
+                        ctx.quadraticCurveTo(e.radius * .5, e.radius * .25, 0, e.radius * .8);
+                        ctx.quadraticCurveTo(-e.radius * .5, e.radius * .25, -e.radius, e.radius * .65);
+                    } else {
+                        ctx.roundRect(-e.radius, -e.radius * .72, e.radius * 2, e.radius * 1.44, e.radius * .5);
+                    }
+                    ctx.closePath(); ctx.fill(); ctx.stroke();
+                    ctx.fillStyle = "#0f172a";
+                    ctx.beginPath(); ctx.arc(-e.radius * .28, -e.radius * .12, Math.max(2, e.radius * .11), 0, Math.PI * 2); ctx.fill();
+                    ctx.beginPath(); ctx.arc(e.radius * .28, -e.radius * .12, Math.max(2, e.radius * .11), 0, Math.PI * 2); ctx.fill();
+
+                    const hpPercent = Math.max(0, e.hp / e.maxHp);
+                    ctx.fillStyle = "rgba(15, 23, 42, 0.8)";
+                    ctx.fillRect(-16, -e.radius - 10, 32, 5);
+                    ctx.fillStyle = hpPercent > 0.5 ? "#10b981" : "#ef4444";
+                    ctx.fillRect(-16, -e.radius - 10, 32 * hpPercent, 5);
+
+                    if (e.shield > 0) {
+                        ctx.fillStyle = "rgba(139, 92, 246, 0.8)";
+                        ctx.fillRect(-16, -e.radius - 14, 32, 3);
+                        ctx.fillStyle = "#8b5cf6";
+                        ctx.fillRect(-16, -e.radius - 14, 32 * (e.shield / 100), 3);
+                    }
+
+                    ctx.restore();
+                });
+
+                // 子弹
+                this.projectiles.forEach(p => {
+                    if (p.symbol) {
+                        ctx.fillStyle = p.isCrit ? "#facc15" : p.color;
+                        ctx.font = `bold ${p.isCrit ? 16 : 12}px monospace`;
+                        ctx.textAlign = "center";
+                        ctx.fillText(p.symbol, p.x, p.y);
+                    } else {
+                        ctx.fillStyle = p.color;
+                        ctx.beginPath();
+                        ctx.arc(p.x, p.y, p.isCrit ? 6 : 5, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                });
+
+                // 粒子
+                this.particles.forEach(pt => {
+                    ctx.fillStyle = pt.color;
+                    ctx.globalAlpha = pt.life / 30;
+                    ctx.beginPath();
+                    ctx.arc(pt.x, pt.y, pt.size, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.globalAlpha = 1.0;
+                });
+
+                // 🔧 绘制爆炸冲击波扩散环（双层环+发光）
+                this.explosions.forEach(exp => {
+                    const progress = 1 - exp.timer / exp.duration; // 0→1
+                    const r = progress * exp.maxR;
+                    const alpha = (1 - progress) * 0.9;
+                    // 外环（粗+淡）
+                    ctx.strokeStyle = `rgba(254, 243, 199, ${alpha * 0.6})`;
+                    ctx.lineWidth = 8 * (1 - progress * 0.5);
+                    ctx.beginPath();
+                    ctx.arc(exp.x, exp.y, r, 0, Math.PI * 2);
+                    ctx.stroke();
+                    // 内环（细+亮）
+                    ctx.strokeStyle = `rgba(251, 191, 36, ${alpha})`;
+                    ctx.lineWidth = 4 * (1 - progress);
+                    ctx.beginPath();
+                    ctx.arc(exp.x, exp.y, r * 0.7, 0, Math.PI * 2);
+                    ctx.stroke();
+                    // 核心高亮
+                    if (progress < 0.4) {
+                        const coreR = 18 + progress * 20;
+                        const coreAlpha = (1 - progress / 0.4) * 0.7;
+                        ctx.fillStyle = `rgba(255, 255, 255, ${coreAlpha})`;
+                        ctx.beginPath();
+                        ctx.arc(exp.x, exp.y, coreR, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                });
+
+                // 浮动文字
+                this.floatingTexts.forEach(ft => {
+                    ctx.fillStyle = ft.color;
+                    ctx.font = "bold 13px sans-serif";
+                    ctx.textAlign = "center";
+                    ctx.fillText(ft.text, ft.x, ft.y);
+                });
+            }
+
+            updateUI() {
+                const maxWaves = STAGES[this.level].waves;
+                document.getElementById('ui-energy').innerText = this.energy;
+                document.getElementById('ui-hp').innerText = this.hp;
+                const starsEl = document.getElementById('ui-stars');
+                if (starsEl) starsEl.innerText = this.cumulativeStars || 0;
+                document.getElementById('ui-level-name').innerText = STAGES[this.level].name;
+                document.getElementById('ui-wave').innerText = `${this.wave} / ${maxWaves}`;
+
+                const btnText = document.getElementById('btn-next-wave-text');
+                if (btnText) {
+                    if (this.waveCleared) {
+                        btnText.innerText = this.wave >= maxWaves ? "已通关全部波次！" : `出击！第 ${this.wave + 1} 波`;
+                    } else {
+                        btnText.innerText = `出击！第 ${this.wave} 波`;
+                    }
+                }
+
+                // 更新塔栏解锁状态
+                renderTowerDock(this.level);
+            }
+
+            stageVictory() {
+                this.paused = true;
+                window.parent.postMessage({
+                    type: 'aibook-featured-game-progress',
+                    gameId: 'ai-tower-defense',
+                    wave: STAGES[this.level].waves,
+                    score: this.cumulativeStars || 0,
+                    completed: this.level === STAGES.length - 1
+                }, '*');
+                showBanner("🎉 胜利！成功保卫AI核心", "已击退当前关卡所有波次威胁！");
+                sound.playCorrect();
+                // 显示星级评分和勋章
+                setTimeout(() => {
+                    const stageName = STAGES[this.level].name;
+                    const maxWaves = STAGES[this.level].waves;
+                    // ⭐ 把本关累积星星数传给 showStageStars（按各波星星之和评级）
+                    showStageStars(this.level, stageName, this.hp, getStageMaxHp(this.level),
+                                   this.cumulativeStars || 0, maxWaves * 3);
+                }, 1500);
+            }
+
+            // 显示章节胜利后的星级
+            showStageStarsHandler() {
+                const stageName = STAGES[this.level].name;
+                const maxWaves = STAGES[this.level].waves;
+                showStageStars(this.level, stageName, this.hp, getStageMaxHp(this.level),
+                               this.cumulativeStars || 0, maxWaves * 3);
+            }
+
+            gameOver() {
+                this.paused = true;
+                window.parent.postMessage({
+                    type: 'aibook-featured-game-progress',
+                    gameId: 'ai-tower-defense',
+                    wave: Math.max(0, this.wave - 1),
+                    score: this.cumulativeStars || 0,
+                    completed: false
+                }, '*');
+                this.gameOverActive = true;
+                if (this.spawnTimer) {
+                    clearInterval(this.spawnTimer);
+                    this.spawnTimer = null;
+                }
+                // 🔧 清除所有待执行的 setTimeout（答题、波次庆祝等），防止重开后误触发
+                if (this.pendingTimers) {
+                    this.pendingTimers.forEach(id => clearTimeout(id));
+                    this.pendingTimers = [];
+                }
+                // 立即关闭可能挂起的答题模态框（防止gameOver后被延迟弹出）
+                const quizModal = document.getElementById('modal-quiz');
+                if (quizModal) quizModal.classList.add('hidden');
+                this.quizHandled = false;
+                this.quizOpenedThisSession = false; // 🔧 重置会话级标记，防止残余关闭按钮误触发 wave++
+                // 完整清场 - 防止动画残留
+                this.enemies = [];
+                this.projectiles = [];
+                this.particles = [];
+                this.floatingTexts = [];
+                this.explosions = [];
+                this.bossActive = false;
+
+                // 计算本局总星（基于已通关波次累积）
+                const totalStars = this.cumulativeStars || 0;
+                // ⭐ 用百分比阈值（与通关模态框一致）：基于已通关波数推算最大可能
+                const wavesPlayed = Math.max(1, this.wave - 1);
+                const maxPossibleGameOver = wavesPlayed * 3;
+                const pct = Math.max(0, Math.min(1, totalStars / maxPossibleGameOver));
+                let goStars;
+                if (totalStars <= 0) goStars = 0;
+                else if (pct >= STAR_THRESHOLDS.three) goStars = 3;
+                else if (pct >= STAR_THRESHOLDS.two) goStars = 2;
+                else goStars = 1;
+                const starDisplay = goStars === 3 ? '⭐⭐⭐' : goStars === 2 ? '⭐⭐' : goStars === 1 ? '⭐' : '✖';
+
+                const modal = document.getElementById('modal-gameover');
+                document.getElementById('gameover-wave').innerText = `${this.wave} / ${STAGES[this.level].waves}`;
+                document.getElementById('gameover-stars').innerText = starDisplay;
+                document.getElementById('gameover-kills').innerText = this.totalKills || 0;
+
+                // 根据通关波次给出不同鼓励语
+                const msg = this.wave >= STAGES[this.level].waves
+                    ? '🏆 击退全部敌人！可惜最后一刻核心失守'
+                    : (this.wave >= 3 ? '⚔️ 已击退多波！建议布置更多减速塔' : '🌱 刚开始就要多思考，先建几个特征放大镜探路');
+                document.getElementById('gameover-message').innerText = msg;
+
+                modal.classList.remove('hidden');
+                showBanner("AI核心失守！", "看看下方结算面板");
+                sound.playWrong();
+
+                // 🔧 禁用答题关闭按钮（防御性 — 防止gameOver期间被误点触发 wave++）
+                const _qc = document.getElementById('quiz-close');
+                if (_qc) _qc.disabled = true;
+            }
+
+            resetForNewStage() {
+                // 🔧 完整重置：清场 + 状态 + 计时器
+                // 1. 清空所有动态对象
+                this.towers = [];
+                this.enemies = [];
+                this.projectiles = [];
+                this.particles = [];
+                this.floatingTexts = [];
+                this.explosions = [];
+
+                // 2. 重置核心状态
+                this.wave = 1;
+                // 🔧 按当前关卡读取起始 HP/能量（不同关卡起步资源不同，后段关卡更充裕）
+                const _stg = STAGES[this.level] || {};
+                this.hp = _stg.startHp || 15;
+                this.energy = _stg.startEnergy || 250;
+                this.waveInProgress = false;
+                this.waveCleared = false;
+                this.paused = false;
+                this.comboCounter = 0;
+                this.gradientBoostTimer = 0;
+                this.bossActive = false;
+                this.quizHandled = false;
+                this.quizOpenedThisSession = false; // 🔧 重置会话级标记
+                this.gameOverActive = false;
+                this.lastKillTime = 0;
+
+                // 3. 重置本局累计数据
+                this.cumulativeStars = 0;
+                this.totalKills = 0;
+
+                // 4. 清除所有 spawn 计时器
+                if (this.spawnTimer) {
+                    clearInterval(this.spawnTimer);
+                    this.spawnTimer = null;
+                }
+
+                // 🔧 5. 清除所有 pending setTimeout（答题回调等），防止gameOver期间残留触发
+                if (this.pendingTimers) {
+                    this.pendingTimers.forEach(id => clearTimeout(id));
+                    this.pendingTimers = [];
+                }
+                // 确保答题模态框关闭
+                const quizModal = document.getElementById('modal-quiz');
+                if (quizModal) quizModal.classList.add('hidden');
+
+                // 6. 强制重新生成路径
+                this.generatePath();
+
+                // 🔧 重新启用答题关闭按钮（gameOver时禁用，重开后恢复）
+                const _qc = document.getElementById('quiz-close');
+                if (_qc) _qc.disabled = false;
+
+                // 7. 同步 UI
+                this.updateUI();
+            }
+        }
+
+        let game = null;
+
+        window.onload = () => {
+            const canvas = document.getElementById('game-canvas');
+            game = new GameEngine(canvas);
+            game.start();
+            renderTowerDock(0);
+            setupEventListeners();
+            setupDockTooltips();
+            populateStages();
+            updateBadgeCount();
+        };
+
+        function renderTowerDock(level) {
+            const dock = document.getElementById('tower-dock');
+            if (!dock) return;
+            const stage = STAGES[level];
+            const towerOrder = ['switch', 'pixel', 'rgb', 'decoder', 'magnifier', 'loop', 'classifier', 'predictor', 'neural', 'reinforce', 'prompt', 'debugger'];
+
+            dock.innerHTML = '';
+            // 🔧 自适应：使用 grid 确保所有塔在一行可见，超出时横向滚动
+            dock.style.display = 'grid';
+            dock.style.gridTemplateColumns = `repeat(${towerOrder.length}, minmax(50px, 1fr))`;
+            dock.style.gap = '4px';
+
+            towerOrder.forEach((type, idx) => {
+                const t = TOWER_TYPES[type];
+                const unlocked = stage.availableTowers.includes(type);
+                const isSelected = game && game.selectedTowerType === type;
+
+                const card = document.createElement('div');
+                card.dataset.tower = type;
+                card.className = `tower-card relative p-0.5 rounded-md cursor-pointer flex flex-col items-center transition group shrink-0 ${isSelected ? 'border-cyan-400 bg-slate-700/90 ring-1 ring-cyan-400/50' : 'bg-slate-800/80 hover:bg-slate-700/80 border border-slate-600'} ${!unlocked ? 'opacity-40' : ''}`;
+                card.style.minWidth = '48px';
+                card.innerHTML = `
+                    <div class="w-7 h-7 rounded flex items-center justify-center text-sm font-bold mb-0.5" style="background:${unlocked ? t.color + '20' : '#1e293b'}; color:${t.color}">${t.icon}</div>
+                    <span class="text-[9px] font-bold text-slate-200 truncate w-full text-center leading-tight">${t.name.replace(/[^一-龥a-zA-Z0-9]/g, '').slice(0, 4)}</span>
+                    <span class="text-[8px] text-yellow-400 font-bold flex items-center gap-0.5">
+                        <i class="fa-solid fa-bolt" style="font-size:7px"></i> ${t.cost}
+                    </span>
+                    <span class="absolute -top-0.5 -right-0.5 text-[7px] font-bold text-cyan-300 bg-slate-900/90 rounded-full w-3 h-3 flex items-center justify-center">${idx + 1}</span>
+                    ${!unlocked ? '<div class="absolute inset-0 flex items-center justify-center text-xs font-black">未解锁</div>' : ''}
+                `;
+
+                card.addEventListener('click', () => {
+                    if (game) game.selectTower(type);
+                });
+
+                dock.appendChild(card);
+            });
+        }
+
+        function setupDockTooltips() {
+            const tooltip = document.getElementById('ui-dock-tooltip');
+            const towerData = {
+                switch: { title: "01 开关发射塔", lesson: "第2课《开关城》", color: "text-blue-400", borderColor: "border-blue-500/50", desc: "电脑内部用二进制0和1表示与传输所有信息。发射塔以极快攻速交替打出0与1脉冲，性价比之王。", stats: [{ label: "伤害", val: "18", icon: "fa-burst text-amber-400" }, { label: "射速", val: "极快", icon: "fa-bolt text-cyan-400" }, { label: "射程", val: "120px", icon: "fa-bullseye text-emerald-400" }], cost: 100 },
+                pixel: { title: "像素瞄准塔", lesson: "第5课《像素》", color: "text-cyan-400", borderColor: "border-cyan-500/50", desc: "像素越多画面越清晰！精准瞄准，攻击速度较快。", stats: [{ label: "伤害", val: "14", icon: "fa-burst text-amber-400" }, { label: "射程", val: "140px", icon: "fa-bullseye text-emerald-400" }, { label: "特性", val: "精准点杀", icon: "fa-crosshairs text-cyan-400" }], cost: 120 },
+                rgb: { title: "RGB调色塔", lesson: "第6课《RGB》", color: "text-pink-400", borderColor: "border-pink-500/50", desc: "RGB三原色：红+绿=黄，绿+蓝=青，红+蓝=紫！切换颜色输出不同效果。", stats: [{ label: "伤害", val: "22", icon: "fa-burst text-amber-400" }, { label: "射程", val: "130px", icon: "fa-bullseye text-emerald-400" }, { label: "特性", val: "三色切换", icon: "fa-palette text-pink-400" }], cost: 180 },
+                decoder: { title: "密码破译塔", lesson: "第3课《编码》", color: "text-purple-400", borderColor: "border-purple-500/50", desc: "编码和解码必须用同一套规则！破译密码锁敌人的护盾。", stats: [{ label: "伤害", val: "20", icon: "fa-burst text-amber-400" }, { label: "射程", val: "110px", icon: "fa-bullseye text-emerald-400" }, { label: "特性", val: "破译护盾", icon: "fa-key text-purple-400" }], cost: 140 },
+                magnifier: { title: "特征放大镜", lesson: "第14课《特征》", color: "text-emerald-400", borderColor: "border-emerald-500/50", desc: '捕捉事物区分的关键特征线索！形成磁场使范围内敌人移速降低50%，并强行破解"隐藏数据噪声"的隐身防护！', stats: [{ label: "伤害", val: "8/秒", icon: "fa-burst text-amber-400" }, { label: "减速", val: "50% 群体", icon: "fa-gauge text-cyan-400" }, { label: "射程", val: "140px", icon: "fa-bullseye text-emerald-400" }], cost: 150 },
+                loop: { title: "循环炮塔", lesson: "第10课《循环》", color: "text-amber-400", borderColor: "border-amber-500/50", desc: "重复执行同一个步骤！一次发射3发子弹，适合对付群体敌人。", stats: [{ label: "伤害", val: "12×3", icon: "fa-burst text-amber-400" }, { label: "射速", val: "中", icon: "fa-bolt text-cyan-400" }, { label: "射程", val: "130px", icon: "fa-bullseye text-emerald-400" }], cost: 160 },
+                classifier: { title: "分类扫描塔", lesson: "第13课《分类》", color: "text-teal-400", borderColor: "border-teal-500/50", desc: "AI靠分类认识世界！标记敌人弱点，被标记敌人受所有塔+50%伤害。", stats: [{ label: "伤害", val: "16", icon: "fa-burst text-amber-400" }, { label: "射程", val: "150px", icon: "fa-bullseye text-emerald-400" }, { label: "特性", val: "弱点标记", icon: "fa-tag text-teal-400" }], cost: 200 },
+                predictor: { title: "预测水晶塔", lesson: "第15课《预测》", color: "text-purple-400", borderColor: "border-purple-500/50", desc: "根据过去规律猜未来！30%概率暴击，但预测不是100%准确。", stats: [{ label: "伤害", val: "28", icon: "fa-burst text-amber-400" }, { label: "射程", val: "170px", icon: "fa-bullseye text-emerald-400" }, { label: "特性", val: "30%暴击", icon: "fa-bolt text-yellow-400" }], cost: 220 },
+                neural: { title: "神经网络塔", lesson: "第21课《神经网络》", color: "text-purple-400", borderColor: "border-purple-500/50", desc: "模仿大脑神经元多层节点连结！发射连锁脉冲，在3个敌人间弹射递增伤害。", stats: [{ label: "伤害", val: "14 (弹射递增)", icon: "fa-burst text-amber-400" }, { label: "弹射", val: "最多3目标", icon: "fa-link text-purple-400" }, { label: "射程", val: "160px", icon: "fa-bullseye text-emerald-400" }], cost: 220 },
+                reinforce: { title: "强化学习塔", lesson: "第18课《强化学习》", color: "text-yellow-400", borderColor: "border-yellow-500/50", desc: "做对了得奖励，下次还这么做！连续击杀奖励递增伤害。", stats: [{ label: "基础", val: "15", icon: "fa-burst text-amber-400" }, { label: "连击", val: "+30%/次", icon: "fa-fire text-orange-400" }, { label: "射程", val: "140px", icon: "fa-bullseye text-emerald-400" }], cost: 240 },
+                prompt: { title: "提示词魔导", lesson: "第26课《提示词》", color: "text-amber-400", borderColor: "border-amber-500/50", desc: "设定明确的角色、目标与限制！发射高能魔法提示词爆破球，对70px范围内的所有敌人群体造成巨额爆破伤害！", stats: [{ label: "伤害", val: "50 (超高额)", icon: "fa-burst text-amber-400" }, { label: "范围", val: "70px AOE", icon: "fa-volcano text-rose-400" }, { label: "射程", val: "180px", icon: "fa-bullseye text-emerald-400" }], cost: 300 },
+                debugger: { title: "Debug调试塔", lesson: "第12课《调试》", color: "text-lime-400", borderColor: "border-lime-500/50", desc: "调试四步骤：发现问题→找到原因→修改→再试！造成真实伤害无视护盾。", stats: [{ label: "伤害", val: "10 真实", icon: "fa-burst text-amber-400" }, { label: "射程", val: "120px", icon: "fa-bullseye text-emerald-400" }, { label: "特性", val: "无视护盾", icon: "fa-bug text-lime-400" }], cost: 180 }
+            };
+
+            document.addEventListener('mouseover', (e) => {
+                const card = e.target.closest('.tower-card');
+                if (!card) return;
+                const type = card.dataset.tower;
+                const data = towerData[type];
+                if (!data) return;
+
+                tooltip.className = `fixed pointer-events-none glass-panel p-3.5 rounded-2xl border ${data.borderColor} text-xs text-slate-200 z-50 shadow-2xl backdrop-blur-xl w-72 transition-opacity duration-150`;
+                tooltip.innerHTML = `
+                    <div class="flex items-center justify-between font-bold border-b border-slate-700/80 pb-1.5 mb-2">
+                        <span class="${data.color} text-sm font-extrabold">${data.title}</span>
+                        <span class="text-[10px] bg-slate-800 px-2 py-0.5 rounded-full text-slate-300 font-bold border border-slate-700">${data.lesson}</span>
+                    </div>
+                    <p class="text-[11px] text-slate-300 leading-relaxed mb-2">${data.desc}</p>
+                    <div class="grid grid-cols-2 gap-1.5 text-[10px] text-slate-400 pt-1.5 border-t border-slate-800/80 bg-slate-900/40 p-2 rounded-xl">
+                        ${data.stats.map(s => `<div><i class="fa-solid ${s.icon}"></i> ${s.label}: <b class="text-slate-100">${s.val}</b></div>`).join('')}
+                    </div>
+                    <div class="mt-2 text-[10px] text-yellow-400 font-bold flex justify-between items-center bg-yellow-500/10 px-2 py-1 rounded-lg border border-yellow-500/20">
+                        <span><i class="fa-solid fa-bolt"></i> 建造消耗: ${data.cost} 能量</span>
+                        <span class="text-slate-400">按数字键${[...document.querySelectorAll('.tower-card')].findIndex(c => c.dataset.tower === type) + 1 || ''}</span>
+                    </div>
+                `;
+                positionTooltip(e);
+                tooltip.classList.remove('hidden');
+            });
+
+            document.addEventListener('mousemove', (e) => {
+                const card = e.target.closest('.tower-card');
+                if (card && !tooltip.classList.contains('hidden')) positionTooltip(e);
+            });
+
+            document.addEventListener('mouseout', (e) => {
+                const card = e.target.closest('.tower-card');
+                if (card) tooltip.classList.add('hidden');
+            });
+
+            // 技能提示
+            const skillBtn = document.getElementById('skill-gradient');
+            if (skillBtn) {
+                skillBtn.addEventListener('mouseenter', (e) => {
+                    tooltip.className = "fixed pointer-events-none glass-panel p-3.5 rounded-2xl border border-cyan-500/50 text-xs text-slate-200 z-50 shadow-2xl backdrop-blur-xl w-64 transition-opacity duration-150";
+                    tooltip.innerHTML = `
+                        <div class="flex items-center justify-between font-bold border-b border-slate-700/80 pb-1 mb-1.5">
+                            <span class="text-cyan-300 text-sm font-extrabold">⚡ 梯度加速技能</span>
+                            <span class="text-[10px] bg-cyan-500/20 px-2 py-0.5 rounded text-cyan-300">第24课《小箭头》</span>
+                        </div>
+                        <p class="text-[11px] text-slate-300 leading-relaxed mb-2">每次微调一点点！激活后5秒内所有防御塔射速提升100%，急速清理入侵威胁！</p>
+                        <div class="text-[10px] text-yellow-400 font-bold bg-slate-900/60 px-2 py-1 rounded-lg flex items-center gap-1 border border-slate-800">
+                            <i class="fa-solid fa-bolt"></i> 消耗 100 数据能量
+                        </div>
+                    `;
+                    positionTooltip(e);
+                    tooltip.classList.remove('hidden');
+                });
+                skillBtn.addEventListener('mousemove', (e) => positionTooltip(e));
+                skillBtn.addEventListener('mouseleave', () => tooltip.classList.add('hidden'));
+            }
+
+            function positionTooltip(e) {
+                const rect = tooltip.getBoundingClientRect();
+                let x = e.clientX - rect.width / 2;
+                let y = e.clientY - rect.height - 15;
+                if (x < 10) x = 10;
+                if (x + rect.width > window.innerWidth - 10) x = window.innerWidth - rect.width - 10;
+                if (y < 10) y = e.clientY + 20;
+                tooltip.style.left = `${x}px`;
+                tooltip.style.top = `${y}px`;
+            }
+        }
+
+        function setupEventListeners() {
+            document.getElementById('btn-next-wave').addEventListener('click', () => game.startNextWave());
+
+            // 敌人预览面板的"出击"按钮
+            const enemyStartBtn = document.getElementById('enemy-preview-start');
+            if (enemyStartBtn) {
+                enemyStartBtn.addEventListener('click', () => closeEnemyPreview());
+            }
+
+            // 敌人预览面板的关闭按钮
+            const enemyCloseBtn = document.getElementById('enemy-preview-close');
+            if (enemyCloseBtn) {
+                enemyCloseBtn.addEventListener('click', () => closeEnemyPreview());
+            }
+
+            const btnSpeed = document.getElementById('btn-speed');
+            btnSpeed.addEventListener('click', () => {
+                game.speed = game.speed === 1 ? 2 : 1;
+                btnSpeed.innerText = `${game.speed}x`;
+                btnSpeed.classList.toggle('text-cyan-400', game.speed === 2);
+            });
+
+            const btnSound = document.getElementById('btn-sound');
+            btnSound.addEventListener('click', () => {
+                sound.enabled = !sound.enabled;
+                sound.bgmEnabled = sound.enabled;
+                if (sound.enabled) {
+                    btnSound.innerHTML = `<i class="fa-solid fa-volume-high"></i>`;
+                    tryPlayBGM();
+                } else {
+                    btnSound.innerHTML = `<i class="fa-solid fa-volume-xmark"></i>`;
+                    pauseBGM();
+                }
+            });
+
+            const btnPause = document.getElementById('btn-pause');
+            btnPause.addEventListener('click', () => {
+                game.paused = !game.paused;
+                btnPause.innerHTML = game.paused ? `<i class="fa-solid fa-play"></i>` : `<i class="fa-solid fa-pause"></i>`;
+            });
+
+            // 🔧 返回主菜单：顶栏常驻按钮 → 弹确认框（暂停游戏避免怪继续走）
+            const btnHome = document.getElementById('btn-home');
+            if (btnHome) btnHome.addEventListener('click', () => {
+                // 若已在主菜单（modal-stage 显示），不重复弹
+                const stageModal = document.getElementById('modal-stage');
+                if (stageModal && !stageModal.classList.contains('hidden')) return;
+                // 暂停游戏以冻结怪移动，避免确认期间继续损失HP
+                if (game) game.paused = true;
+                document.getElementById('modal-confirm-home').classList.remove('hidden');
+                if (sound.playClick) sound.playClick();
+            });
+
+            const btnQuiz = document.getElementById('btn-quiz');
+            if (btnQuiz) {
+                btnQuiz.addEventListener('click', () => {
+                    if (game) game.addFloatingText("每一波防御成功后将自动解锁答题奖励！", game.canvas.width / 2, 50, "#f59e0b");
+                });
+            }
+
+            document.getElementById('quiz-close').addEventListener('click', () => {
+                const modal = document.getElementById('modal-quiz');
+                modal.classList.add('hidden');
+
+                // 🔧 综合守卫：仅在答题确实为当前活跃波次开启时才推进波次
+                // - 若游戏已结束/暂停/重置中、或本会话根本没开过答题，直接关闭即可
+                if (game.gameOverActive || game.paused) return;
+                if (!game.quizOpenedThisSession) return; // 防止重置后残余按钮误触 wave++
+
+                // 🔧 防止答题回调与关闭按钮双重触发 wave++
+                if (game.quizHandled) return;
+                game.quizHandled = true;
+                game.quizOpenedThisSession = false; // 关闭后清零，避免遗留
+
+                // 若用户未答任何题就关闭，则这里推进波次
+                const maxWaves = STAGES[game.level].waves;
+                if (game.wave < maxWaves && !game.waveInProgress) {
+                    game.wave++;
+                    game.waveCleared = false;
+                    game.updateUI();
+                    showEnemyPreview(game.wave, game.level);
+                }
+            });
+
+            document.getElementById('skill-gradient').addEventListener('click', () => {
+                if (game.energy >= 100) {
+                    game.energy -= 100;
+                    game.gradientBoostTimer = 300;
+                    game.updateUI();
+                    sound.playCorrect();
+                    showBanner("⚡ 梯度加速启动！", "所有防御塔攻速翻倍！");
+                } else {
+                    game.addFloatingText("能量不足 100!", game.canvas.width / 2, game.canvas.height / 2, "#f43f5e");
+                }
+            });
+
+            document.getElementById('btn-start-game').addEventListener('click', () => {
+                document.getElementById('modal-stage').classList.add('hidden');
+                sound.init();
+                tryPlayBGM();  // 用户明确点击开始游戏时启动BGM
+                game.resetForNewStage();
+                // 显示第一波敌人情报
+                showEnemyPreview(game.wave, game.level);
+            });
+
+            // 勋章墙按钮
+            document.getElementById('btn-badges').addEventListener('click', () => {
+                sound.init();
+                tryPlayBGM();
+                openBadgeWall();
+            });
+
+            // 勋章墙关闭
+            document.getElementById('badges-close').addEventListener('click', () => {
+                document.getElementById('modal-badges').classList.add('hidden');
+            });
+
+            // 重置进度
+            document.getElementById('badges-reset').addEventListener('click', () => {
+                if (confirm('确定要清空所有勋章和星级进度吗？此操作不可恢复！')) {
+                    playerProgress = getDefaultProgress();
+                    saveProgress(playerProgress);
+                    updateBadgeCount();
+                    openBadgeWall();
+                }
+            });
+
+            // 星级模态继续按钮
+            document.getElementById('stars-continue').addEventListener('click', () => {
+                document.getElementById('modal-stars').classList.add('hidden');
+                game.paused = false;
+                document.getElementById('modal-stage').classList.remove('hidden');
+            });
+
+            // 游戏结束 - 重新挑战
+            document.getElementById('gameover-retry').addEventListener('click', () => {
+                document.getElementById('modal-gameover').classList.add('hidden');
+                // 🔧 完全重置当前关卡：清理所有状态并同步UI
+                game.resetForNewStage();
+                // 重新渲染塔栏以匹配当前关卡可用塔
+                renderTowerDock(game.level);
+                // 显示第1波敌人情报
+                showEnemyPreview(game.wave, game.level);
+                // 确保游戏循环未被暂停（resetForNewStage已重置paused，但保险起见再次确认）
+                game.paused = false;
+                game.gameOverActive = false;
+            });
+
+            // 游戏结束 - 返回首页
+            document.getElementById('gameover-back').addEventListener('click', () => {
+                document.getElementById('modal-gameover').classList.add('hidden');
+                game.resetForNewStage();
+                document.getElementById('modal-stage').classList.remove('hidden');
+            });
+
+            // 🔧 胜利模态 - 返回主菜单（直接返回，无确认框 — 已通关，无进度可丢）
+            document.getElementById('stars-back-home').addEventListener('click', () => {
+                backToMainMenu(false);
+            });
+
+            // 🔧 确认框 - 取消（继续游戏）
+            document.getElementById('confirm-home-cancel').addEventListener('click', () => {
+                document.getElementById('modal-confirm-home').classList.add('hidden');
+                // 取消时不强制恢复 paused（用户可能之前主动暂停）
+            });
+
+            // 🔧 确认框 - 确认（返回主菜单）
+            document.getElementById('confirm-home-ok').addEventListener('click', () => {
+                backToMainMenu(true);
+            });
+        }
+
+        // 🔧 统一处理：返回主菜单（不做确认弹窗 — 已通关时由 stars-back-home 直接调）
+        function backToMainMenu() {
+            // 关闭所有模态
+            ['modal-gameover', 'modal-quiz', 'modal-stars', 'modal-badges', 'modal-enemy-preview', 'modal-confirm-home'].forEach(id => {
+                const m = document.getElementById(id);
+                if (m) m.classList.add('hidden');
+            });
+            // 关闭可能的 lesson card
+            const lessonCard = document.getElementById('lesson-card');
+            if (lessonCard) lessonCard.classList.add('hidden');
+
+            // 清理游戏状态
+            if (game) {
+                game.paused = true;
+                game.gameOverActive = false;
+                game.resetForNewStage();
+                renderTowerDock(game.level);
+            }
+
+            // 显示主菜单
+            const stageModal = document.getElementById('modal-stage');
+            if (stageModal) stageModal.classList.remove('hidden');
+
+            // 重新启用答题关闭按钮（防止 gameOver 期间的禁用状态遗留）
+            const qc = document.getElementById('quiz-close');
+            if (qc) qc.disabled = false;
+        }
+
+        function populateStages() {
+            const container = document.getElementById('stage-list');
+            if (!container) return;
+            container.innerHTML = '';
+            STAGES.forEach((s) => {
+                const item = document.createElement('div');
+                item.dataset.stageId = s.id;
+                item.onclick = () => updateStageSelection(s.id);
+                container.appendChild(item);
+            });
+            updateStageSelection(game ? game.level : 0);
+        }
+
+        function updateStageSelection(selectedId) {
+            game.level = selectedId;
+            game.resetForNewStage();
+            const container = document.getElementById('stage-list');
+            if (!container) return;
+            const cards = container.children;
+            STAGES.forEach((s, idx) => {
+                if (cards[idx]) {
+                    if (s.id === selectedId) {
+                        cards[idx].className = "p-3 rounded-2xl border-2 border-cyan-400 bg-gradient-to-br from-cyan-950/80 to-blue-900/80 shadow-lg shadow-cyan-500/25 cursor-pointer text-left transition transform scale-[1.02]";
+                        cards[idx].innerHTML = `
+                            <div class="flex justify-between items-center font-bold mb-1">
+                                <span class="text-xs text-cyan-300">关卡 0${s.id + 1}</span>
+                                <span class="text-[10px] bg-cyan-400/20 text-cyan-300 border border-cyan-400/40 px-1.5 py-0.5 rounded">当前选中</span>
+                            </div>
+                            <div class="text-sm font-black text-white">${s.name}</div>
+                            <div class="text-[10px] text-cyan-200/80 mt-1 leading-relaxed">${s.lesson}</div>
+                            <div class="text-[10px] text-amber-300 mt-1"><i class="fa-solid fa-graduation-cap"></i> ${s.waves} 波</div>
+                        `;
+                    } else {
+                        cards[idx].className = "p-3 rounded-2xl border border-slate-700/80 bg-slate-800/50 hover:bg-slate-800 hover:border-slate-500 cursor-pointer text-left transition";
+                        cards[idx].innerHTML = `
+                            <div class="text-xs font-bold text-slate-400">关卡 0${s.id + 1}</div>
+                            <div class="text-sm font-bold text-slate-200 mt-1">${s.name}</div>
+                            <div class="text-[10px] text-slate-400 mt-1 leading-relaxed">${s.lesson}</div>
+                            <div class="text-[10px] text-slate-500 mt-1"><i class="fa-solid fa-graduation-cap"></i> ${s.waves} 波</div>
+                        `;
+                    }
+                }
+            });
+            renderTowerDock(selectedId);
+        }
+
+        function openWaveQuizModal() {
+            const modal = document.getElementById('modal-quiz');
+            const q = QUIZ_DATABASE[Math.floor(Math.random() * QUIZ_DATABASE.length)];
+            document.getElementById('quiz-lesson-tag').innerText = q.lesson;
+            document.getElementById('quiz-question').innerText = q.question;
+            const titleEl = modal.querySelector('h3');
+            if (titleEl) titleEl.innerText = `⚡ 第 ${game.wave} 波防御成功！知识奖励答题`;
+            const optionsContainer = document.getElementById('quiz-options');
+            optionsContainer.innerHTML = '';
+            document.getElementById('quiz-feedback').className = 'hidden p-3 rounded-xl text-center text-sm font-bold';
+            q.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = "p-3 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-600 hover:border-cyan-400 text-sm font-bold text-slate-200 transition text-left cursor-pointer";
+                btn.innerText = `${String.fromCharCode(65 + idx)}. ${opt}`;
+                btn.onclick = () => {
+                    // 禁用所有按钮防止重复点击
+                    optionsContainer.querySelectorAll('button').forEach(b => {
+                        b.disabled = true;
+                        b.classList.add('opacity-60', 'cursor-not-allowed');
+                    });
+                    // 高亮用户的选择和正确答案
+                    if (idx === q.answer) {
+                        btn.classList.remove('opacity-60');
+                        btn.classList.add('border-emerald-400', 'bg-emerald-500/30', 'text-emerald-200');
+                    } else {
+                        btn.classList.remove('opacity-60');
+                        btn.classList.add('border-rose-400', 'bg-rose-500/30', 'text-rose-200');
+                        const correctBtn = optionsContainer.children[q.answer];
+                        if (correctBtn) {
+                            correctBtn.classList.remove('opacity-60');
+                            correctBtn.classList.add('border-emerald-400', 'bg-emerald-500/30', 'text-emerald-200');
+                        }
+                    }
+                    handleQuizAnswer(idx, q.answer, q.explanation, q.options);
+                };
+                optionsContainer.appendChild(btn);
+            });
+            game.quizOpenedThisSession = true; // 🔧 标记本次会话开过答题（quiz-close 用它判断是否可推进波次）
+            modal.classList.remove('hidden');
+        }
+
+        function handleQuizAnswer(selected, correct, explanation, options) {
+            // 🔧 标记答题已处理，防止关闭按钮与setTimeout双重触发
+            game.quizHandled = true;
+
+            const feedback = document.getElementById('quiz-feedback');
+            feedback.classList.remove('hidden');
+            const correctAnswerText = `${String.fromCharCode(65 + correct)}. ${options[correct]}`;
+            if (selected === correct) {
+                feedback.className = 'p-4 rounded-xl bg-emerald-500/15 border border-emerald-500/40 text-left';
+                feedback.innerHTML = `
+                    <div class="text-center font-bold text-emerald-300 mb-3 text-base">🎉 回答正确！+100 数据能量！</div>
+                    <div class="text-sm text-slate-200 mb-2">✅ <b class="text-emerald-300">正确答案：</b><span class="text-white font-bold">${correctAnswerText}</span></div>
+                    <div class="text-sm text-slate-300 leading-relaxed bg-slate-900/60 p-2.5 rounded-lg border border-slate-700">💡 <b class="text-amber-300">解析：</b>${explanation}</div>
+                `;
+                game.energy += 100;
+                game.updateUI();
+                sound.playCorrect();
+
+                // 更新答题计数 & 检查勋章
+                playerProgress.stats.totalQuizzesCorrect++;
+                saveProgress(playerProgress);
+                const qCount = playerProgress.stats.totalQuizzesCorrect;
+                if (qCount >= 10) awardBadge('ai_scholar');
+                if (qCount >= 30) awardBadge('ai_expert');
+                if (qCount >= 50) {
+                    awardBadge('ai_master');
+                    // 检查是否全部勋章
+                    if (Object.keys(BADGES).every(id => playerProgress.badges.includes(id))) {
+                        awardBadge('champion');
+                    }
+                }
+            } else {
+                feedback.className = 'p-4 rounded-xl bg-rose-500/15 border border-rose-500/40 text-left';
+                feedback.innerHTML = `
+                    <div class="text-center font-bold text-rose-300 mb-3 text-base">❌ 回答错误，吸收经验！</div>
+                    <div class="text-sm text-slate-200 mb-2">✅ <b class="text-emerald-300">正确答案：</b><span class="text-white font-bold">${correctAnswerText}</span></div>
+                    <div class="text-sm text-slate-300 leading-relaxed bg-slate-900/60 p-2.5 rounded-lg border border-slate-700">💡 <b class="text-amber-300">解析：</b>${explanation}</div>
+                `;
+                sound.playWrong();
+            }
+            // 给用户时间看清正确答案+解析，然后切换到下一波并展示敌人情报
+            // 🔧 使用pendingTimers跟踪，便于gameOver时清理
+            game.pendingTimers.push(setTimeout(() => {
+                // 🔧 守卫：若用户提前关闭按钮已经处理过，这里跳过
+                if (!game.quizHandled) return;
+                // 🔧 防御：若游戏已结束/已重置，不要推进波次
+                if (game.gameOverActive || game.paused) return;
+                game.quizHandled = false; // 重置供下一波使用
+                document.getElementById('modal-quiz').classList.add('hidden');
+                const maxWaves = STAGES[game.level].waves;
+                if (game.wave < maxWaves) {
+                    game.wave++;
+                    game.waveCleared = false; // 重置波次清除状态，按钮正确显示当前波
+                    game.updateUI();
+                    showEnemyPreview(game.wave, game.level);
+                }
+            }, 3500));
+        }
+
+        function showBanner(title, subtitle) {
+            const banner = document.getElementById('game-banner');
+            document.getElementById('banner-title').innerText = title;
+            document.getElementById('banner-subtitle').innerText = subtitle;
+            banner.classList.remove('scale-0', 'opacity-0');
+            banner.classList.add('scale-100', 'opacity-100');
+            setTimeout(() => {
+                banner.classList.remove('scale-100', 'opacity-100');
+                banner.classList.add('scale-0', 'opacity-0');
+            }, 2500);
+        }
+
+        function showLessonCard(tag, text, duration = 4000) {
+            const card = document.getElementById('lesson-card');
+            document.getElementById('lesson-card-tag').innerText = tag;
+            document.getElementById('lesson-card-text').innerText = text;
+            card.classList.remove('scale-0', 'opacity-0');
+            card.classList.add('scale-100', 'opacity-100');
+            setTimeout(() => {
+                card.classList.remove('scale-100', 'opacity-100');
+                card.classList.add('scale-0', 'opacity-0');
+            }, duration);
+        }
+
+        // 敌人特性描述表
+        const ENEMY_FEATURES = {
+            bug: '基础程序Bug，HP/速度一般',
+            bitmonster: '高速低HP，二进制组成',
+            lockmonster: '有护盾，需密码破译塔破解',
+            blurry: '模糊身形，命中困难（25%闪避）',
+            compress: '初始小，路径中点展开×3 HP',
+            noise: '隐身！需特征放大镜破解',
+            traffic: '走走停停，演示条件判断',
+            loopmonster: '死亡时分裂成2个小怪',
+            pipeline: '3段HP，需要多次攻击',
+            chaos: '混乱属性，无弱点',
+            parrot: '模仿但不理解（过拟合）',
+            memorize: '固定路线，不会变道',
+            puppy: '乱试行为，奖励后变强',
+            tagged: '被监督学习的标签怪',
+            neuron: '神经网络怪，HP较高',
+            gradient: '梯度下降怪，HP高速度慢',
+            tongue: '话痨怪，喋喋不休',
+            vague: '含糊指令，指令不清难杀',
+            phantom: '幻觉怪，真假难辨',
+            thief: '隐私窃贼，巨大护盾',
+            bias: '偏见巨兽，对部分塔有抗性',
+            boss: '终极BOSS！超高HP'
+        };
+
+        function showEnemyPreview(wave, level) {
+            const waveConfigs = STAGE_WAVES[level] || [{ bug: 10 }];
+            const config = waveConfigs[Math.min(wave - 1, waveConfigs.length - 1)];
+
+            // 统计本波敌人类型与数量
+            const summary = {};
+            Object.keys(config).forEach(t => { summary[t] = config[t]; });
+
+            // 更新标题
+            document.getElementById('enemy-preview-title').innerText = `第 ${wave} 波 · 威胁情报`;
+
+            // 生成敌人卡片
+            const list = document.getElementById('enemy-preview-list');
+            list.innerHTML = '';
+            Object.keys(summary).forEach(typeKey => {
+                const enemy = ENEMY_TYPES[typeKey];
+                if (!enemy) return;
+                const feature = ENEMY_FEATURES[typeKey] || '神秘威胁';
+
+                const card = document.createElement('div');
+                card.className = 'flex items-center gap-2 p-2 rounded-xl bg-slate-800/80 border border-slate-700 hover:border-rose-500/50 transition';
+                card.innerHTML = `
+                    <div class="w-12 h-12 rounded-lg flex items-center justify-center text-2xl flex-shrink-0" style="background:${enemy.color}30; color:${enemy.color}">${enemy.icon}</div>
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center justify-between gap-1 mb-0.5">
+                            <span class="text-xs font-bold text-slate-200 truncate">${enemy.name}</span>
+                            <span class="text-[10px] font-extrabold text-yellow-400 flex-shrink-0">×${summary[typeKey]}</span>
+                        </div>
+                        <div class="text-[10px] text-slate-400 leading-tight">${feature}</div>
+                    </div>
+                `;
+                list.appendChild(card);
+            });
+
+            // 显示预览面板（启用点击拦截，避免误触建造塔）
+            const preview = document.getElementById('enemy-preview');
+            preview.classList.remove('scale-0', 'opacity-0', 'pointer-events-none');
+            preview.classList.add('scale-100', 'opacity-100', 'pointer-events-auto');
+
+            // 修改按钮文字提示玩家预览只是信息展示
+            const startBtn = document.getElementById('enemy-preview-start');
+            if (startBtn) {
+                startBtn.innerHTML = '<i class="fa-solid fa-check mr-1"></i> 知道了';
+            }
+        }
+
+        function closeEnemyPreview() {
+            const preview = document.getElementById('enemy-preview');
+            preview.classList.remove('scale-100', 'opacity-100', 'pointer-events-auto');
+            preview.classList.add('scale-0', 'opacity-0', 'pointer-events-none');
+            // 不再自动调用 executeWave，玩家需主动点击主"出击"按钮开始波次
+        }
+    </script>
+</body>
+</html>
