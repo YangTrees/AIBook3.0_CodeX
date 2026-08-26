@@ -1,9 +1,37 @@
 import { useState } from 'react';
 import COURSE_DATA from '../data/courseData.ts';
+import { COURSE_CHAPTERS } from '../data/courseChapters';
 import { useStorage } from '../hooks/useStorage';
-import { BarChart3, ClipboardList, FileText, Award, BookOpen, Star, PartyPopper, Medal } from 'lucide-react';
+import { BarChart3, ClipboardList, FileText, Award, BookOpen, Star, PartyPopper, Medal, ExternalLink, Compass } from 'lucide-react';
 
-type SubTabType = 'overview' | 'details' | 'wrong' | 'badges';
+type SubTabType = 'overview' | 'details' | 'wrong' | 'badges' | 'resources';
+
+const EXTENDED_RESOURCES = [
+  {
+    title: 'Scratch 编程入门',
+    desc: '学习完编码与压缩内容后，可以尝试使用积木式编程创作动画和小游戏。',
+    link: 'https://scratch.mit.edu/',
+    tag: '创意编程',
+    color: '#e07010',
+    bg: '#fff6ed',
+  },
+  {
+    title: '可汗学院数学',
+    desc: '通过互动练习继续探索数学、数据与统计知识。',
+    link: 'https://zh.khanacademy.org/',
+    tag: '数学思维',
+    color: '#16825d',
+    bg: '#edfaf4',
+  },
+  {
+    title: 'Code.org',
+    desc: '适合少儿体验的计算机科学和编程启蒙课程。',
+    link: 'https://code.org/',
+    tag: '计算机科学',
+    color: '#7653cc',
+    bg: '#f5f0ff',
+  },
+];
 
 interface WrongReviewItem {
   lessonId: number;
@@ -30,9 +58,10 @@ export default function ArchivePage({ onSelectCourse }: ArchivePageProps) {
 
   const subTabs = [
     { key: 'overview' as SubTabType, label: '学习总览', Icon: BarChart3 },
-    { key: 'details' as SubTabType, label: '课程详情', Icon: ClipboardList },
-    { key: 'wrong' as SubTabType, label: '错题本', Icon: FileText },
+    { key: 'details' as SubTabType, label: '学习记录', Icon: ClipboardList },
+    { key: 'wrong' as SubTabType, label: '巩固练习', Icon: FileText },
     { key: 'badges' as SubTabType, label: '我的勋章', Icon: Award },
+    { key: 'resources' as SubTabType, label: '拓展资源', Icon: Compass },
   ];
 
   // 收集所有错题
@@ -86,6 +115,13 @@ export default function ArchivePage({ onSelectCourse }: ArchivePageProps) {
     return `${Math.floor(seconds / 3600)}小时${Math.floor((seconds % 3600) / 60)}分`;
   };
 
+  const formatRecordDate = (timestamp?: string): string => {
+    if (!timestamp) return '暂无记录';
+    const date = new Date(timestamp);
+    if (Number.isNaN(date.getTime())) return '暂无记录';
+    return date.toLocaleDateString('zh-CN', { month: 'numeric', day: 'numeric' });
+  };
+
   return (
     <div className="kid-float-in responsive-page section-page archive-page" style={{ width: 1920, minHeight: 1000, padding: '40px 48px', boxSizing: 'border-box' }}>
       {/* 顶部标题区 */}
@@ -93,8 +129,8 @@ export default function ArchivePage({ onSelectCourse }: ArchivePageProps) {
         <div style={{ display: 'flex', alignItems: 'center', gap: 20 }}>
           <BookOpen size={48} strokeWidth={1.7} />
           <div>
-            <h1 style={{ fontSize: 36, fontWeight: 900, color: 'var(--kid-gray-800)', margin: 0 }}>学习档案</h1>
-            <p style={{ fontSize: 16, color: 'var(--kid-gray-400)', margin: '4px 0 0 0' }}>记录你的每一步成长</p>
+            <h1 style={{ fontSize: 36, fontWeight: 900, color: 'var(--kid-gray-800)', margin: 0 }}>我的成长</h1>
+            <p style={{ fontSize: 16, color: 'var(--kid-gray-400)', margin: '4px 0 0 0' }}>记录每一次学习与进步</p>
           </div>
         </div>
         <div style={{ display: 'flex', gap: 12 }}>
@@ -153,13 +189,13 @@ export default function ArchivePage({ onSelectCourse }: ArchivePageProps) {
           color: '#70400e',
           boxShadow: '0 6px 20px rgba(224,112,16,0.12)',
         }}>
-          <div style={{ fontSize: 15, fontWeight: 800, letterSpacing: '0.02em', marginBottom: 8 }}>累计错题数</div>
+          <div style={{ fontSize: 15, fontWeight: 800, letterSpacing: '0.02em', marginBottom: 8 }}>完成知识挑战</div>
           <div style={{ fontSize: 42, fontWeight: 900, color: '#a55010', lineHeight: 1.1 }}>
-            {stats.totalErrors}
+            {stats.totalQuiz}
             <span style={{ fontSize: 20, color: '#8a653c', fontWeight: 700 }}> 道</span>
           </div>
           <div style={{ fontSize: 14, color: '#7a5a34', fontWeight: 600, marginTop: 10 }}>
-            错过的都是进步的机会
+            每次尝试都在成长
           </div>
         </div>
 
@@ -275,23 +311,22 @@ export default function ArchivePage({ onSelectCourse }: ArchivePageProps) {
               flex: 1,
             }}>
               <h3 style={{ fontSize: 20, fontWeight: 800, color: 'var(--kid-gray-700)', margin: '0 0 24px 0' }}>
-                各模块学习情况
+                四章学习情况
               </h3>
-              {['模块A｜信息从哪里来', '模块B｜编码与压缩', '模块C｜数据与统计', '模块D｜人工智能', '模块E｜综合应用'].map((module) => {
-                const moduleLessons = COURSE_DATA.filter(c => c.module === module);
-                const completedInModule = moduleLessons.filter(l => storage.lessons[l.id]?.completed).length;
-                const total = moduleLessons.length;
-                const percent = total > 0 ? Math.min(100, Math.round((completedInModule / total) * 100)) : 0;
+              {COURSE_CHAPTERS.map(chapter => {
+                const chapterLessons = COURSE_DATA.filter(course => course.id >= chapter.startLesson && course.id <= chapter.endLesson);
+                const completedInChapter = chapterLessons.filter(lesson => storage.lessons[lesson.id]?.completed).length;
+                const total = chapterLessons.length;
+                const percent = total > 0 ? Math.min(100, Math.round((completedInChapter / total) * 100)) : 0;
 
                 return (
-                  <div key={module} style={{ marginBottom: 20 }}>
+                  <div key={chapter.title} style={{ marginBottom: 24 }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
-                      <span style={{ fontSize: 15, fontWeight: 700, color: 'var(--kid-gray-700)' }}>
-                        {module}
-                      </span>
-                      <span style={{ fontSize: 14, color: 'var(--kid-gray-500)' }}>
-                        {completedInModule}/{total} 课
-                      </span>
+                      <div>
+                        <span style={{ fontSize: 15, fontWeight: 800, color: chapter.color }}>{chapter.title}</span>
+                        <div style={{ fontSize: 12, color: 'var(--kid-gray-400)', marginTop: 3 }}>{chapter.desc}</div>
+                      </div>
+                      <span style={{ fontSize: 14, color: chapter.color, fontWeight: 800 }}>{completedInChapter}/{total} 课</span>
                     </div>
                     <div style={{
                       height: 12,
@@ -302,9 +337,7 @@ export default function ArchivePage({ onSelectCourse }: ArchivePageProps) {
                       <div style={{
                         height: '100%',
                         width: `${percent}%`,
-                        background: percent === 100
-                          ? 'var(--kid-green-500)'
-                          : 'var(--kid-blue-400)',
+                        background: percent === 100 ? 'var(--kid-green-500)' : chapter.color,
                         borderRadius: 6,
                         transition: 'width 0.5s ease',
                       }} />
@@ -316,7 +349,7 @@ export default function ArchivePage({ onSelectCourse }: ArchivePageProps) {
           </div>
         )}
 
-        {/* 课程详情 */}
+        {/* 学习记录 */}
         {activeSubTab === 'details' && (
           <div className="kid-fade-in" style={{
             background: 'white',
@@ -325,7 +358,7 @@ export default function ArchivePage({ onSelectCourse }: ArchivePageProps) {
             boxShadow: '0 4px 16px rgba(0,0,0,0.08)',
           }}>
             <h3 style={{ fontSize: 20, fontWeight: 800, color: 'var(--kid-gray-700)', margin: '0 0 24px 0' }}>
-              课程学习详情
+              每课学习记录
             </h3>
             <div className="archive-course-grid" style={{
               display: 'grid',
@@ -336,6 +369,7 @@ export default function ArchivePage({ onSelectCourse }: ArchivePageProps) {
                 const record = storage.lessons[course.id];
                 const isCompleted = record?.completed;
                 const quizAccuracy = record?.quizAccuracy || 0;
+                const completedSteps = record?.completedModules?.filter(moduleId => moduleId >= 2 && moduleId <= 7).length || 0;
 
                 return (
                   <div
@@ -384,6 +418,21 @@ export default function ArchivePage({ onSelectCourse }: ArchivePageProps) {
                         </span>
                       )}
                     </div>
+                    <div style={{
+                      marginTop: 10,
+                      paddingTop: 9,
+                      borderTop: '1px solid var(--kid-gray-100)',
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      gap: 8,
+                      fontSize: 11,
+                      color: 'var(--kid-gray-400)',
+                    }}>
+                      <span>最近学习：{formatRecordDate(record?.lastStudyTime)}</span>
+                      <span style={{ color: completedSteps > 0 ? 'var(--kid-blue-500)' : 'var(--kid-gray-400)', fontWeight: 700 }}>
+                        学习环节 {completedSteps}/6
+                      </span>
+                    </div>
                   </div>
                 );
               })}
@@ -391,7 +440,7 @@ export default function ArchivePage({ onSelectCourse }: ArchivePageProps) {
           </div>
         )}
 
-        {/* 错题本 */}
+        {/* 巩固练习 */}
         {activeSubTab === 'wrong' && (
           <div className="kid-fade-in" style={{
             background: 'white',
@@ -401,11 +450,11 @@ export default function ArchivePage({ onSelectCourse }: ArchivePageProps) {
           }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 24 }}>
               <h3 style={{ fontSize: 20, fontWeight: 800, color: 'var(--kid-gray-700)', margin: 0 }}>
-                错题本
-                <span style={{ fontSize: 14, color: 'var(--kid-gray-400)', fontWeight: 400, marginLeft: 12 }}>共 {allWrongAnswers.length} 道待复习</span>
+                再练一练
+                <span style={{ fontSize: 14, color: 'var(--kid-gray-400)', fontWeight: 400, marginLeft: 12 }}>{allWrongAnswers.length} 道知识正在等你再次挑战</span>
               </h3>
               {allWrongAnswers.length > 0 && reviewQueue.length === 0 && (
-                <button onClick={startReview} className="kid-btn kid-btn-primary" style={{ padding: '10px 20px' }}>开始错题复习 →</button>
+                <button onClick={startReview} className="kid-btn kid-btn-primary" style={{ padding: '10px 20px' }}>开始巩固练习 →</button>
               )}
             </div>
             {reviewQueue.length > 0 ? (
@@ -422,16 +471,16 @@ export default function ArchivePage({ onSelectCourse }: ArchivePageProps) {
                       const isCorrect = reviewAnswer !== null && option.key === currentReview.correctKey;
                       const isWrong = isSelected && option.key !== currentReview.correctKey;
                       return (
-                        <button key={option.key} onClick={() => answerReview(option.key)} disabled={reviewAnswer !== null} style={{ textAlign: 'left', padding: '16px 18px', borderRadius: 14, border: `2px solid ${isCorrect ? 'var(--kid-green-400)' : isWrong ? 'var(--kid-red-400)' : 'var(--kid-gray-100)'}`, background: isCorrect ? 'var(--kid-green-50)' : isWrong ? 'var(--kid-red-50)' : '#fff', color: 'var(--kid-gray-700)', fontSize: 16, fontWeight: 700, cursor: reviewAnswer ? 'default' : 'pointer' }}>
+                        <button key={option.key} onClick={() => answerReview(option.key)} disabled={reviewAnswer !== null} style={{ textAlign: 'left', padding: '16px 18px', borderRadius: 14, border: `2px solid ${isCorrect ? 'var(--kid-green-400)' : isWrong ? 'var(--kid-orange-400)' : 'var(--kid-gray-100)'}`, background: isCorrect ? 'var(--kid-green-50)' : isWrong ? 'var(--kid-orange-50)' : '#fff', color: 'var(--kid-gray-700)', fontSize: 16, fontWeight: 700, cursor: reviewAnswer ? 'default' : 'pointer' }}>
                           <span style={{ marginRight: 10, color: 'var(--kid-blue-500)' }}>{option.key}.</span>{option.text}
                         </button>
                       );
                     })}
                   </div>
                   {reviewAnswer && (
-                    <div style={{ marginTop: 22, padding: 18, borderRadius: 14, background: reviewAnswer === currentReview.correctKey ? 'var(--kid-green-50)' : 'var(--kid-red-50)' }}>
-                      <strong style={{ color: reviewAnswer === currentReview.correctKey ? 'var(--kid-green-600)' : 'var(--kid-red-500)' }}>
-                        {reviewAnswer === currentReview.correctKey ? '回答正确，这道题已掌握！' : `再想一想，正确答案是 ${currentReview.correctKey}`}
+                    <div style={{ marginTop: 22, padding: 18, borderRadius: 14, background: reviewAnswer === currentReview.correctKey ? 'var(--kid-green-50)' : 'var(--kid-orange-50)' }}>
+                      <strong style={{ color: reviewAnswer === currentReview.correctKey ? 'var(--kid-green-600)' : 'var(--kid-orange-500)' }}>
+                        {reviewAnswer === currentReview.correctKey ? '太棒了，你找到了正确答案！' : `很接近了！我们一起看看答案：${currentReview.correctKey}`}
                       </strong>
                       {currentQuizItem?.explanation && <p style={{ marginTop: 8, color: 'var(--kid-gray-500)', lineHeight: 1.6 }}>{currentQuizItem.explanation}</p>}
                       <button onClick={nextReview} className="kid-btn kid-btn-primary" style={{ marginTop: 14, padding: '9px 18px' }}>{reviewIndex === reviewQueue.length - 1 ? '查看结果 →' : '下一题 →'}</button>
@@ -441,16 +490,16 @@ export default function ArchivePage({ onSelectCourse }: ArchivePageProps) {
               ) : (
                 <div style={{ textAlign: 'center', padding: '55px 20px' }}>
                   <Star size={64} strokeWidth={1.5} style={{ marginBottom: 14 }} />
-                  <h4 style={{ fontSize: 26, fontWeight: 900, color: 'var(--kid-gray-800)', marginBottom: 10 }}>本轮复习完成</h4>
-                  <p style={{ color: 'var(--kid-gray-500)', marginBottom: 22 }}>重新掌握 {masteredCount} 道题，未答对的题会继续留在错题本中。</p>
-                  <button onClick={() => setReviewQueue([])} className="kid-btn kid-btn-green">返回错题本</button>
+                  <h4 style={{ fontSize: 26, fontWeight: 900, color: 'var(--kid-gray-800)', marginBottom: 10 }}>本轮练习完成</h4>
+                  <p style={{ color: 'var(--kid-gray-500)', marginBottom: 22 }}>你成功巩固了 {masteredCount} 道知识！其他内容可以随时回来继续挑战。</p>
+                  <button onClick={() => setReviewQueue([])} className="kid-btn kid-btn-green">继续看看</button>
                 </div>
               )
             ) : allWrongAnswers.length === 0 ? (
               <div style={{ textAlign: 'center', padding: '60px 0', color: 'var(--kid-gray-400)' }}>
                 <PartyPopper size={64} strokeWidth={1.5} style={{ marginBottom: 16 }} />
-                <p style={{ fontSize: 18, fontWeight: 700 }}>太棒了！没有错题！</p>
-                <p style={{ fontSize: 14 }}>继续保持，争取获得更多勋章！</p>
+                <p style={{ fontSize: 18, fontWeight: 700 }}>太棒了，今天的知识都掌握得很稳！</p>
+                <p style={{ fontSize: 14 }}>继续探索新课程，让成长足迹越来越丰富吧！</p>
               </div>
             ) : (
               <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
@@ -458,8 +507,8 @@ export default function ArchivePage({ onSelectCourse }: ArchivePageProps) {
                   <div
                     key={`${wa.lessonId}-${wa.question.slice(0, 20)}-${idx}`}
                     style={{
-                      background: 'var(--kid-red-50)',
-                      border: '2px solid var(--kid-red-100)',
+                      background: 'linear-gradient(135deg, var(--kid-blue-50), #fff)',
+                      border: '2px solid var(--kid-blue-100)',
                       borderRadius: 16,
                       padding: 16,
                     }}
@@ -467,8 +516,8 @@ export default function ArchivePage({ onSelectCourse }: ArchivePageProps) {
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 10 }}>
                       <div>
                         <span style={{
-                          background: 'var(--kid-red-100)',
-                          color: 'var(--kid-red-500)',
+                          background: 'var(--kid-blue-100)',
+                          color: 'var(--kid-blue-500)',
                           padding: '4px 10px',
                           borderRadius: 8,
                           fontSize: 13,
@@ -490,14 +539,14 @@ export default function ArchivePage({ onSelectCourse }: ArchivePageProps) {
                       {wa.question}
                     </p>
                     <div style={{ display: 'flex', gap: 16, fontSize: 14 }}>
-                      <span style={{ color: 'var(--kid-red-500)' }}>
-                        ✗ 你的答案：{wa.selectedKey}
+                      <span style={{ color: 'var(--kid-gray-500)' }}>
+                        上次选择：{wa.selectedKey}
                       </span>
                       <span style={{ color: 'var(--kid-green-500)' }}>
-                        ✓ 正确答案：{wa.correctKey}
+                        知识提示：正确选项 {wa.correctKey}
                       </span>
                       <button onClick={() => onSelectCourse(wa.lessonId)} style={{ marginLeft: 'auto', border: 'none', borderRadius: 10, padding: '7px 14px', background: 'var(--kid-blue-500)', color: '#fff', fontWeight: 800, cursor: 'pointer' }}>
-                        回到课程复习 →
+                        再学一遍 →
                       </button>
                     </div>
                   </div>
@@ -587,6 +636,47 @@ export default function ArchivePage({ onSelectCourse }: ArchivePageProps) {
                 })}
               </div>
             )}
+          </div>
+        )}
+
+        {/* 拓展学习资源 */}
+        {activeSubTab === 'resources' && (
+          <div className="kid-fade-in" style={{
+            background: 'linear-gradient(135deg, var(--kid-purple-50), var(--kid-blue-50))',
+            borderRadius: 24,
+            padding: 28,
+            border: '2px solid var(--kid-purple-100)',
+            boxShadow: '0 4px 16px rgba(0,0,0,0.06)',
+          }}>
+            <div style={{ marginBottom: 22 }}>
+              <h3 style={{ fontSize: 22, fontWeight: 900, color: 'var(--kid-purple-600)', margin: '0 0 6px 0', display: 'flex', alignItems: 'center', gap: 10 }}>
+                <Compass size={24} /> 拓展学习资源
+              </h3>
+              <p style={{ fontSize: 14, color: 'var(--kid-gray-500)', margin: 0 }}>完成课程后，可以前往这些优质平台继续探索。</p>
+            </div>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 18 }}>
+              {EXTENDED_RESOURCES.map(resource => (
+                <div key={resource.link} style={{
+                  background: 'white',
+                  borderRadius: 18,
+                  padding: 20,
+                  border: `1.5px solid ${resource.color}22`,
+                  boxShadow: '0 4px 14px rgba(0,0,0,0.05)',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  minHeight: 170,
+                }}>
+                  <span style={{ alignSelf: 'flex-start', padding: '5px 10px', borderRadius: 8, background: resource.bg, color: resource.color, fontSize: 12, fontWeight: 800 }}>
+                    {resource.tag}
+                  </span>
+                  <h4 style={{ fontSize: 18, fontWeight: 800, color: 'var(--kid-gray-700)', margin: '15px 0 7px' }}>{resource.title}</h4>
+                  <p style={{ fontSize: 13, lineHeight: 1.6, color: 'var(--kid-gray-500)', margin: '0 0 18px', flex: 1 }}>{resource.desc}</p>
+                  <a href={resource.link} target="_blank" rel="noopener noreferrer" style={{ alignSelf: 'flex-start', display: 'inline-flex', alignItems: 'center', gap: 6, background: resource.color, color: 'white', padding: '9px 14px', borderRadius: 10, fontSize: 13, fontWeight: 800, textDecoration: 'none' }}>
+                    前往学习 <ExternalLink size={15} />
+                  </a>
+                </div>
+              ))}
+            </div>
           </div>
         )}
       </div>

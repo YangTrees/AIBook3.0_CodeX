@@ -86,3 +86,112 @@
 .fa-volcano::before { content: "爆"; font-size: .68em; }
 .fa-volume-high::before { content: "音"; font-size: .68em; }
 .fa-volume-xmark::before { content: "静"; font-size: .68em; }
+.fa-microchip::before { content: "芯"; font-size: .68em; }
+.fa-binary::before { content: "01"; font-size: .62em; }
+.fa-heart-pulse::before { content: "♥"; }
+.fa-shield-halved::before,
+.fa-shield::before { content: "盾"; font-size: .68em; }
+.fa-book-open::before,
+.fa-book-bookmark::before { content: "知"; font-size: .68em; }
+.fa-diagram-project::before { content: "图"; font-size: .68em; }
+.fa-hammer::before { content: "建"; font-size: .68em; }
+.fa-arrows-to-dot::before,
+.fa-radar::before { content: "◎"; }
+.fa-filter::before { content: "滤"; font-size: .68em; }
+.fa-dragon::before { content: "怪"; font-size: .68em; }
+.fa-ghost::before { content: "幻"; font-size: .68em; }
+.fa-glasses::before { content: "察"; font-size: .68em; }
+.fa-lock::before { content: "锁"; font-size: .68em; }
+.fa-sliders::before { content: "调"; font-size: .68em; }
+.fa-smog::before { content: "雾"; font-size: .68em; }
+.fa-tower-broadcast::before,
+.fa-tower-cell::before { content: "塔"; font-size: .68em; }
+.fa-trash::before { content: "删"; font-size: .68em; }
+.fa-tree::before { content: "木"; font-size: .68em; }
+.fa-users::before { content: "人"; font-size: .68em; }
+.fa-gem::before { content: "晶"; font-size: .68em; }
+.fa-coins::before { content: "币"; font-size: .68em; }
+.fa-cloud::before { content: "云"; font-size: .68em; }
+.fa-layer-group::before { content: "层"; font-size: .68em; }
+.fa-clipboard-check::before { content: "单"; font-size: .68em; }
+.fa-battery-charging::before { content: "电"; font-size: .68em; }
+.fa-pizza-slice::before { content: "饼"; font-size: .68em; }
+.fa-wheat-awn::before { content: "产"; font-size: .68em; }
+
+/* Real, offline vector icons for common UI controls. These masks keep every
+   self-contained game readable without loading the missing Font Awesome font. */
+.fa-volume-high::before,
+.fa-volume-xmark::before,
+.fa-pause::before,
+.fa-play::before,
+.fa-house::before,
+.fa-trophy::before,
+.fa-gauge-high::before,
+.fa-graduation-cap::before,
+.fa-book-open::before,
+.fa-network-wired::before,
+.fa-check::before,
+.fa-check-double::before,
+.fa-circle-check::before,
+.fa-arrow-left::before,
+.fa-arrow-right::before,
+.fa-arrow-up-right-dots::before,
+.fa-rotate::before,
+.fa-rotate-right::before,
+.fa-paper-plane::before,
+.fa-lock::before,
+.fa-microchip::before,
+.fa-shield-halved::before,
+.fa-xmark::before,
+.fa-border-all::before,
+.fa-spinner::before,
+.fa-flask::before,
+.fa-hand-pointer::before,
+.fa-wand-magic-sparkles::before,
+.fa-battery-charging::before,
+.fa-diagram-project::before,
+.fa-lightbulb::before,
+.fa-rocket::before,
+.fa-trash::before,
+.fa-trash-can::before,
+.fa-wheat-awn::before,
+.fa-shield-cat::before {
+  content: "" !important;
+  width: 1em;
+  height: 1em;
+  flex: 0 0 1em;
+  background: currentColor;
+  -webkit-mask: var(--ui-icon) center / contain no-repeat;
+  mask: var(--ui-icon) center / contain no-repeat;
+}
+.fa-volume-high::before { --ui-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cg fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M11 5 6 9H2v6h4l5 4z'/%3E%3Cpath d='M15.5 8.5a5 5 0 0 1 0 7M18 6a8.5 8.5 0 0 1 0 12'/%3E%3C/g%3E%3C/svg%3E"); }
+.fa-volume-xmark::before { --ui-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cg fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M11 5 6 9H2v6h4l5 4zM16 9l5 6M21 9l-5 6'/%3E%3C/g%3E%3C/svg%3E"); }
+.fa-pause::before { --ui-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect x='5' y='4' width='5' height='16' rx='1' fill='black'/%3E%3Crect x='14' y='4' width='5' height='16' rx='1' fill='black'/%3E%3C/svg%3E"); }
+.fa-play::before { --ui-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M7 4v16l13-8z' fill='black'/%3E%3C/svg%3E"); }
+.fa-house::before { --ui-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M3 11 12 3l9 8v10h-6v-6H9v6H3z' fill='black'/%3E%3C/svg%3E"); }
+.fa-trophy::before { --ui-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M7 3h10v3h4v3c0 3-2 5-5 5h-1a6 6 0 0 1-2 2v3h4v2H7v-2h4v-3a6 6 0 0 1-2-2H8c-3 0-5-2-5-5V6h4zm0 5H5v1c0 2 1 3 3 3h.2A9 9 0 0 1 7 8zm10 0a9 9 0 0 1-1.2 4h.2c2 0 3-1 3-3V8z' fill='black'/%3E%3C/svg%3E"); }
+.fa-gauge-high::before { --ui-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cg fill='none' stroke='black' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='M4 18a9 9 0 1 1 16 0M12 13l4-4'/%3E%3Ccircle cx='12' cy='13' r='2' fill='black'/%3E%3C/g%3E%3C/svg%3E"); }
+.fa-graduation-cap::before { --ui-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='m2 9 10-5 10 5-10 5zm4 3 6 3 6-3v5c-4 3-8 3-12 0zm15-2h2v7h-2z' fill='black'/%3E%3C/svg%3E"); }
+.fa-book-open::before { --ui-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M3 4c4 0 7 1 9 3 2-2 5-3 9-3v15c-4 0-7 1-9 3-2-2-5-3-9-3zm8 5C9 7 7 6 5 6v11c2 0 4 .5 6 1.5zm2 0v9.5c2-1 4-1.5 6-1.5V6c-2 0-4 1-6 3' fill='black'/%3E%3C/svg%3E"); }
+.fa-network-wired::before { --ui-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M9 3h6v5h-2v2h7v4h2v6h-6v-6h2v-2h-5v2h2v6H9v-6h2v-2H6v2h2v6H2v-6h2v-4h7V8H9z' fill='black'/%3E%3C/svg%3E"); }
+.fa-check::before,.fa-check-double::before,.fa-circle-check::before { --ui-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='m3 12 5 5L21 4l-2-2L8 13 5 10z' fill='black'/%3E%3C/svg%3E"); }
+.fa-arrow-left::before { --ui-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='m10 4-8 8 8 8 2-2-5-5h15v-2H7l5-5z' fill='black'/%3E%3C/svg%3E"); }
+.fa-arrow-right::before,.fa-paper-plane::before { --ui-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='m14 4 8 8-8 8-2-2 5-5H2v-2h15l-5-5z' fill='black'/%3E%3C/svg%3E"); }
+.fa-arrow-up-right-dots::before { --ui-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M4 18 10 12l4 4 6-8v5h2V4h-9v2h5l-4 6-4-4-8 8z' fill='black'/%3E%3C/svg%3E"); }
+.fa-rotate::before,.fa-rotate-right::before { --ui-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M20 5V1l-3 3a9 9 0 1 0 3 10h-3a6 6 0 1 1-2-7l-4 4h9V5z' fill='black'/%3E%3C/svg%3E"); }
+.fa-lock::before { --ui-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M6 10V7a6 6 0 0 1 12 0v3h2v12H4V10zm3 0h6V7a3 3 0 0 0-6 0z' fill='black'/%3E%3C/svg%3E"); }
+.fa-microchip::before { --ui-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M8 2h2v3h4V2h2v3h3v3h3v2h-3v4h3v2h-3v3h-3v3h-2v-3h-4v3H8v-3H5v-3H2v-2h3v-4H2V8h3V5h3zm1 7v6h6V9z' fill='black'/%3E%3C/svg%3E"); }
+.fa-shield-halved::before { --ui-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2 21 6v6c0 6-4 9-9 10C7 21 3 18 3 12V6zm0 4v12c3-1 5-3 5-7V8z' fill='black'/%3E%3C/svg%3E"); }
+.fa-xmark::before { --ui-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='m5 3 7 7 7-7 2 2-7 7 7 7-2 2-7-7-7 7-2-2 7-7-7-7z' fill='black'/%3E%3C/svg%3E"); }
+.fa-border-all::before { --ui-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M3 3h18v18H3zm2 2v6h6V5zm8 0v6h6V5zM5 13v6h6v-6zm8 0v6h6v-6z' fill='black'/%3E%3C/svg%3E"); }
+.fa-spinner::before { --ui-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2a10 10 0 1 0 10 10h-3a7 7 0 1 1-7-7z' fill='black'/%3E%3C/svg%3E"); }
+.fa-flask::before { --ui-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M8 2h8v2h-1v5l5 9c1 2 0 4-3 4H7c-3 0-4-2-3-4l5-9V4H8zm3 8-3 6h8l-3-6V4h-2z' fill='black'/%3E%3C/svg%3E"); }
+.fa-hand-pointer::before { --ui-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M9 2c2 0 3 1 3 3v5c1-1 3-1 4 0 2-1 4 0 4 2v5c0 4-3 6-7 6h-1c-3 0-5-2-7-5l-2-3c-1-2 1-4 3-3l1 1V5c0-2 1-3 2-3' fill='black'/%3E%3C/svg%3E"); }
+.fa-wand-magic-sparkles::before { --ui-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='m4 18 11-11 3 3L7 21zm13-16 1 3 3 1-3 1-1 3-1-3-3-1 3-1zm4 11 1 2 2 1-2 1-1 2-1-2-2-1 2-1z' fill='black'/%3E%3C/svg%3E"); }
+.fa-battery-charging::before { --ui-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M3 6h16v3h2v6h-2v3H3zm8 2-4 6h4v3l5-7h-4V8z' fill='black'/%3E%3C/svg%3E"); }
+.fa-diagram-project::before { --ui-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M9 2h6v5H9zM2 17h6v5H2zm14 0h6v5h-6zM11 7h2v4h6v4h-2v-2H7v2H5v-4h6z' fill='black'/%3E%3C/svg%3E"); }
+.fa-lightbulb::before { --ui-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2a8 8 0 0 1 5 14c-1 1-1 2-1 3H8c0-1 0-2-1-3A8 8 0 0 1 12 2m-4 19h8v2H8z' fill='black'/%3E%3C/svg%3E"); }
+.fa-rocket::before { --ui-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M13 3c4-2 7-1 8 0 1 1 2 4 0 8l-5 5-4-4zM9 11l4 4-4 4-3-1-3 3 1-6zM15 5a2 2 0 1 0 3 3 2 2 0 0 0-3-3' fill='black'/%3E%3C/svg%3E"); }
+.fa-trash::before,.fa-trash-can::before { --ui-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M8 2h8l1 3h5v2H2V5h5zm-3 7h14l-1 13H6zm4 2v8h2v-8zm4 0v8h2v-8z' fill='black'/%3E%3C/svg%3E"); }
+.fa-wheat-awn::before { --ui-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 22h-2v-7c-4 0-7-3-7-7 4 0 7 2 7 6V2h2v7c0-4 3-6 7-6 0 4-3 7-7 7v3c0-4 3-6 7-6 0 4-3 7-7 7z' fill='black'/%3E%3C/svg%3E"); }
+.fa-shield-cat::before { --ui-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2 21 6v6c0 6-4 9-9 10C7 21 3 18 3 12V6zm0 4-5 2v4c0 3 2 5 5 6 3-1 5-3 5-6V8z' fill='black'/%3E%3C/svg%3E"); }

@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>团团点点AI探险记：代码世界幸存者</title>
-    <script src="/assets/libs/libs/tailwind.min.js"></script>
-    <link rel="stylesheet" href="/assets/libs/libs/game-icon-fallback.css">
+    <script src="../../../libs/libs/tailwind.min.js"></script>
+    <link rel="stylesheet" href="../../../libs/libs/game-icon-fallback.css">
     <style>
         body {
             touch-action: none;
@@ -26,6 +26,34 @@
                 8px 100%, 8px calc(100% - 8px), 0 calc(100% - 8px)
             );
         }
+        .skill-sprite {
+            display: inline-block;
+            width: 100%;
+            height: 100%;
+            background: url('./game02-skill-sprites.png') no-repeat;
+            background-size: 500% 400%;
+            border-radius: inherit;
+            transform: scale(.88);
+            transform-origin: center;
+        }
+        .skill-icon-frame { position: relative; overflow: hidden; }
+        .skill-cooldown-sweep {
+            position: absolute; inset: 2px; border-radius: .55rem; pointer-events: none;
+            background: conic-gradient(from -90deg, rgba(2,6,23,.82) 0deg var(--cd-angle, 0deg), transparent var(--cd-angle, 0deg) 360deg);
+            box-shadow: inset 0 0 0 1px rgba(255,255,255,.16);
+        }
+        .skill-cooldown-text {
+            position: absolute; inset: 0; display: grid; place-items: center; pointer-events: none;
+            color: white; font-size: 10px; font-weight: 900; text-shadow: 0 1px 3px #020617;
+        }
+        .g2-r1c1 { background-position: 0% 0%; } .g2-r1c2 { background-position: 25% 0%; }
+        .g2-r1c3 { background-position: 50% 0%; } .g2-r1c4 { background-position: 75% 0%; } .g2-r1c5 { background-position: 100% 0%; }
+        .g2-r2c1 { background-position: 0% 33.333%; } .g2-r2c2 { background-position: 25% 33.333%; }
+        .g2-r2c3 { background-position: 50% 33.333%; } .g2-r2c4 { background-position: 75% 33.333%; } .g2-r2c5 { background-position: 100% 33.333%; }
+        .g2-r3c1 { background-position: 0% 66.667%; } .g2-r3c2 { background-position: 25% 66.667%; }
+        .g2-r3c3 { background-position: 50% 66.667%; } .g2-r3c4 { background-position: 75% 66.667%; } .g2-r3c5 { background-position: 100% 66.667%; }
+        .g2-r4c1 { background-position: 0% 100%; } .g2-r4c2 { background-position: 25% 100%; }
+        .g2-r4c3 { background-position: 50% 100%; } .g2-r4c4 { background-position: 75% 100%; } .g2-r4c5 { background-position: 100% 100%; }
     </style>
 </head>
 <body class="w-screen h-screen flex flex-col items-center justify-center text-white relative">
@@ -38,13 +66,16 @@
             <!-- 等级与经验条 -->
             <div class="flex items-center justify-between bg-slate-900/80 backdrop-blur border border-cyan-500/30 px-4 py-2 rounded-xl shadow-lg">
                 <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-full bg-cyan-500/20 border-2 border-cyan-400 flex items-center justify-center font-bold text-cyan-300 text-lg">
-                        <span id="level-display">Lv.1</span>
+                    <div class="w-10 h-10 rounded-xl bg-cyan-500/20 border-2 border-cyan-400 flex items-center justify-center text-cyan-300 shadow-lg shadow-cyan-500/20" title="游戏标识：AI幸存者">
+                        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="闪光游戏标识">
+                            <path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3z"></path>
+                            <path d="M5 3v4M3 5h4"></path>
+                        </svg>
                     </div>
                     <div>
-                        <div class="text-xs text-slate-400 font-bold">团团 & 点点</div>
+                        <div class="text-xs text-slate-400 font-bold">团团 & 点点 · <span id="level-display" class="text-cyan-300">Lv.1</span></div>
                         <div class="text-sm font-bold text-cyan-300 flex items-center gap-1">
-                            <i class="fa-solid fa-brain text-amber-400"></i> AI探险研究员
+                            AI探险研究员
                         </div>
                     </div>
                 </div>
@@ -85,10 +116,14 @@
                 <!-- 动态填充已装备技能 -->
             </div>
 
-            <!-- 音效切换按钮 -->
-            <button id="sound-btn" class="w-10 h-10 bg-slate-800/80 border border-slate-600 rounded-full flex items-center justify-center text-slate-300 hover:text-white pointer-events-auto cursor-pointer">
-                <i class="fa-solid fa-volume-high"></i>
-            </button>
+            <div class="flex items-center gap-2">
+                <button id="pause-btn" class="h-10 px-3 bg-slate-800/80 border border-slate-600 rounded-xl flex items-center justify-center gap-1.5 text-slate-300 hover:text-white pointer-events-auto cursor-pointer">
+                    <i id="pause-icon" class="fa-solid fa-pause"></i><span id="pause-label" class="text-xs font-bold">暂停</span>
+                </button>
+                <button id="sound-btn" class="h-10 px-3 bg-slate-800/80 border border-slate-600 rounded-xl flex items-center justify-center gap-1.5 text-slate-300 hover:text-white pointer-events-auto cursor-pointer">
+                    <i id="sound-icon" class="fa-solid fa-volume-high"></i><span id="sound-label" class="text-xs font-bold">声音</span>
+                </button>
+            </div>
         </div>
     </div>
 
@@ -173,12 +208,23 @@
             { id: 12, title: "找bug的小修理工", skillName: "Debug 重锤", type: "active", icon: "fa-bug-slash", color: "text-rose-500", desc: "自动锤击附近 Bug 怪，造成范围震荡秒杀小怪。", detail: "Bug是隐藏的错误，调试四步：发现问题→找到原因→修改→再试！" },
             { id: 14, title: "特征放大镜", skillName: "特征弱点放大镜", type: "passive", icon: "fa-icicles", color: "text-blue-300", desc: "增加 20% 暴击率，暴露敌人弱点特征。", detail: "特征是区分事物的关键线索，找到有区分度的特征最重要！" },
             { id: 18, title: "小狗学握手", skillName: "强化学习奖励", type: "passive", icon: "fa-award", color: "text-yellow-300", desc: "每消灭 50 个敌人，永久提高 5% 伤害。", detail: "强化学习：做对了得奖励，试一试→得反馈→再调整！" },
-            { id: 21, title: "点亮聪明灯", skillName: "神经网络电弧", type: "active", icon: "fa-network-wired", color: "text-cyan-300", desc: "发射电弧，在相近的敌人节点之间传导伤害。", detail: "神经元是小灯泡，神经网络是很多灯泡连在一起变聪明！" },
+            { id: 21, title: "点亮聪明灯", skillName: "神经网络串联闪电", type: "active", icon: "fa-network-wired", color: "text-cyan-300", desc: "从玩家发射醒目的闪电，自动在多个相近敌人之间连续跳跃。", detail: "神经元是小灯泡，神经网络是很多灯泡连在一起变聪明！" },
             { id: 26, title: "给AI的清楚指令", skillName: "提示词精准天雷", type: "active", icon: "fa-bolt-lightning", color: "text-amber-300", desc: "精准召唤天雷轰炸敌群最密集区域。", detail: "清晰的指令=清晰的结果！包含角色、目标与限制！" },
-            { id: 27, title: "从乱点点到清图画", skillName: "噪点扩散去噪波", type: "active", icon: "fa-wand-magic-sparkles", color: "text-fuchsia-300", desc: "释放扩散波，清空屏幕小怪并转化为经验。", detail: "生成式AI从随机噪点一步一步去噪，诞生出高清画面！" },
+            { id: 27, title: "从乱点点到清图画", skillName: "噪点扩散去噪波", type: "active", icon: "fa-wand-magic-sparkles", color: "text-fuchsia-300", desc: "释放无伤害扩散波，把附近敌人强力击退。", detail: "生成式AI从随机噪点一步一步去噪，诞生出高清画面！" },
             { id: 29, title: "不要随便给陌生人", skillName: "隐私防爆盾", type: "passive", icon: "fa-user-shield", color: "text-emerald-300", desc: "减少 25% 受到的一切碰撞伤害。", detail: "个人信息是隐私，保护隐私就是保护自己的安全！" },
             { id: 31, title: "超级搭档", skillName: "团团点点合体激光", type: "active", icon: "fa-handshake-angle", color: "text-amber-400", desc: "团团点点合体，发射持续 3 秒的贯穿高能激光！", detail: "AI擅长快速处理数据，人类擅长创造与道德判断，AI+人类=超级搭档！" }
         ];
+
+        const SKILL_SPRITES = {
+            1:'g2-r1c1', 2:'g2-r1c2', 3:'g2-r1c3', 4:'g2-r1c4', 5:'g2-r1c5',
+            6:'g2-r2c1', 7:'g2-r2c2', 8:'g2-r2c3', 9:'g2-r2c4', 10:'g2-r2c5',
+            11:'g2-r3c1', 12:'g2-r3c2', 14:'g2-r3c3', 18:'g2-r3c4', 21:'g2-r3c5',
+            26:'g2-r4c1', 27:'g2-r4c2', 29:'g2-r4c3', 31:'g2-r4c4', 991:'g2-r4c5', 992:'g2-r1c2'
+        };
+
+        function skillSpriteMarkup(id, name, frameClass = 'w-12 h-12') {
+            return `<span class="${frameClass} skill-icon-frame rounded-xl inline-flex shrink-0"><span class="skill-sprite ${SKILL_SPRITES[id] || 'g2-r1c1'}" role="img" aria-label="${name}"></span></span>`;
+        }
 
         const QUIZ_BANK = [
             {
@@ -276,7 +322,7 @@
         }
         const sound = new SoundFX();
         const bgm = document.getElementById('bgm');
-        bgm.volume = 0.32;
+        bgm.volume = 0.16;
 
         function startBGM() {
             if (!sound.enabled) return;
@@ -292,8 +338,8 @@
         const ctx = canvas.getContext('2d');
         const tuantuanImage = new Image();
         const diandianImage = new Image();
-        tuantuanImage.src = '/assets/characters/characters/tuantuan.png';
-        diandianImage.src = '/assets/characters/characters/diandian.png';
+        tuantuanImage.src = '../../../characters/characters/tuantuan.png';
+        diandianImage.src = '../../../characters/characters/diandian.png';
 
         function resizeCanvas() {
             canvas.width = window.innerWidth;
@@ -375,9 +421,15 @@
         let expGems = [];
         let particles = [];
         let chestBoxes = [];
+        let skillEffects = [];
 
         // 技能冷却与触发器
         const skillCooldowns = {};
+        const skillCooldownMax = {};
+        function setSkillCooldown(lessonId, duration) {
+            skillCooldowns[lessonId] = duration;
+            skillCooldownMax[lessonId] = duration;
+        }
 
         // 初始化游戏
         function initGame() {
@@ -398,12 +450,15 @@
             expToNextLevel = 10;
             pendingUpgrades = 0;
             equippedSkills = [];
+            Object.keys(skillCooldowns).forEach(key => delete skillCooldowns[key]);
+            Object.keys(skillCooldownMax).forEach(key => delete skillCooldownMax[key]);
 
             enemies = [];
             bullets = [];
             expGems = [];
             particles = [];
             chestBoxes = [];
+            skillEffects = [];
 
             // 重置操作状态
             for (let k in keys) keys[k] = false;
@@ -470,10 +525,37 @@
                 const lesson = LESSONS_DATABASE.find(l => l.id === s.lessonId);
                 if (!lesson) return;
                 const badge = document.createElement('div');
-                badge.className = "w-8 h-8 rounded-lg bg-slate-800 border border-slate-600 flex items-center justify-center text-xs relative";
-                badge.innerHTML = `<i class="fa-solid ${lesson.icon} ${lesson.color}"></i>
+                badge.dataset.skillId = lesson.id;
+                badge.className = "w-11 h-11 rounded-lg bg-slate-800 border border-slate-600 flex items-center justify-center text-xs relative overflow-visible";
+                badge.innerHTML = `${skillSpriteMarkup(lesson.id, lesson.skillName, 'w-10 h-10')}
+                    <span class="skill-cooldown-sweep" style="--cd-angle:0deg"></span>
+                    <span class="skill-cooldown-text"></span>
                     <span class="absolute -bottom-1 -right-1 bg-cyan-500 text-slate-950 text-[9px] font-black px-1 rounded-full">${s.level}</span>`;
                 container.appendChild(badge);
+            });
+            updateSkillCooldownUI();
+        }
+
+        function updateSkillCooldownUI() {
+            document.querySelectorAll('#skills-container [data-skill-id]').forEach(badge => {
+                const id = Number(badge.dataset.skillId);
+                const lesson = LESSONS_DATABASE.find(item => item.id === id);
+                const sweep = badge.querySelector('.skill-cooldown-sweep');
+                const text = badge.querySelector('.skill-cooldown-text');
+                if (!lesson || lesson.type === 'passive' || id === 3) {
+                    sweep.style.setProperty('--cd-angle', '0deg');
+                    text.textContent = '';
+                    return;
+                }
+                const remaining = Math.max(0, skillCooldowns[id] || 0);
+                const maximum = Math.max(.01, skillCooldownMax[id] || remaining || 1);
+                if (remaining < .5) {
+                    sweep.style.setProperty('--cd-angle', '0deg');
+                    text.textContent = '';
+                    return;
+                }
+                sweep.style.setProperty('--cd-angle', `${Math.min(360, remaining / maximum * 360)}deg`);
+                text.textContent = remaining > .05 ? remaining.toFixed(remaining < 1 ? 1 : 0) : '';
             });
         }
 
@@ -554,7 +636,7 @@
                                     life: 1.5, text: Math.random() > 0.5 ? '1' : '0', color: '#10b981'
                                 });
                             }
-                            skillCooldowns[lessonId] = 1.8 - level * 0.15;
+                            setSkillCooldown(lessonId, 1.8 - level * 0.15);
                             break;
 
                         case 3: // 密码加密护盾
@@ -579,7 +661,8 @@
                                     createParticles(e.x, e.y, '#ec4899', 4);
                                 }
                             });
-                            skillCooldowns[lessonId] = 3.5;
+                            addSkillEffect('ring', player.x, player.y, 150 + level * 20, '#ec4899', '像素解构');
+                            setSkillCooldown(lessonId, 3.5);
                             break;
 
                         case 6: // RGB三原色激光
@@ -594,7 +677,36 @@
                                     life: 1.0, color: colors[i]
                                 });
                             }
-                            skillCooldowns[lessonId] = 2.0;
+                            addSkillEffect('ring', player.x, player.y, 105, '#ef4444', 'RGB激光', 0.5);
+                            setSkillCooldown(lessonId, 2.0);
+                            break;
+
+                        case 7: // 无损压缩力场
+                            enemies.forEach(e => {
+                                const dx = player.x - e.x;
+                                const dy = player.y - e.y;
+                                const dist = Math.max(1, Math.hypot(dx, dy));
+                                if (dist < 260) {
+                                    e.x += dx / dist * (24 + level * 6);
+                                    e.y += dy / dist * (24 + level * 6);
+                                    e.hp -= 18 * level * player.damageMultiplier;
+                                    e.hitTimer = 0.2;
+                                }
+                            });
+                            sound.playHit();
+                            addSkillEffect('vortex', player.x, player.y, 250, '#818cf8', '压缩力场', 1.0);
+                            setSkillCooldown(lessonId, Math.max(2.2, 4.2 - level * 0.25));
+                            break;
+
+                        case 8: // 降噪风暴
+                            enemies.forEach(e => {
+                                if (Math.hypot(e.x - player.x, e.y - player.y) < 300) {
+                                    e.weakenTimer = 4 + level;
+                                    e.hp -= 10 * level * player.damageMultiplier;
+                                }
+                            });
+                            addSkillEffect('storm', player.x, player.y, 290, '#22d3ee', '降噪：敌人攻击减半', 1.2);
+                            setSkillCooldown(lessonId, Math.max(3, 6 - level * 0.35));
                             break;
 
                         case 9: // 红绿灯判定场
@@ -610,7 +722,32 @@
                                     }
                                 });
                             }
-                            skillCooldowns[lessonId] = 0.5;
+                            setSkillCooldown(lessonId, 0.5);
+                            break;
+
+                        case 10: // 循环连发炮
+                            if (enemies.length > 0) {
+                                const target = enemies.reduce((best, e) => Math.hypot(e.x-player.x,e.y-player.y) < Math.hypot(best.x-player.x,best.y-player.y) ? e : best, enemies[0]);
+                                const baseAngle = Math.atan2(target.y - player.y, target.x - player.x);
+                                for (let i = 0; i < 3 + level; i++) {
+                                    const spread = (i - (2 + level) / 2) * 0.08;
+                                    bullets.push({ x:player.x, y:player.y, vx:Math.cos(baseAngle+spread)*9, vy:Math.sin(baseAngle+spread)*9, radius:6, damage:14*level*player.damageMultiplier, life:1.4, color:'#2dd4bf' });
+                                }
+                                addSkillEffect('burst', player.x, player.y, 90, '#2dd4bf', `循环连发 ×${3 + level}`, 0.65, target.x, target.y);
+                            }
+                            setSkillCooldown(lessonId, Math.max(1.4, 3 - level * 0.2));
+                            break;
+
+                        case 11: // 并行多轨流水线
+                            if (enemies.length > 0) {
+                                const target = enemies[0];
+                                const angle = Math.atan2(target.y - player.y, target.x - player.x);
+                                [0, Math.PI].forEach(direction => {
+                                    [-0.12, 0.12].forEach(lane => bullets.push({ x:player.x, y:player.y, vx:Math.cos(angle+direction+lane)*8, vy:Math.sin(angle+direction+lane)*8, radius:7, damage:20*level*player.damageMultiplier, life:1.8, color:'#f59e0b' }));
+                                });
+                                addSkillEffect('cross', player.x, player.y, 140, '#f59e0b', '并行双轨', 0.8);
+                            }
+                            setSkillCooldown(lessonId, Math.max(2, 4 - level * 0.25));
                             break;
 
                         case 12: // Debug重锤
@@ -625,42 +762,74 @@
                                     closest.hp -= 60 * level * player.damageMultiplier;
                                     closest.hitTimer = 0.3;
                                     createParticles(closest.x, closest.y, '#f43f5e', 8);
+                                    addSkillEffect('strike', closest.x, closest.y, 70, '#f43f5e', 'Debug重锤', 0.65);
                                 }
                             }
-                            skillCooldowns[lessonId] = 2.5 - level * 0.2;
+                            setSkillCooldown(lessonId, 2.5 - level * 0.2);
                             break;
 
-                        case 21: // 神经网络电弧
-                            if (enemies.length >= 2) {
-                                sound.playHit();
-                                for (let i = 0; i < Math.min(enemies.length - 1, 3 + level); i++) {
-                                    const e1 = enemies[i];
-                                    const e2 = enemies[i + 1];
-                                    if (Math.hypot(e1.x - e2.x, e1.y - e2.y) < 200) {
-                                        e1.hp -= 15 * player.damageMultiplier;
-                                        e2.hp -= 15 * player.damageMultiplier;
-                                        particles.push({
-                                            x: (e1.x + e2.x) / 2, y: (e1.y + e2.y) / 2,
-                                            vx: 0, vy: 0, life: 0.2, color: '#06b6d4', radius: 4
-                                        });
+                        case 21: { // 神经网络串联闪电
+                            const candidates = [...enemies].sort((a, b) =>
+                                Math.hypot(a.x - player.x, a.y - player.y) - Math.hypot(b.x - player.x, b.y - player.y));
+                            let source = { x: player.x, y: player.y };
+                            let jumps = 0;
+                            while (candidates.length && jumps < 3 + level) {
+                                let nearestIndex = -1;
+                                let nearestDistance = Infinity;
+                                candidates.forEach((target, index) => {
+                                    const distance = Math.hypot(target.x - source.x, target.y - source.y);
+                                    if (distance < nearestDistance && distance <= (jumps === 0 ? 380 : 260)) {
+                                        nearestDistance = distance;
+                                        nearestIndex = index;
                                     }
-                                }
+                                });
+                                if (nearestIndex < 0) break;
+                                const target = candidates.splice(nearestIndex, 1)[0];
+                                target.hp -= (18 + level * 5) * player.damageMultiplier;
+                                target.hitTimer = .3;
+                                addSkillEffect('lightning', source.x, source.y, 0, '#67e8f9', jumps === 0 ? '串联闪电' : '', .68, target.x, target.y);
+                                createParticles(target.x, target.y, '#a5f3fc', 9);
+                                source = target;
+                                jumps++;
                             }
-                            skillCooldowns[lessonId] = 2.2;
+                            if (jumps > 0) {
+                                sound.playShoot();
+                                addSkillEffect('ring', player.x, player.y, 70, '#22d3ee', `串联 ${jumps} 个目标`, .7);
+                            }
+                            setSkillCooldown(lessonId, 2.2);
                             break;
+                        }
 
                         case 26: // 提示词天雷轰炸
                             if (enemies.length > 0) {
                                 sound.playShoot();
                                 const target = enemies[Math.floor(Math.random() * enemies.length)];
                                 createParticles(target.x, target.y, '#f59e0b', 12);
+                                addSkillEffect('strike', target.x, target.y, 120, '#f59e0b', '提示词天雷', 0.8);
                                 enemies.forEach(e => {
                                     if (Math.hypot(e.x - target.x, e.y - target.y) < 120) {
                                         e.hp -= 80 * level * player.damageMultiplier;
                                     }
                                 });
                             }
-                            skillCooldowns[lessonId] = 4.0;
+                            setSkillCooldown(lessonId, 4.0);
+                            break;
+
+                        case 27: // 噪点扩散去噪波
+                            enemies.forEach(e => {
+                                const dx = e.x - player.x;
+                                const dy = e.y - player.y;
+                                const distance = Math.max(1, Math.hypot(dx, dy));
+                                if (distance < 430) {
+                                    const pushDistance = 90 + level * 20;
+                                    e.x += dx / distance * pushDistance;
+                                    e.y += dy / distance * pushDistance;
+                                    e.hitTimer = 0.3;
+                                }
+                            });
+                            sound.playHit();
+                            addSkillEffect('ring', player.x, player.y, 430, '#e879f9', '扩散去噪击退', 1.4);
+                            setSkillCooldown(lessonId, Math.max(7, 11 - level * 0.5));
                             break;
 
                         case 31: // 超级搭档合体激光
@@ -673,12 +842,14 @@
                                     radius: 20, damage: 100 * level * player.damageMultiplier,
                                     life: 1.2, color: '#fbbf24', text: 'AI搭档'
                                 });
+                                addSkillEffect('beam', player.x, player.y, 0, '#fbbf24', '超级搭档', 1.0, enemies[0].x, enemies[0].y);
                             }
-                            skillCooldowns[lessonId] = 5.0;
+                            setSkillCooldown(lessonId, 5.0);
                             break;
                     }
                 }
             });
+            updateSkillCooldownUI();
         }
 
         function createParticles(x, y, color, count = 6) {
@@ -691,6 +862,10 @@
                     life: 0.4, color
                 });
             }
+        }
+
+        function addSkillEffect(type, x, y, radius, color, label, life = 0.7, targetX = null, targetY = null) {
+            skillEffects.push({ type, x, y, radius, color, label, life, maxLife: life, targetX, targetY });
         }
 
         // --- 5. 主更新与绘制循环 ---
@@ -750,11 +925,13 @@
                 e.x += Math.cos(angle) * e.speed;
                 e.y += Math.sin(angle) * e.speed;
                 if (e.hitTimer > 0) e.hitTimer -= dt;
+                if (e.weakenTimer > 0) e.weakenTimer -= dt;
 
                 // 与玩家碰撞伤害
                 const distToPlayer = Math.hypot(player.x - e.x, player.y - e.y);
                 if (distToPlayer < player.radius + e.radius) {
                     let hurt = 0.2;
+                    if (e.weakenTimer > 0) hurt *= 0.5;
                     // 隐私盾牌减伤 (第29课)
                     if (equippedSkills.some(s => s.lessonId === 29)) hurt *= 0.75;
                     player.hp = Math.max(0, player.hp - hurt);
@@ -858,6 +1035,9 @@
                 p.life -= dt;
             });
             particles = particles.filter(p => p.life > 0);
+
+            skillEffects.forEach(effect => effect.life -= dt);
+            skillEffects = skillEffects.filter(effect => effect.life > 0);
         }
 
         function updateUI() {
@@ -1007,6 +1187,71 @@
                 ctx.fill();
             });
 
+            // 技能触发可视化：让压缩、降噪、循环、并行、电弧等效果清楚可见
+            skillEffects.forEach(effect => {
+                const progress = 1 - effect.life / effect.maxLife;
+                ctx.save();
+                ctx.globalAlpha = Math.max(0, effect.life / effect.maxLife);
+                ctx.strokeStyle = effect.color;
+                ctx.fillStyle = effect.color;
+                ctx.lineWidth = effect.type === 'beam' || effect.type === 'line' ? 6 : (effect.type === 'lightning' ? 8 : 4);
+                ctx.shadowColor = effect.color;
+                ctx.shadowBlur = 18;
+
+                if (effect.type === 'lightning' && effect.targetX !== null && effect.targetY !== null) {
+                    const dx = effect.targetX - effect.x;
+                    const dy = effect.targetY - effect.y;
+                    const length = Math.max(1, Math.hypot(dx, dy));
+                    const nx = -dy / length;
+                    const ny = dx / length;
+                    ctx.beginPath();
+                    ctx.moveTo(effect.x, effect.y);
+                    for (let i = 1; i < 9; i++) {
+                        const ratio = i / 9;
+                        const offset = (i % 2 ? 1 : -1) * (6 + Math.random() * 7);
+                        ctx.lineTo(effect.x + dx * ratio + nx * offset, effect.y + dy * ratio + ny * offset);
+                    }
+                    ctx.lineTo(effect.targetX, effect.targetY);
+                    ctx.stroke();
+                    ctx.lineWidth = 2;
+                    ctx.strokeStyle = '#ffffff';
+                    ctx.stroke();
+                } else if (effect.targetX !== null && effect.targetY !== null) {
+                    ctx.beginPath();
+                    ctx.moveTo(effect.x, effect.y);
+                    ctx.lineTo(effect.targetX, effect.targetY);
+                    ctx.stroke();
+                }
+
+                if (['ring','vortex','storm','cross','burst'].includes(effect.type)) {
+                    const radius = effect.radius * (0.35 + progress * 0.65);
+                    ctx.beginPath();
+                    ctx.arc(effect.x, effect.y, radius, 0, Math.PI * 2);
+                    ctx.stroke();
+                    if (effect.type === 'vortex' || effect.type === 'storm') {
+                        for (let i = 0; i < 3; i++) {
+                            ctx.beginPath();
+                            ctx.arc(effect.x, effect.y, radius * (0.45 + i * 0.18), gameTime * (i + 1), gameTime * (i + 1) + Math.PI * 1.25);
+                            ctx.stroke();
+                        }
+                    }
+                    if (effect.type === 'cross') {
+                        ctx.beginPath(); ctx.moveTo(effect.x-radius,effect.y); ctx.lineTo(effect.x+radius,effect.y); ctx.stroke();
+                        ctx.beginPath(); ctx.moveTo(effect.x,effect.y-radius); ctx.lineTo(effect.x,effect.y+radius); ctx.stroke();
+                    }
+                } else if (effect.type === 'strike') {
+                    ctx.beginPath(); ctx.arc(effect.x, effect.y, effect.radius * (0.5 + progress * 0.5), 0, Math.PI * 2); ctx.stroke();
+                    ctx.beginPath(); ctx.moveTo(effect.x, effect.y - effect.radius * 1.8); ctx.lineTo(effect.x, effect.y + effect.radius * 0.2); ctx.stroke();
+                }
+
+                ctx.shadowBlur = 0;
+                ctx.globalAlpha = Math.min(1, effect.life / effect.maxLife + 0.2);
+                ctx.font = 'bold 13px system-ui, sans-serif';
+                ctx.textAlign = 'center';
+                if (effect.label) ctx.fillText(effect.label, effect.x, effect.y - Math.max(34, effect.radius * 0.45));
+                ctx.restore();
+            });
+
             // 绘制主角：使用项目内统一角色素材
             ctx.save();
             ctx.translate(player.x, player.y);
@@ -1076,9 +1321,7 @@
                             <span class="text-xs font-bold text-amber-400">${item.isStat ? '属性加成' : (curLvl > 0 ? '升级 Lv.' + (curLvl + 1) : '新解锁')}</span>
                         </div>
                         <div class="flex items-center gap-3 mb-3">
-                            <div class="w-12 h-12 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center text-2xl">
-                                <i class="fa-solid ${item.icon} ${item.color}"></i>
-                            </div>
+                            ${skillSpriteMarkup(item.id, item.skillName, 'w-14 h-14')}
                             <div>
                                 <h4 class="font-bold text-white text-base">${item.skillName}</h4>
                                 <p class="text-xs text-slate-400">${item.title}</p>
@@ -1197,8 +1440,16 @@
         document.getElementById('sound-btn').onclick = () => {
             sound.enabled = !sound.enabled;
             if (sound.enabled) startBGM(); else stopBGM();
-            document.getElementById('sound-btn').innerHTML = sound.enabled ? 
-                '<i class="fa-solid fa-volume-high"></i>' : '<i class="fa-solid fa-volume-xmark text-rose-400"></i>';
+            document.getElementById('sound-icon').className = sound.enabled ? 'fa-solid fa-volume-high' : 'fa-solid fa-volume-xmark text-rose-400';
+            document.getElementById('sound-label').innerText = sound.enabled ? '声音' : '静音';
+        };
+
+        document.getElementById('pause-btn').onclick = () => {
+            if (gameState !== 'playing' && gameState !== 'paused') return;
+            gameState = gameState === 'playing' ? 'paused' : 'playing';
+            const paused = gameState === 'paused';
+            document.getElementById('pause-icon').className = paused ? 'fa-solid fa-play' : 'fa-solid fa-pause';
+            document.getElementById('pause-label').innerText = paused ? '继续' : '暂停';
         };
 
         // 启动程序主循环

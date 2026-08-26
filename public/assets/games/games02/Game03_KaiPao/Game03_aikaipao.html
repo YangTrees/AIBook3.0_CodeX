@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>向噪声开炮！AI矩阵保卫战</title>
-    <script src="/assets/libs/libs/tailwind.min.js"></script>
+    <script src="../../../libs/libs/tailwind.min.js"></script>
     <style>
         body {
             touch-action: none;
@@ -22,6 +22,30 @@
             transform: translateY(-3px) scale(1.01);
             box-shadow: 0 10px 25px -5px rgba(56, 189, 248, 0.35);
         }
+        .skill-sprite {
+            display: inline-block;
+            width: 100%;
+            height: 100%;
+            background: url('./game03-skill-sprites.png') no-repeat;
+            background-size: 400% 200%;
+            border-radius: inherit;
+            transform: scale(.88);
+            transform-origin: center;
+        }
+        .g3-r1c1 { background-position: 0% 0%; } .g3-r1c2 { background-position: 33.333% 0%; }
+        .g3-r1c3 { background-position: 66.667% 0%; } .g3-r1c4 { background-position: 100% 0%; }
+        .g3-r2c1 { background-position: 0% 100%; } .g3-r2c2 { background-position: 33.333% 100%; }
+        .g3-r2c3 { background-position: 66.667% 100%; } .g3-r2c4 { background-position: 100% 100%; }
+        .skill-frame { aspect-ratio: 3 / 4; overflow: hidden; flex-shrink: 0; position: relative; }
+        .skill-cd-sweep {
+            position: absolute; inset: 1px; border-radius: inherit; pointer-events: none;
+            background: conic-gradient(from -90deg, rgba(2,6,23,.84) 0deg var(--cd-angle, 0deg), transparent var(--cd-angle, 0deg) 360deg);
+            box-shadow: inset 0 0 0 1px rgba(255,255,255,.2);
+        }
+        .skill-cd-text {
+            position: absolute; inset: 0; display: grid; place-items: center; pointer-events: none;
+            color: white; font-size: 9px; font-weight: 900; text-shadow: 0 1px 3px #020617;
+        }
     </style>
 </head>
 <body class="h-screen w-screen flex flex-col justify-between select-none">
@@ -30,16 +54,26 @@
     <header class="bg-slate-900/95 border-b border-slate-700 px-3 py-2 z-10 backdrop-blur-md">
         <div class="flex justify-between items-center text-xs sm:text-sm mb-1.5">
             <div class="flex items-center space-x-2 font-bold">
-                <span class="text-sky-400">防线生命:</span>
-                <span id="wall-hp-text" class="text-emerald-400 font-mono text-sm">100%</span>
+                <div class="w-9 h-9 rounded-xl bg-sky-500/20 border border-sky-400/50 flex items-center justify-center text-sky-300 shadow-lg shadow-sky-500/20 shrink-0" title="游戏标识：向噪声开炮">
+                    <svg viewBox="0 0 24 24" width="23" height="23" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="靶心游戏标识">
+                        <circle cx="12" cy="12" r="9"></circle><circle cx="12" cy="12" r="5"></circle><circle cx="12" cy="12" r="1.5"></circle>
+                    </svg>
+                </div>
+                <div class="leading-tight">
+                    <div class="text-[10px] text-sky-300 hidden sm:block">向噪声开炮</div>
+                    <div><span class="text-sky-400">防线生命:</span> <span id="wall-hp-text" class="text-emerald-400 font-mono text-sm">100%</span></div>
+                </div>
             </div>
             <div class="flex items-center space-x-2 sm:space-x-3">
                 <span id="wave-text" class="bg-indigo-600/90 text-indigo-100 px-2.5 py-0.5 rounded-full font-bold border border-indigo-400 text-xs">
                     第 1 / 8 模块波次
                 </span>
                 <span class="text-amber-400 font-bold font-mono">Lv.<span id="level-text">1</span></span>
-                <button id="sound-btn" class="bg-slate-800 text-slate-300 px-2 py-0.5 rounded border border-slate-600 text-xs">
-                    音效
+                <button id="pause-btn" class="bg-slate-800 text-slate-300 px-2.5 py-1 rounded-lg border border-slate-600 text-xs flex items-center gap-1.5">
+                    <i id="pause-icon" class="fa-solid fa-pause"></i><span id="pause-label">暂停</span>
+                </button>
+                <button id="sound-btn" class="bg-slate-800 text-slate-300 px-2.5 py-1 rounded-lg border border-slate-600 text-xs flex items-center gap-1.5">
+                    <i id="sound-icon" class="fa-solid fa-volume-high"></i><span id="sound-label">声音</span>
                 </button>
             </div>
         </div>
@@ -95,7 +129,7 @@
                     <strong>操作提示</strong>：按住屏幕滑动可<strong>手动瞄准集火</strong>高威胁目标，松开恢复自动索敌。
                 </div>
                 <button id="start-game-btn" class="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 text-white font-bold py-3 rounded-xl shadow-lg transform active:scale-95 transition-all">
-                    进入阵地，开始保卫战！
+                    <i class="fa-solid fa-shield-halved mr-2"></i>进入阵地，开始保卫战！
                 </button>
             </div>
 
@@ -129,7 +163,7 @@
                     防线虽被突破，但你已经积累了丰厚的AI实战经验！
                 </p>
                 <button onclick="location.reload()" class="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 text-white font-bold py-2.5 rounded-xl shadow-lg text-sm">
-                    再次出击
+                    <i class="fa-solid fa-rotate-right mr-2"></i>再次出击
                 </button>
             </div>
 
@@ -176,8 +210,8 @@
         const sound = new SoundEngine();
         const bgm = document.getElementById('bgm');
         const diandianImage = new Image();
-        diandianImage.src = '/assets/characters/characters/diandian.png';
-        bgm.volume = 0.3;
+        diandianImage.src = '../../../characters/characters/diandian.png';
+        bgm.volume = 0.15;
 
         function startBGM() {
             if (sound.enabled) bgm.play().catch(() => {});
@@ -193,7 +227,7 @@
                 id: 'SPLIT',
                 name: '01二进制分裂弹',
                 course: '第2课《开关城的两兄弟》',
-                icon: '01',
+                sprite: 'g3-r1c1',
                 color: '#38bdf8',
                 desc: '主炮每次额外射出 +1 颗散射子弹，覆盖更宽广火力。'
             },
@@ -201,7 +235,7 @@
                 id: 'PIERCE',
                 name: '神经网络多层穿透',
                 course: '第22课《从边边角角到整张脸》',
-                icon: '层',
+                sprite: 'g3-r1c2',
                 color: '#a855f7',
                 desc: '主炮子弹可穿透 +1 个敌人，持续向后排推进伤害。'
             },
@@ -209,7 +243,7 @@
                 id: 'BOUNCE',
                 name: 'If-Else条件弹射',
                 course: '第9课《红灯停绿灯行》',
-                icon: '判',
+                sprite: 'g3-r1c3',
                 color: '#f59e0b',
                 desc: '命中怪物后自动弹射至下一个临近目标（最多弹射 +1 次）。'
             },
@@ -217,7 +251,7 @@
                 id: 'CRIT',
                 name: '特征放大镜暴击',
                 course: '第14课《特征放大镜》',
-                icon: '镜',
+                sprite: 'g3-r1c4',
                 color: '#eab308',
                 desc: '暴击率 +20%，暴击伤害提升至 250%（触发高亮金色暴击）。'
             },
@@ -225,7 +259,7 @@
                 id: 'LASER',
                 name: 'RGB高能贯穿激光',
                 course: '第6课《红绿蓝灯的合唱团》',
-                icon: '光',
+                sprite: 'g3-r2c1',
                 color: '#f43f5e',
                 desc: '解锁/强化副武器：每3秒召唤一道巨型RGB激光纵向贯穿全场！'
             },
@@ -233,15 +267,15 @@
                 id: 'MISSILE',
                 name: '循环导弹集群',
                 course: '第10课《会数数的刷牙机器人》',
-                icon: '导',
+                sprite: 'g3-r2c2',
                 color: '#ec4899',
                 desc: '解锁/强化副武器：每3.5秒自动发射追踪导弹轰炸后排群怪。'
             },
             DIFFUSION: {
                 id: 'DIFFUSION',
-                name: '扩散去噪清场环',
+                name: '扩散去噪击退环',
                 course: '第27课《从乱点点到清图画》',
-                icon: '波',
+                sprite: 'g3-r2c3',
                 color: '#06b6d4',
                 desc: '解锁/强化技能：每5秒自防线爆发一道环形冲击波击退全场敌人！'
             },
@@ -249,7 +283,7 @@
                 id: 'DRONE',
                 name: '超级搭档点点浮游机',
                 course: '第31课《超级搭档》',
-                icon: '伴',
+                sprite: 'g3-r2c4',
                 color: '#10b981',
                 desc: '解锁/强化点点浮游机：自动盘旋发射连续高速微型能量弹！'
             }
@@ -764,12 +798,13 @@
 
         // 扩散去噪冲击波
         class ShockwaveRing {
-            constructor(y, damage) {
+            constructor(y, pushStrength) {
                 this.y = y;
                 this.radius = 10;
-                this.damage = damage;
+                this.pushStrength = pushStrength;
                 this.maxRadius = game.height * 0.78;
                 this.active = true;
+                this.hitEnemies = new WeakSet();
             }
             update() {
                 this.radius += 11;
@@ -779,9 +814,9 @@
                 }
                 for (let enemy of game.enemies) {
                     const d = Math.abs((game.wallY - this.radius) - enemy.y);
-                    if (d < 18 && enemy.y < game.wallY) {
-                        enemy.takeDamage(this.damage, false);
-                        const pushBack = enemy.isBoss ? 8 : 34;
+                    if (d < 18 && enemy.y < game.wallY && !this.hitEnemies.has(enemy)) {
+                        this.hitEnemies.add(enemy);
+                        const pushBack = enemy.isBoss ? Math.max(10, this.pushStrength * .25) : this.pushStrength;
                         enemy.y = Math.max(10, enemy.y - pushBack);
                     }
                 }
@@ -908,7 +943,14 @@
             document.getElementById('sound-btn').onclick = () => {
                 sound.enabled = !sound.enabled;
                 if (sound.enabled) startBGM(); else stopBGM();
-                document.getElementById('sound-btn').innerText = sound.enabled ? '音效' : '静音';
+                document.getElementById('sound-icon').className = sound.enabled ? 'fa-solid fa-volume-high' : 'fa-solid fa-volume-xmark text-rose-400';
+                document.getElementById('sound-label').innerText = sound.enabled ? '声音' : '静音';
+            };
+            document.getElementById('pause-btn').onclick = () => {
+                if (!game.running || !document.getElementById('modal-overlay').classList.contains('hidden')) return;
+                game.paused = !game.paused;
+                document.getElementById('pause-icon').className = game.paused ? 'fa-solid fa-play' : 'fa-solid fa-pause';
+                document.getElementById('pause-label').innerText = game.paused ? '继续' : '暂停';
             };
         }
 
@@ -980,7 +1022,7 @@
                 card.className = "skill-card bg-slate-800 border-2 border-slate-700 hover:border-cyan-400 p-3.5 rounded-2xl cursor-pointer transition-all flex items-center justify-between";
                 card.innerHTML = `
                     <div class="flex items-center space-x-3">
-                        <div class="text-3xl p-2 bg-slate-900 rounded-xl border border-slate-700">${def.icon}</div>
+                        <div class="skill-frame w-14 bg-slate-900 rounded-xl border border-slate-700"><span class="skill-sprite ${def.sprite}" role="img" aria-label="${def.name}"></span></div>
                         <div>
                             <div class="flex items-center space-x-2">
                                 <span class="font-bold text-slate-100 text-sm">${def.name}</span>
@@ -1270,6 +1312,7 @@
                 showGameOver(false);
             }
 
+            updateSkillCooldownUI();
             updateBossHUD();
         }
 
@@ -1375,10 +1418,41 @@
                 if (lvl > 0) {
                     const def = SKILL_DEFS[k];
                     const tag = document.createElement('span');
+                    tag.dataset.skillKey = k;
                     tag.className = "text-[10px] px-1.5 py-0.5 rounded bg-slate-800 border border-slate-600 text-slate-200 font-mono flex items-center space-x-1";
-                    tag.innerHTML = `<span>${def.icon}</span><span>${def.name.slice(0, 4)}</span><span class="text-cyan-400 font-bold">Lv.${lvl}</span>`;
+                    tag.innerHTML = `<span class="skill-frame w-8 rounded"><span class="skill-sprite ${def.sprite}" role="img" aria-label="${def.name}"></span><span class="skill-cd-sweep" style="--cd-angle:0deg"></span><span class="skill-cd-text"></span></span><span>${def.name.slice(0, 4)}</span><span class="text-cyan-400 font-bold">Lv.${lvl}</span>`;
                     activeBar.appendChild(tag);
                 }
+            });
+            updateSkillCooldownUI();
+        }
+
+        function updateSkillCooldownUI() {
+            document.querySelectorAll('#active-skills-bar [data-skill-key]').forEach(tag => {
+                const key = tag.dataset.skillKey;
+                const level = game.skills[key] || 0;
+                const sweep = tag.querySelector('.skill-cd-sweep');
+                const text = tag.querySelector('.skill-cd-text');
+                let timer = 0;
+                let maximum = 0;
+                if (key === 'LASER') { timer = game.laserTimer; maximum = 180 - level * 20; }
+                else if (key === 'MISSILE') { timer = game.missileTimer; maximum = 210 - level * 25; }
+                else if (key === 'DIFFUSION') { timer = game.diffusionTimer; maximum = 300 - level * 30; }
+                else if (key === 'DRONE') { timer = game.droneTimer; maximum = 14 - Math.min(8, level * 2); }
+                if (maximum <= 0) {
+                    sweep.style.setProperty('--cd-angle', '0deg');
+                    text.textContent = '';
+                    return;
+                }
+                const remainingRatio = Math.max(0, Math.min(1, 1 - timer / maximum));
+                const seconds = Math.max(0, (maximum - timer) / 60);
+                if (seconds < .5) {
+                    sweep.style.setProperty('--cd-angle', '0deg');
+                    text.textContent = '';
+                    return;
+                }
+                sweep.style.setProperty('--cd-angle', `${remainingRatio * 360}deg`);
+                text.textContent = seconds.toFixed(seconds < 1 ? 1 : 0);
             });
         }
 

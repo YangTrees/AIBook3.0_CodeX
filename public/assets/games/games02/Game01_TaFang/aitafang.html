@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI知识保卫战：团团点点AI探险记</title>
-    <script src="/assets/libs/libs/tailwind.min.js"></script>
-    <link rel="stylesheet" href="/assets/libs/libs/game-icon-fallback.css">
+    <script src="../../../libs/libs/tailwind.min.js"></script>
+    <link rel="stylesheet" href="../../../libs/libs/game-icon-fallback.css">
     <style>
         body {
             font-family: "Microsoft YaHei", "PingFang SC", system-ui, sans-serif;
@@ -44,6 +44,59 @@
         }
         .animate-glow { animation: pulse-glow 2s infinite; }
         canvas { touch-action: none; }
+        .tower-sprite {
+            display: block;
+            width: 100%;
+            height: 100%;
+            background-image: url('./game01-tower-sprites.png');
+            background-repeat: no-repeat;
+            background-size: 400% 300%;
+            transform: scale(.86);
+            transform-origin: center;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,.35));
+        }
+        .tower-switch { background-position: 0 0; }
+        .tower-pixel { background-position: 33.333% 0; }
+        .tower-rgb { background-position: 66.667% 0; }
+        .tower-decoder { background-position: 100% 0; }
+        .tower-magnifier { background-position: 0 50%; }
+        .tower-loop { background-position: 33.333% 50%; }
+        .tower-classifier { background-position: 66.667% 50%; }
+        .tower-predictor { background-position: 100% 50%; }
+        .tower-neural { background-position: 0 100%; }
+        .tower-reinforce { background-position: 33.333% 100%; }
+        .tower-prompt { background-position: 66.667% 100%; }
+        .tower-debugger { background-position: 100% 100%; }
+        .enemy-sprite {
+            display: block;
+            width: 100%;
+            height: 100%;
+            background-image: url('./game01-enemy-sprites.png');
+            background-repeat: no-repeat;
+            background-size: 500% 500%;
+            transform: scale(.86);
+            transform-origin: center;
+            filter: drop-shadow(0 2px 5px rgba(0,0,0,.45));
+        }
+        .enemy-boss-sprite { background-image: url('./game01-boss-sprites.png'); background-size: 400% 200%; transform: scale(.9); }
+        .enemy-bug { background-position: 0 0; } .enemy-bitmonster { background-position: 25% 0; }
+        .enemy-lockmonster { background-position: 50% 0; } .enemy-blurry { background-position: 75% 0; } .enemy-compress { background-position: 100% 0; }
+        .enemy-noise { background-position: 0 25%; } .enemy-traffic { background-position: 25% 25%; }
+        .enemy-loopmonster { background-position: 50% 25%; } .enemy-pipeline { background-position: 75% 25%; } .enemy-chaos { background-position: 100% 25%; }
+        .enemy-parrot { background-position: 0 50%; } .enemy-memorize { background-position: 25% 50%; }
+        .enemy-puppy { background-position: 50% 50%; } .enemy-tagged { background-position: 75% 50%; } .enemy-neuron { background-position: 100% 50%; }
+        .enemy-gradient { background-position: 0 75%; } .enemy-tongue { background-position: 25% 75%; }
+        .enemy-vague { background-position: 50% 75%; } .enemy-phantom { background-position: 75% 75%; } .enemy-thief { background-position: 100% 75%; }
+        .enemy-bias { background-position: 0 100%; }
+        .enemy-bossA { background-position: 0 0; } .enemy-bossB { background-position: 33.333% 0; }
+        .enemy-bossC { background-position: 66.667% 0; } .enemy-bossD { background-position: 100% 0; }
+        .enemy-bossE { background-position: 0 100%; } .enemy-bossF { background-position: 33.333% 100%; }
+        .enemy-bossG { background-position: 66.667% 100%; } .enemy-bossH { background-position: 100% 100%; }
+        .game-stage {
+            flex: 1 1 auto;
+            height: auto;
+            min-height: 320px;
+        }
     </style>
 </head>
 <body class="w-screen h-screen flex flex-col justify-between items-center relative bg-slate-950 text-white">
@@ -51,7 +104,11 @@
     <header class="w-full max-w-7xl px-4 py-2 mt-2 flex justify-between items-center z-20 flex-wrap gap-2">
         <div class="flex items-center gap-3 glass-panel px-4 py-2 rounded-2xl">
             <div class="flex items-center gap-2">
-                <i class="fa-solid fa-cloud-bolt text-2xl text-cyan-400 animate-bounce"></i>
+                <div class="w-9 h-9 rounded-xl bg-cyan-500/20 border border-cyan-400/50 flex items-center justify-center text-cyan-300 shadow-lg shadow-cyan-500/20" title="游戏标识：AI知识保卫战">
+                    <svg viewBox="0 0 24 24" width="23" height="23" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="盾牌游戏标识">
+                        <path d="M20 13c0 5-3.5 7.5-8 9-4.5-1.5-8-4-8-9V5l8-3 8 3z"></path>
+                    </svg>
+                </div>
                 <span class="font-bold text-lg bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent hidden sm:inline">AI知识保卫战</span>
             </div>
             <div class="h-6 w-[1px] bg-slate-700 mx-1"></div>
@@ -86,24 +143,25 @@
                 <i class="fa-solid fa-graduation-cap text-lg text-amber-400"></i>
                 <span class="hidden md:inline">每波防御奖励答题</span>
             </button>
-            <button id="btn-badges" class="glass-panel w-10 h-10 rounded-2xl flex items-center justify-center text-slate-300 hover:text-white transition relative" title="勋章墙">
+            <button id="btn-badges" class="glass-panel h-10 px-3 rounded-2xl flex items-center justify-center gap-1.5 text-slate-300 hover:text-white transition relative" title="勋章墙">
                 <i class="fa-solid fa-trophy text-amber-400"></i>
+                <span class="text-xs font-bold">勋章</span>
                 <span id="badge-count" class="absolute -top-1 -right-1 w-5 h-5 bg-rose-500 text-white text-[10px] font-extrabold rounded-full flex items-center justify-center hidden">0</span>
             </button>
-            <button id="btn-speed" class="glass-panel w-10 h-10 rounded-2xl flex items-center justify-center text-slate-300 hover:text-white font-bold transition">1x</button>
-            <button id="btn-sound" class="glass-panel w-10 h-10 rounded-2xl flex items-center justify-center text-slate-300 hover:text-white transition">
-                <i class="fa-solid fa-volume-high"></i>
+            <button id="btn-speed" class="glass-panel h-10 px-3 rounded-2xl flex items-center justify-center gap-1.5 text-slate-300 hover:text-white font-bold transition"><i class="fa-solid fa-gauge-high"></i><span id="speed-label" class="text-xs">速度 1x</span></button>
+            <button id="btn-sound" class="glass-panel h-10 px-3 rounded-2xl flex items-center justify-center gap-1.5 text-slate-300 hover:text-white transition">
+                <i class="fa-solid fa-volume-high"></i><span class="text-xs font-bold">声音</span>
             </button>
-            <button id="btn-pause" class="glass-panel w-10 h-10 rounded-2xl flex items-center justify-center text-slate-300 hover:text-white transition">
-                <i class="fa-solid fa-pause"></i>
+            <button id="btn-pause" class="glass-panel h-10 px-3 rounded-2xl flex items-center justify-center gap-1.5 text-slate-300 hover:text-white transition">
+                <i class="fa-solid fa-pause"></i><span class="text-xs font-bold">暂停</span>
             </button>
-            <button id="btn-home" class="glass-panel w-10 h-10 rounded-2xl flex items-center justify-center text-slate-300 hover:text-white transition" title="返回主菜单">
-                <i class="fa-solid fa-house"></i>
+            <button id="btn-home" class="glass-panel h-10 px-3 rounded-2xl flex items-center justify-center gap-1.5 text-slate-300 hover:text-white transition" title="返回主菜单">
+                <i class="fa-solid fa-house"></i><span class="text-xs font-bold">主页</span>
             </button>
         </div>
     </header>
 
-    <main class="relative w-full max-w-7xl flex-1 my-1 flex justify-center items-center px-2 min-h-0">
+    <main class="game-stage relative w-full max-w-7xl my-1 flex justify-center items-center px-2 min-h-0">
         <div class="relative w-full h-full glass-panel rounded-3xl overflow-hidden border border-slate-700 flex justify-center items-center shadow-2xl">
             <canvas id="game-canvas" class="w-full h-full block"></canvas>
 
@@ -228,8 +286,8 @@
             <div id="stage-list" class="grid grid-cols-2 sm:grid-cols-4 gap-3 w-full my-2"></div>
 
             <button id="btn-start-game" class="btn-glow px-8 py-3.5 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 font-black text-white text-base flex items-center gap-3">
+                <i class="fa-solid fa-play text-xl" aria-hidden="true"></i>
                 <span>开启AI保卫战</span>
-                <i class="fa-solid fa-rocket"></i>
             </button>
         </div>
     </div>
@@ -416,7 +474,7 @@
 
         // 🎵 BGM 背景音乐控制（用户首次交互后才能播放，自动重试）
         const bgmEl = document.getElementById('bgm');
-        bgmEl.volume = 0.5;  // 适中音量
+        bgmEl.volume = 0.25; // 在原音量基础上降低50%
         bgmEl.loop = true;   // 确保循环
 
         // 一次性用户交互监听器 - 解决浏览器自动播放策略
@@ -652,6 +710,52 @@
             bossG: { name: "幻觉魔王", hp: 3500, speed: 0.8, reward: 450, radius: 38, color: "#9333ea", icon: "幻", isBoss: true, bossModule: 6, bossPhase: 3, bossSkill: "真假分身×2", bossClone: true, illusion: true, lesson: "第28课《AI幻觉》" },
             bossH: { name: "终极Bug王", hp: 5000, speed: 0.7, reward: 800, radius: 42, color: "#dc2626", icon: "AI", isBoss: true, bossModule: 7, bossPhase: 3, bossSkill: "全技能+召唤", summonType: "bug", summonInterval: 5, bossClone: true, colorShield: true, lesson: "第31课《人机协作》" }
         };
+
+        const enemySpriteImage = new Image();
+        enemySpriteImage.src = './game01-enemy-sprites.png';
+        const bossSpriteImage = new Image();
+        bossSpriteImage.src = './game01-boss-sprites.png';
+        const ENEMY_SPRITE_CELLS = {
+            bug:[0,0], bitmonster:[1,0], lockmonster:[2,0], blurry:[3,0], compress:[4,0],
+            noise:[0,1], traffic:[1,1], loopmonster:[2,1], pipeline:[3,1], chaos:[4,1],
+            parrot:[0,2], memorize:[1,2], puppy:[2,2], tagged:[3,2], neuron:[4,2],
+            gradient:[0,3], tongue:[1,3], vague:[2,3], phantom:[3,3], thief:[4,3], bias:[0,4],
+            bossA:[0,0], bossB:[1,0], bossC:[2,0], bossD:[3,0],
+            bossE:[0,1], bossF:[1,1], bossG:[2,1], bossH:[3,1]
+        };
+
+        function isBossSprite(typeKey) { return /^boss[A-H]$/.test(typeKey); }
+        function enemySpriteMarkup(typeKey, label) {
+            const bossClass = isBossSprite(typeKey) ? ' enemy-boss-sprite' : '';
+            return `<span class="enemy-sprite${bossClass} enemy-${typeKey}" role="img" aria-label="${label}"></span>`;
+        }
+        function drawEnemySprite(ctx, typeKey, centerX, centerY, maxWidth, maxHeight) {
+            const boss = isBossSprite(typeKey);
+            const img = boss ? bossSpriteImage : enemySpriteImage;
+            const cell = ENEMY_SPRITE_CELLS[typeKey];
+            if (!cell || !img.complete || !img.naturalWidth) return false;
+            const columns = boss ? 4 : 5;
+            const rows = boss ? 2 : 5;
+            const sourceWidth = img.naturalWidth / columns;
+            const sourceHeight = img.naturalHeight / rows;
+            const ratio = sourceWidth / sourceHeight;
+            let drawWidth = maxWidth;
+            let drawHeight = drawWidth / ratio;
+            if (drawHeight > maxHeight) {
+                drawHeight = maxHeight;
+                drawWidth = drawHeight * ratio;
+            }
+            ctx.save();
+            if (boss) {
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, Math.min(maxWidth, maxHeight) * .5, 0, Math.PI * 2);
+                ctx.clip();
+            }
+            ctx.drawImage(img, cell[0] * sourceWidth, cell[1] * sourceHeight, sourceWidth, sourceHeight,
+                centerX - drawWidth / 2, centerY - drawHeight / 2, drawWidth, drawHeight);
+            ctx.restore();
+            return true;
+        }
 
         // ===== 关卡波次配置（难度全面提升 + 每关Boss）=====
         const STAGE_WAVES = {
@@ -1555,6 +1659,7 @@
                             if (summoned) {
                                 const minion = {
                                     ...summoned,
+                                    type: e.summonType,
                                     x: e.x - 30,
                                     y: e.y,
                                     pathIdx: e.pathIdx,
@@ -2055,7 +2160,7 @@
                 ctx.font = 'bold 13px sans-serif';
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
-                const infoText = `${boss.icon} ${boss.name}  ·  ${phaseNames[boss.bossCurrentPhase]}  ·  HP ${Math.floor(boss.hp).toLocaleString()} / ${Math.floor(boss.maxHp).toLocaleString()}`;
+                const infoText = `${boss.name}  ·  ${phaseNames[boss.bossCurrentPhase]}  ·  HP ${Math.floor(boss.hp).toLocaleString()} / ${Math.floor(boss.maxHp).toLocaleString()}`;
                 ctx.fillText(infoText, x + barWidth / 2, y + barHeight / 2);
 
                 // 技能描述（血条下方）
@@ -2599,32 +2704,15 @@
                         }
                     }
 
-                    // 统一绘本怪物轮廓，替换平台相关Emoji字形
-                    ctx.fillStyle = e.slowTimer > 0 ? "#60a5fa" : e.color;
-                    ctx.strokeStyle = e.isBoss ? "#facc15" : "rgba(255,255,255,.55)";
-                    ctx.lineWidth = e.isBoss ? 3 : 1.5;
-                    ctx.beginPath();
-                    if (e.isBoss || e.bias) {
-                        const points = e.isBoss ? 18 : 12;
-                        for (let i = 0; i < points; i++) {
-                            const a = i * Math.PI * 2 / points;
-                            const r = i % 2 ? e.radius : e.radius * 1.18;
-                            if (i === 0) ctx.moveTo(Math.cos(a) * r, Math.sin(a) * r);
-                            else ctx.lineTo(Math.cos(a) * r, Math.sin(a) * r);
-                        }
-                    } else if (e.stealth || e.illusion) {
-                        ctx.moveTo(-e.radius, e.radius * .65);
-                        ctx.quadraticCurveTo(-e.radius * .65, -e.radius, 0, -e.radius);
-                        ctx.quadraticCurveTo(e.radius * .65, -e.radius, e.radius, e.radius * .65);
-                        ctx.quadraticCurveTo(e.radius * .5, e.radius * .25, 0, e.radius * .8);
-                        ctx.quadraticCurveTo(-e.radius * .5, e.radius * .25, -e.radius, e.radius * .65);
-                    } else {
-                        ctx.roundRect(-e.radius, -e.radius * .72, e.radius * 2, e.radius * 1.44, e.radius * .5);
+                    // 使用完整怪物图片；按原图比例 contain 绘制，避免文字代替角色和上下裁切。
+                    const spriteSize = e.isBoss ? e.radius * 2.75 : e.radius * 2.45;
+                    const drewSprite = drawEnemySprite(ctx, e.type, 0, 0, spriteSize, spriteSize);
+                    if (!drewSprite) {
+                        ctx.fillStyle = e.slowTimer > 0 ? "#60a5fa" : e.color;
+                        ctx.beginPath();
+                        ctx.arc(0, 0, e.radius, 0, Math.PI * 2);
+                        ctx.fill();
                     }
-                    ctx.closePath(); ctx.fill(); ctx.stroke();
-                    ctx.fillStyle = "#0f172a";
-                    ctx.beginPath(); ctx.arc(-e.radius * .28, -e.radius * .12, Math.max(2, e.radius * .11), 0, Math.PI * 2); ctx.fill();
-                    ctx.beginPath(); ctx.arc(e.radius * .28, -e.radius * .12, Math.max(2, e.radius * .11), 0, Math.PI * 2); ctx.fill();
 
                     const hpPercent = Math.max(0, e.hp / e.maxHp);
                     ctx.fillStyle = "rgba(15, 23, 42, 0.8)";
@@ -2913,7 +3001,9 @@
                 card.className = `tower-card relative p-0.5 rounded-md cursor-pointer flex flex-col items-center transition group shrink-0 ${isSelected ? 'border-cyan-400 bg-slate-700/90 ring-1 ring-cyan-400/50' : 'bg-slate-800/80 hover:bg-slate-700/80 border border-slate-600'} ${!unlocked ? 'opacity-40' : ''}`;
                 card.style.minWidth = '48px';
                 card.innerHTML = `
-                    <div class="w-7 h-7 rounded flex items-center justify-center text-sm font-bold mb-0.5" style="background:${unlocked ? t.color + '20' : '#1e293b'}; color:${t.color}">${t.icon}</div>
+                    <div class="w-9 h-9 rounded-lg overflow-hidden flex items-center justify-center mb-0.5" style="background:${unlocked ? t.color + '18' : '#1e293b'}">
+                        <span class="tower-sprite tower-${type}" role="img" aria-label="${t.name}"></span>
+                    </div>
                     <span class="text-[9px] font-bold text-slate-200 truncate w-full text-center leading-tight">${t.name.replace(/[^一-龥a-zA-Z0-9]/g, '').slice(0, 4)}</span>
                     <span class="text-[8px] text-yellow-400 font-bold flex items-center gap-0.5">
                         <i class="fa-solid fa-bolt" style="font-size:7px"></i> ${t.cost}
@@ -3035,7 +3125,7 @@
             const btnSpeed = document.getElementById('btn-speed');
             btnSpeed.addEventListener('click', () => {
                 game.speed = game.speed === 1 ? 2 : 1;
-                btnSpeed.innerText = `${game.speed}x`;
+                document.getElementById('speed-label').innerText = `速度 ${game.speed}x`;
                 btnSpeed.classList.toggle('text-cyan-400', game.speed === 2);
             });
 
@@ -3044,10 +3134,10 @@
                 sound.enabled = !sound.enabled;
                 sound.bgmEnabled = sound.enabled;
                 if (sound.enabled) {
-                    btnSound.innerHTML = `<i class="fa-solid fa-volume-high"></i>`;
+                    btnSound.innerHTML = `<i class="fa-solid fa-volume-high"></i><span class="text-xs font-bold">声音</span>`;
                     tryPlayBGM();
                 } else {
-                    btnSound.innerHTML = `<i class="fa-solid fa-volume-xmark"></i>`;
+                    btnSound.innerHTML = `<i class="fa-solid fa-volume-xmark"></i><span class="text-xs font-bold">静音</span>`;
                     pauseBGM();
                 }
             });
@@ -3055,7 +3145,9 @@
             const btnPause = document.getElementById('btn-pause');
             btnPause.addEventListener('click', () => {
                 game.paused = !game.paused;
-                btnPause.innerHTML = game.paused ? `<i class="fa-solid fa-play"></i>` : `<i class="fa-solid fa-pause"></i>`;
+                btnPause.innerHTML = game.paused
+                    ? `<i class="fa-solid fa-play"></i><span class="text-xs font-bold">继续</span>`
+                    : `<i class="fa-solid fa-pause"></i><span class="text-xs font-bold">暂停</span>`;
             });
 
             // 🔧 返回主菜单：顶栏常驻按钮 → 弹确认框（暂停游戏避免怪继续走）
@@ -3435,7 +3527,7 @@
                 const card = document.createElement('div');
                 card.className = 'flex items-center gap-2 p-2 rounded-xl bg-slate-800/80 border border-slate-700 hover:border-rose-500/50 transition';
                 card.innerHTML = `
-                    <div class="w-12 h-12 rounded-lg flex items-center justify-center text-2xl flex-shrink-0" style="background:${enemy.color}30; color:${enemy.color}">${enemy.icon}</div>
+                    <div class="w-14 h-14 rounded-xl overflow-hidden flex items-center justify-center flex-shrink-0" style="background:${enemy.color}18">${enemySpriteMarkup(typeKey, enemy.name)}</div>
                     <div class="flex-1 min-w-0">
                         <div class="flex items-center justify-between gap-1 mb-0.5">
                             <span class="text-xs font-bold text-slate-200 truncate">${enemy.name}</span>

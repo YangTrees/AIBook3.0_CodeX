@@ -1,5 +1,5 @@
 import type { TabType } from '../App';
-import { Home, Clapperboard, Gamepad2, BookOpen, Users } from 'lucide-react';
+import { Home, Clapperboard, Gamepad2, BookOpen } from 'lucide-react';
 
 interface BottomNavProps {
   currentTab: TabType;
@@ -42,19 +42,11 @@ const TABS: TabItem[] = [
   },
   {
     key: 'archive',
-    label: '档案',
+    label: '我的成长',
     Icon: BookOpen,
     activeColor: '#2185d0',
     activeBg: 'var(--kid-blue-50)',
     activeGradient: 'linear-gradient(135deg, #eef7ff, #d6ecff)',
-  },
-  {
-    key: 'parent',
-    label: '家长',
-    Icon: Users,
-    activeColor: '#e07010',
-    activeBg: 'var(--kid-orange-50)',
-    activeGradient: 'linear-gradient(135deg, #fff6ed, #fde8cc)',
   },
 ];
 

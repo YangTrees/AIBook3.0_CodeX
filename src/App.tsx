@@ -5,23 +5,22 @@ import BottomNav from './sections/BottomNav';
 import CinemaPage from './sections/CinemaPage';
 import GamePage from './sections/GamePage';
 import ArchivePage from './sections/ArchivePage';
-import ParentPage from './sections/ParentPage';
-import PromoPage from './sections/PromoPage';
 import AppErrorBoundary from './components/AppErrorBoundary';
 import './App.css';
 
-export type TabType = 'promo' | 'home' | 'cinema' | 'game' | 'archive' | 'parent';
+export type TabType = 'home' | 'cinema' | 'game' | 'archive';
 
 function readRoute(): { tab: TabType; courseId: number | null } {
   const route = window.location.hash.replace(/^#\/?/, '');
-  if (!route || route === 'promo') return { tab: 'promo', courseId: null };
+  if (!route || route === 'promo') return { tab: 'home', courseId: null };
+  if (route === 'parent') return { tab: 'archive', courseId: null };
   const courseMatch = route.match(/^course\/(\d+)$/);
   if (courseMatch) {
     const courseId = Number(courseMatch[1]);
     if (courseId >= 1 && courseId <= 32) return { tab: 'home', courseId };
   }
   const tab = route as TabType;
-  return { tab: ['promo', 'home', 'cinema', 'game', 'archive', 'parent'].includes(tab) ? tab : 'promo', courseId: null };
+  return { tab: ['home', 'cinema', 'game', 'archive'].includes(tab) ? tab : 'home', courseId: null };
 }
 
 function pushRoute(path: string) {
@@ -71,6 +70,13 @@ export default function App() {
   const [currentTab, setCurrentTab] = useState<TabType>(initialRoute.tab);
   const [currentCourseId, setCurrentCourseId] = useState<number | null>(initialRoute.courseId);
   const { scale, offset, compact } = useAppScale();
+
+  useEffect(() => {
+    const route = window.location.hash.replace(/^#\/?/, '');
+    if (!route || route === 'promo') {
+      window.history.replaceState(null, '', `${window.location.pathname}${window.location.search}#/home`);
+    }
+  }, []);
 
   useEffect(() => {
     const restoreRoute = () => {
@@ -134,8 +140,6 @@ export default function App() {
       return <CoursePage courseId={currentCourseId} onBack={handleBackToHome} />;
     }
     switch (currentTab) {
-      case 'promo':
-        return null;
       case 'home':
         return <HomePage onSelectCourse={handleSelectCourse} />;
       case 'cinema':
@@ -144,21 +148,10 @@ export default function App() {
         return <GamePage />;
       case 'archive':
         return <ArchivePage onSelectCourse={handleSelectCourse} />;
-      case 'parent':
-        return <ParentPage />;
       default:
         return <HomePage onSelectCourse={handleSelectCourse} />;
     }
   };
-
-  if (currentTab === 'promo' && currentCourseId === null) {
-    return (
-      <PromoPage
-        onExplore={() => handleTabChange('home')}
-        onTrial={() => handleSelectCourse(1)}
-      />
-    );
-  }
 
   return (
     <div className={`fixed inset-0 overflow-hidden app-shell ${compact ? 'is-compact' : ''}`} style={{ backgroundColor: '#b8d4f0' }}>

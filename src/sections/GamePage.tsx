@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import COURSE_DATA from '../data/courseData.ts';
 import { useStorage } from '../hooks/useStorage';
-import { Gamepad2, RotateCcw, CircleCheck, Rocket, Shield, Sparkles, Target, Clock3 } from 'lucide-react';
+import { Gamepad2, RotateCcw, CircleCheck, Rocket, Shield, Sparkles, Target, Clock3, Castle, Building2, Combine } from 'lucide-react';
 
 type GameEntry = {
   id: string;
@@ -51,6 +51,33 @@ const FEATURED_GAMES: GameEntry[] = [
     gamePath: './assets/games/games02/Game03_KaiPao/Game03_aikaipao.html',
     kind: 'featured',
     difficulty: '挑战',
+  },
+  {
+    id: 'land-survival',
+    title: 'AI领地生存战',
+    subtitle: '经营数据资源，布置防线守住智能核心',
+    coverImage: './assets/games/games02/covers/game04-land-survival.png',
+    gamePath: './assets/games/games02/Game04_LandSurvival/Game04_LingDiShengCun.html',
+    kind: 'featured',
+    difficulty: '进阶',
+  },
+  {
+    id: 'town-development',
+    title: '奇智小镇建设家',
+    subtitle: '配置自动规则，建设会思考的未来小镇',
+    coverImage: './assets/games/games02/covers/game05-town-development.png',
+    gamePath: './assets/games/games02/Game05_TownDevelopment/Game05_Town.html',
+    kind: 'featured',
+    difficulty: '进阶',
+  },
+  {
+    id: 'card-merge',
+    title: 'AI知识梦工坊',
+    subtitle: '合成知识卡牌，完成订单点亮AI图鉴',
+    coverImage: './assets/games/games02/covers/game06-card-merge.png',
+    gamePath: './assets/games/games02/Game06_CardMerge/Game06_Merge.html',
+    kind: 'featured',
+    difficulty: '轻松',
   },
 ];
 
@@ -151,7 +178,7 @@ export default function GamePage() {
           <Gamepad2 size={48} strokeWidth={1.7} />
           <div>
             <h1 style={{ fontSize: 36, fontWeight: 900, color: 'var(--kid-gray-800)', margin: 0 }}>趣味游戏</h1>
-            <p style={{ fontSize: 16, color: 'var(--kid-gray-400)', margin: '4px 0 0 0' }}>32个课程游戏 + 3个大型挑战，自由练习巩固知识点</p>
+            <p style={{ fontSize: 16, color: 'var(--kid-gray-400)', margin: '4px 0 0 0' }}>32个课程游戏 + 6个大型挑战，自由练习巩固知识点</p>
           </div>
         </div>
         <div style={{ display: 'flex', gap: 12 }}>
@@ -169,12 +196,12 @@ export default function GamePage() {
             </h2>
             <p style={{ margin: '5px 0 0', color: 'var(--kid-gray-400)', fontSize: 14 }}>跨课程综合玩法，挑战更长流程和更丰富的AI技能组合</p>
           </div>
-          <div style={{ padding: '8px 14px', borderRadius: 999, background: '#fff4dc', color: '#b96b15', fontWeight: 800, fontSize: 13 }}>3款全新游戏</div>
+          <div style={{ padding: '8px 14px', borderRadius: 999, background: '#fff4dc', color: '#b96b15', fontWeight: 800, fontSize: 13 }}>6款精选游戏</div>
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', gap: 22 }}>
           {FEATURED_GAMES.map((game, index) => {
             const progress = featuredProgress[game.id];
-            const Icon = [Shield, Sparkles, Target][index];
+            const Icon = [Shield, Sparkles, Target, Castle, Building2, Combine][index];
             return (
               <article key={game.id} onClick={() => handlePlayGame(game)} className="game-card featured-game-card" style={{
                 position: 'relative', overflow: 'hidden', borderRadius: 24, minHeight: 290, cursor: 'pointer',
@@ -196,7 +223,7 @@ export default function GamePage() {
                   </div>
                   <div style={{ marginTop: 12, display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: 12 }}>
                     <span style={{ color: '#bdeff4', display: 'flex', alignItems: 'center', gap: 6 }}><Clock3 size={14} /> {progress?.bestSeconds ? `最佳 ${Math.floor(progress.bestSeconds / 60)}:${String(progress.bestSeconds % 60).padStart(2, '0')}` : '尚未挑战'}</span>
-                    <span style={{ padding: '7px 13px', borderRadius: 999, background: progress?.completed ? '#22b573' : '#2d8df5', fontWeight: 900 }}>{progress?.completed ? '已完成' : '开始挑战'}</span>
+                    <span style={{ padding: '7px 13px', borderRadius: 999, background: '#2d8df5', fontWeight: 900 }}>开始挑战</span>
                   </div>
                 </div>
               </article>
