@@ -1,0 +1,1665 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>奇智小镇：AI纪元 (Smart Haven: AI Era)</title>
+    <script src="../../../libs/libs/tailwind.min.js"></script>
+    <link rel="stylesheet" href="../../../libs/libs/font-awesome.all.min.css">
+    <link rel="stylesheet" href="../../../libs/libs/game-icon-fallback.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'lark-sky': '#e0f2fe',
+                        'lark-card': '#f8fafc',
+                        'lark-primary': '#0284c7',
+                        'lark-accent': '#8b5cf6',
+                    },
+                    fontFamily: {
+                        'sans': ['"Noto Sans SC"', '"Fredoka"', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            user-select: none;
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+            color: #f8fafc;
+            overflow: hidden;
+            font-family: "Microsoft YaHei", "PingFang SC", system-ui, sans-serif;
+        }
+        
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.82);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        .glass-card {
+            background: rgba(30, 41, 59, 0.75);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.2s ease-in-out;
+        }
+
+        .glass-card:hover {
+            border-color: rgba(56, 189, 248, 0.5);
+            transform: translateY(-2px);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 5px;
+            height: 5px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.5);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(148, 163, 184, 0.3);
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(148, 163, 184, 0.5);
+        }
+
+        canvas {
+            image-rendering: pixelated;
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { opacity: 0.4; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.1); }
+        }
+        .pulse-effect { animation: pulseGlow 2s infinite ease-in-out; }
+        .game-sprite {
+            display: inline-block;
+            width: 100%;
+            height: 100%;
+            background: url('./game05-sprites.png') no-repeat;
+            background-size: 400% 300%;
+            border-radius: inherit;
+            transform: scale(.86);
+            transform-origin: center;
+        }
+        .game05-frame { aspect-ratio: 9 / 8; overflow: hidden; flex-shrink: 0; }
+        .sprite-townhall { background-position: 0% 0%; }
+        .sprite-house { background-position: 33.333% 0%; }
+        .sprite-lumberyard { background-position: 66.667% 0%; }
+        .sprite-powerplant { background-position: 100% 0%; }
+        .sprite-warehouse { background-position: 0% 50%; }
+        .sprite-denoise_tower { background-position: 33.333% 50%; }
+        .sprite-pizza_factory { background-position: 66.667% 50%; }
+        .sprite-debug_station { background-position: 100% 50%; }
+        .sprite-tree { background-position: 0% 100%; }
+        .sprite-crystal { background-position: 33.333% 100%; }
+        .sprite-tuantuan, .sprite-citizen { background-position: 66.667% 100%; }
+        .sprite-diandian { background-position: 100% 100%; }
+    </style>
+</head>
+<body class="h-screen w-screen flex flex-col justify-between p-2.5 gap-2.5">
+    <audio id="bgm" src="bgm.mp3" loop preload="auto"></audio>
+
+    <!-- TOP HUD BAR -->
+    <header class="glass-panel rounded-2xl px-3 py-2 flex flex-wrap items-center justify-between z-20 gap-2 shrink-0">
+        <!-- Logo & Title -->
+        <div class="flex items-center gap-2.5">
+            <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-sky-400 to-indigo-500 flex items-center justify-center text-white text-lg shadow-lg">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="建筑游戏标识">
+                    <path d="M6 22V4c0-.6.4-1 1-1h10c.6 0 1 .4 1 1v18M6 12H4c-.6 0-1 .4-1 1v9M18 9h2c.6 0 1 .4 1 1v12M3 22h18M10 7h4M10 11h4M10 15h4M10 19h4"></path>
+                </svg>
+            </div>
+            <div>
+                <h1 class="font-bold text-base leading-none tracking-wide text-sky-200">奇智小镇 <span class="text-[10px] bg-sky-500/20 text-sky-300 px-2 py-0.5 rounded-full border border-sky-400/30">AI纪元</span></h1>
+                <p class="text-[10px] text-slate-400 mt-0.5">和平建设与算法启发模拟</p>
+            </div>
+        </div>
+
+        <!-- Resources Indicator Group -->
+        <div class="flex flex-wrap items-center gap-2 text-xs">
+            <!-- Wood -->
+            <div class="glass-card px-2.5 py-1 rounded-xl flex items-center gap-1.5" title="像素木：基础建造建材">
+                <i class="fa-solid fa-tree text-amber-500 text-sm"></i>
+                <div class="flex flex-col">
+                    <span class="text-[9px] text-slate-400 leading-none">像素木</span>
+                    <span id="res-wood" class="font-bold text-slate-100">40</span>
+                </div>
+            </div>
+
+            <!-- 0/1 Power -->
+            <div class="glass-card px-2.5 py-1 rounded-xl flex items-center gap-1.5" title="0与1：控制AI设备运行的基础逻辑流">
+                <i class="fa-solid fa-bolt text-yellow-400 text-sm"></i>
+                <div class="flex flex-col">
+                    <span class="text-[9px] text-slate-400 leading-none">0/1 能源</span>
+                    <span id="res-power" class="font-bold text-yellow-300">20/20</span>
+                </div>
+            </div>
+
+            <!-- RGB Crystals -->
+            <div class="glass-card px-2.5 py-1 rounded-xl flex items-center gap-1.5" title="RGB光晶：维持农田生机与环境平衡">
+                <i class="fa-solid fa-gem text-emerald-400 text-sm"></i>
+                <div class="flex flex-col">
+                    <span class="text-[9px] text-slate-400 leading-none">RGB光晶</span>
+                    <span id="res-rgb" class="font-bold text-emerald-300">10</span>
+                </div>
+            </div>
+
+            <!-- Feature Data -->
+            <div class="glass-card px-2.5 py-1 rounded-xl flex items-center gap-1.5" title="特征数据：研究规律与解锁科技树的关键">
+                <i class="fa-solid fa-microchip text-indigo-400 text-sm"></i>
+                <div class="flex flex-col">
+                    <span class="text-[9px] text-slate-400 leading-none">特征数据</span>
+                    <span id="res-data" class="font-bold text-indigo-300">5</span>
+                </div>
+            </div>
+
+            <!-- Population & Happiness -->
+            <div class="glass-card px-2.5 py-1 rounded-xl flex items-center gap-1.5" title="小镇居民与助手人口">
+                <i class="fa-solid fa-users text-sky-400 text-sm"></i>
+                <div class="flex flex-col">
+                    <span class="text-[9px] text-slate-400 leading-none">居民 / 助手</span>
+                    <span id="res-pop" class="font-bold text-sky-200">4 人</span>
+                </div>
+            </div>
+
+            <!-- Storage Capacity Indicator -->
+            <div id="storage-container" class="glass-card px-2.5 py-1 rounded-xl flex items-center gap-1.5" title="存储容量：容量若溢出会造成堵塞！">
+                <i class="fa-solid fa-box-archive text-purple-400 text-sm"></i>
+                <div class="flex flex-col">
+                    <span class="text-[9px] text-slate-400 leading-none">存储容量</span>
+                    <span id="res-storage" class="font-bold text-purple-300">55 / 100</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Controls Group -->
+        <div class="flex items-center gap-2">
+            <button id="btn-tutorial" class="px-2.5 py-1.5 rounded-xl bg-amber-600/90 hover:bg-amber-500 text-white font-medium text-xs flex items-center gap-1 transition shadow-md shadow-amber-600/20">
+                <i class="fa-solid fa-book-open"></i> 新手教程
+            </button>
+            <button id="btn-tech-tree" class="px-2.5 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-medium text-xs flex items-center gap-1 transition shadow-md shadow-indigo-600/20">
+                <i class="fa-solid fa-diagram-project"></i> AI 科技树
+            </button>
+            <button id="btn-pipeline" class="px-2.5 py-1.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-medium text-xs flex items-center gap-1 transition shadow-md shadow-purple-600/20">
+                <i class="fa-solid fa-network-wired"></i> 规则配置
+            </button>
+            <button id="btn-sound" class="h-8 px-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 flex items-center justify-center gap-1.5 transition" title="背景音乐与音效">
+                <i id="sound-icon" class="fa-solid fa-volume-high"></i><span id="sound-label" class="text-[10px] font-bold">声音</span>
+            </button>
+            <button id="btn-pause" class="h-8 px-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 flex items-center justify-center gap-1.5 transition">
+                <i class="fa-solid fa-pause"></i><span class="text-[10px] font-bold">暂停</span>
+            </button>
+        </div>
+    </header>
+
+    <section class="glass-panel rounded-2xl px-4 py-2 flex items-center gap-4 shrink-0" aria-label="小镇建设目标">
+        <div class="min-w-[170px]">
+            <div class="text-[10px] text-sky-300 font-bold">本局目标 · 建成智慧示范小镇</div>
+            <div id="goal-summary" class="text-xs text-slate-200 mt-0.5">完成 0 / 6 项建设目标</div>
+        </div>
+        <div class="flex-1 h-2.5 bg-slate-800 rounded-full overflow-hidden border border-slate-700">
+            <div id="goal-progress" class="h-full bg-gradient-to-r from-cyan-400 via-sky-500 to-emerald-400 transition-all duration-500" style="width:0%"></div>
+        </div>
+        <div id="goal-list" class="hidden xl:flex items-center gap-2 text-[9px] text-slate-400"></div>
+    </section>
+
+    <!-- MAIN GAME DISPLAY AREA -->
+    <main class="flex-1 flex gap-2.5 relative overflow-hidden rounded-2xl min-h-0">
+
+        <!-- Left Toolbar: Building Selection Panel -->
+        <aside class="w-44 glass-panel rounded-2xl p-2 flex flex-col gap-2 z-10 shrink-0 overflow-y-auto">
+            <div class="flex items-center justify-between border-b border-slate-700/60 pb-1.5">
+                <h2 class="text-xs font-bold text-sky-300 flex items-center gap-1.5">
+                    <i class="fa-solid fa-hammer"></i> 建造工坊
+                </h2>
+                <span class="text-[9px] text-slate-400">点击选中放置</span>
+            </div>
+
+            <!-- Building Buttons Grid -->
+            <div class="flex flex-col gap-1.5" id="building-menu">
+                <!-- House -->
+                <button data-btype="house" class="build-btn glass-card p-2 rounded-xl text-left border-sky-400 bg-sky-950/30 flex items-center gap-2">
+                    <div class="game05-frame w-10 rounded-lg"><span class="game-sprite sprite-house" role="img" aria-label="居民小屋"></span></div>
+                    <div class="flex-1 min-w-0">
+                        <div class="text-xs font-bold text-slate-200 truncate">居民小屋</div>
+                        <div class="text-[9px] text-slate-400 truncate">增加人口 | 木材 -15</div>
+                    </div>
+                </button>
+
+                <!-- Wood Lumberyard -->
+                <button data-btype="lumberyard" class="build-btn glass-card p-2 rounded-xl text-left flex items-center gap-2">
+                    <div class="game05-frame w-10 rounded-lg"><span class="game-sprite sprite-lumberyard" role="img" aria-label="像素伐木场"></span></div>
+                    <div class="flex-1 min-w-0">
+                        <div class="text-xs font-bold text-slate-200 truncate">像素伐木场</div>
+                        <div class="text-[9px] text-slate-400 truncate">高效产木(+6) | 木材 -20</div>
+                    </div>
+                </button>
+
+                <!-- 0/1 Power Generator -->
+                <button data-btype="powerplant" class="build-btn glass-card p-2 rounded-xl text-left flex items-center gap-2">
+                    <div class="game05-frame w-10 rounded-lg"><span class="game-sprite sprite-powerplant" role="img" aria-label="0与1发电站"></span></div>
+                    <div class="flex-1 min-w-0">
+                        <div class="text-xs font-bold text-slate-200 truncate">0/1 发电站</div>
+                        <div class="text-[9px] text-slate-400 truncate">产生开关能源 | 木材 -25</div>
+                    </div>
+                </button>
+
+                <!-- Storage Warehouse -->
+                <button data-btype="warehouse" class="build-btn glass-card p-2 rounded-xl text-left flex items-center gap-2">
+                    <div class="game05-frame w-10 rounded-lg"><span class="game-sprite sprite-warehouse" role="img" aria-label="格子存储仓库"></span></div>
+                    <div class="flex-1 min-w-0">
+                        <div class="text-xs font-bold text-slate-200 truncate">格子存储仓库</div>
+                        <div class="text-[9px] text-slate-400 truncate">扩容+50上限 | 木材-30</div>
+                    </div>
+                </button>
+
+                <!-- De-noising Tower -->
+                <button data-btype="denoise_tower" class="build-btn glass-card p-2 rounded-xl text-left opacity-60 cursor-not-allowed flex items-center gap-2" id="btn-build-denoise" title="需要先在科技树解锁 [去噪算法]">
+                    <div class="game05-frame w-10 rounded-lg"><span class="game-sprite sprite-denoise_tower" role="img" aria-label="去噪灯塔"></span></div>
+                    <div class="flex-1 min-w-0">
+                        <div class="text-xs font-bold text-slate-200 flex items-center justify-between">
+                            <span class="truncate">去噪灯塔</span> <i class="fa-solid fa-lock text-[9px] text-slate-500"></i>
+                        </div>
+                        <div class="text-[9px] text-slate-400 truncate">自动剥离噪声 | 需科技</div>
+                    </div>
+                </button>
+
+                <!-- Pizza Pipeline Workshop -->
+                <button data-btype="pizza_factory" class="build-btn glass-card p-2 rounded-xl text-left opacity-60 cursor-not-allowed flex items-center gap-2" id="btn-build-pizza" title="需要先在科技树解锁 [任务分解]">
+                    <div class="game05-frame w-10 rounded-lg"><span class="game-sprite sprite-pizza_factory" role="img" aria-label="披萨工坊"></span></div>
+                    <div class="flex-1 min-w-0">
+                        <div class="text-xs font-bold text-slate-200 flex items-center justify-between">
+                            <span class="truncate">披萨工坊</span> <i class="fa-solid fa-lock text-[9px] text-slate-500"></i>
+                        </div>
+                        <div class="text-[9px] text-slate-400 truncate">并行高效生产 | 需科技</div>
+                    </div>
+                </button>
+
+                <!-- Debugging Workshop -->
+                <button data-btype="debug_station" class="build-btn glass-card p-2 rounded-xl text-left opacity-60 cursor-not-allowed flex items-center gap-2" id="btn-build-debug" title="需要先在科技树解锁 [Bug调试]">
+                    <div class="game05-frame w-10 rounded-lg"><span class="game-sprite sprite-debug_station" role="img" aria-label="事实调试站"></span></div>
+                    <div class="flex-1 min-w-0">
+                        <div class="text-xs font-bold text-slate-200 flex items-center justify-between">
+                            <span class="truncate">事实调试站</span> <i class="fa-solid fa-lock text-[9px] text-slate-500"></i>
+                        </div>
+                        <div class="text-[9px] text-slate-400 truncate">修复逻辑错误 | 需科技</div>
+                    </div>
+                </button>
+            </div>
+
+            <!-- Active Hazard Notice Card -->
+            <div class="mt-auto border-t border-slate-700/60 pt-2">
+                <div class="text-[11px] font-bold text-rose-300 mb-1 flex items-center gap-1">
+                    <i class="fa-solid fa-triangle-exclamation"></i> 环境与逻辑监测
+                </div>
+                <div id="hazard-status" class="text-[10px] text-slate-300 p-2 rounded-xl bg-slate-900/60 border border-slate-700/50 leading-relaxed">
+                    小镇气候稳定，机器运转良好。
+                </div>
+            </div>
+        </aside>
+
+        <!-- Center: Interactive Game Map Canvas Container -->
+        <div class="flex-1 glass-panel rounded-2xl relative overflow-hidden flex items-center justify-center" id="canvas-container">
+            <!-- Canvas -->
+            <canvas id="gameCanvas" class="w-full h-full cursor-pointer"></canvas>
+
+            <!-- Disaster Alert Banner (Floating) -->
+            <div id="alert-banner" class="hidden absolute top-3 left-1/2 -translate-x-1/2 px-4 py-2 rounded-xl bg-rose-900/90 border border-rose-500 text-rose-200 text-xs font-medium flex items-center gap-2 shadow-2xl z-20">
+                <i class="fa-solid fa-triangle-exclamation text-rose-400 animate-pulse"></i>
+                <span id="alert-text">警报：出现逻辑错误！</span>
+            </div>
+
+            <!-- Selected Entity Info Inspector Tooltip -->
+            <div id="entity-inspector" class="hidden absolute bottom-3 left-3 right-3 max-w-sm mx-auto p-2.5 rounded-xl glass-panel border border-sky-400/40 text-xs shadow-2xl z-20 flex items-center justify-between gap-3">
+                <div class="flex items-center gap-2">
+                    <div id="inspector-avatar" class="w-9 h-9 rounded-full bg-sky-500/20 flex items-center justify-center overflow-hidden"><span class="game-sprite sprite-diandian"></span></div>
+                    <div>
+                        <div id="inspector-title" class="font-bold text-sky-200">角色状态</div>
+                        <div id="inspector-desc" class="text-slate-300 text-[10px]">正在小镇巡逻工作</div>
+                    </div>
+                </div>
+                <button id="btn-inspector-action" class="px-2.5 py-1 rounded-lg bg-sky-600 hover:bg-sky-500 text-white font-bold text-[10px]"><i class="fa-solid fa-hand-pointer mr-1"></i>交互互动</button>
+            </div>
+
+            <!-- Selected building upgrade panel -->
+            <div id="building-inspector" class="hidden absolute bottom-3 left-3 right-3 max-w-md mx-auto p-3 rounded-xl bg-slate-950/95 border border-amber-400/50 text-xs shadow-2xl z-30 items-center justify-between gap-3">
+                <div class="flex items-center gap-2 min-w-0">
+                    <div id="building-inspector-icon" class="game05-frame w-12 rounded-lg"></div>
+                    <div class="min-w-0">
+                        <div id="building-inspector-title" class="font-black text-amber-200">建筑升级</div>
+                        <div id="building-inspector-desc" class="text-slate-300 text-[10px] truncate">升级后提高产能与抗灾能力</div>
+                    </div>
+                </div>
+                <button id="btn-upgrade-building" class="px-3 py-2 rounded-lg bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 font-black text-[10px] whitespace-nowrap"><i class="fa-solid fa-arrow-up-right-dots mr-1"></i>升级建筑</button>
+            </div>
+        </div>
+
+        <!-- Right Sidebar: Diandian & Tuantuan Status -->
+        <aside class="w-48 glass-panel rounded-2xl p-2 flex flex-col gap-2.5 z-10 shrink-0">
+            <div class="flex items-center gap-2 border-b border-slate-700/60 pb-1.5">
+                <div class="w-7 h-7 rounded-full bg-gradient-to-r from-orange-400 to-amber-500 flex items-center justify-center text-white text-xs font-bold">
+                    团
+                </div>
+                <div>
+                    <div class="text-xs font-bold text-slate-200">探险小队</div>
+                    <div class="text-[9px] text-slate-400">实时巡逻引导</div>
+                </div>
+            </div>
+
+            <!-- Entities Role Legend Panel -->
+            <div class="glass-card p-2 rounded-xl text-[10px] space-y-1.5 border-slate-700/60 bg-slate-900/40">
+                <div class="font-bold text-slate-300 text-[11px] mb-1">巡逻人员分工说明：</div>
+                <div class="flex items-center gap-2 text-purple-300">
+                    <span class="w-2.5 h-2.5 rounded-full bg-purple-500 inline-block shadow-sm shadow-purple-500"></span>
+                    <span><strong>点点 AI</strong>：自动散发吸收迷雾</span>
+                </div>
+                <div class="flex items-center gap-2 text-amber-300">
+                    <span class="w-2.5 h-2.5 rounded-full bg-amber-500 inline-block shadow-sm shadow-amber-500"></span>
+                    <span><strong>团团</strong>：采集晶体特征数据</span>
+                </div>
+                <div class="flex items-center gap-2 text-sky-300">
+                    <span class="w-2.5 h-2.5 rounded-full bg-sky-400 inline-block shadow-sm shadow-sky-400"></span>
+                    <span><strong>小镇居民</strong>：往返运输货物资源</span>
+                </div>
+            </div>
+
+            <!-- Diandian Speech Box -->
+            <div class="glass-card p-3 rounded-xl border-sky-500/20 bg-sky-950/20 flex-1 flex flex-col gap-2 overflow-hidden">
+                <div class="flex items-center gap-2">
+                    <div class="w-9 h-9 rounded-full bg-sky-400/20 border border-sky-400/40 flex items-center justify-center shrink-0 overflow-hidden">
+                        <span class="game-sprite sprite-diandian" role="img" aria-label="点点AI"></span>
+                    </div>
+                    <div>
+                        <div class="text-xs font-bold text-sky-300">点点 AI 顾问</div>
+                        <div class="text-[9px] text-sky-400/80">提示与指导</div>
+                    </div>
+                </div>
+                <div class="text-xs text-sky-100 leading-relaxed overflow-y-auto pr-1 flex-1" id="diandian-speech">
+                    “欢迎来到奇智小镇！我和团团正在外面巡逻呢，点击左侧建筑开始建立聚落吧！如果不知道怎么玩，可以点击右上角【新手教程】哦！”
+                </div>
+            </div>
+        </aside>
+
+    </main>
+
+    <!-- MODAL 0: TUTORIAL STEP BY STEP -->
+    <div id="modal-tutorial" class="hidden fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center p-4">
+        <div class="glass-panel w-full max-w-lg rounded-2xl p-5 border-amber-500/30 flex flex-col gap-4">
+            <div class="flex items-center justify-between border-b border-slate-700 pb-2.5">
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-xl bg-amber-600/30 text-amber-400 border border-amber-500/40 flex items-center justify-center text-sm">
+                        <i class="fa-solid fa-book-open"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-sm text-slate-100">奇智小镇：AI 建设指南</h3>
+                        <p class="text-[10px] text-slate-400">简单 5 步快速上手</p>
+                    </div>
+                </div>
+                <button class="btn-close-modal w-7 h-7 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 flex items-center justify-center text-xs">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <!-- Tutorial Content Area -->
+            <div id="tutorial-step-container" class="min-h-[160px] glass-card p-4 rounded-xl flex flex-col justify-center gap-2">
+                <!-- Dynamically injected tutorial text -->
+            </div>
+
+            <!-- Controls -->
+            <div class="flex items-center justify-between border-t border-slate-700/60 pt-2.5">
+                <span id="tut-step-counter" class="text-xs text-slate-400 font-medium">第 1 / 5 步</span>
+                <div class="flex items-center gap-2">
+                    <button id="btn-tut-prev" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs"><i class="fa-solid fa-arrow-left mr-1"></i>上一步</button>
+                    <button id="btn-tut-next" class="px-4 py-1.5 rounded-lg bg-amber-600 hover:bg-amber-500 text-white font-bold text-xs shadow-md"><i class="fa-solid fa-arrow-right mr-1"></i><span>下一步</span></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 1: AI TECH TREE -->
+    <div id="modal-tech-tree" class="hidden fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center p-4">
+        <div class="glass-panel w-full max-w-3xl rounded-2xl p-5 border-sky-500/30 flex flex-col max-h-[85vh]">
+            <div class="flex items-center justify-between border-b border-slate-700 pb-2.5">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-8 h-8 rounded-xl bg-indigo-600/30 text-indigo-400 border border-indigo-500/40 flex items-center justify-center text-sm">
+                        <i class="fa-solid fa-diagram-project"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-sm text-slate-100">AI 知识科技树</h3>
+                        <p class="text-[10px] text-slate-400">用特征数据解锁解题算法与小镇高级设施</p>
+                    </div>
+                </div>
+                <button class="btn-close-modal w-7 h-7 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 flex items-center justify-center text-xs">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <!-- Tech Nodes Tree Container -->
+            <div class="py-3 flex-1 overflow-y-auto grid grid-cols-1 md:grid-cols-2 gap-2.5" id="tech-nodes-container">
+                <!-- Dynamically generated tech nodes -->
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 2: PIPELINE & RULES CONFIGURATION -->
+    <div id="modal-pipeline" class="hidden fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center p-4">
+        <div class="glass-panel w-full max-w-xl rounded-2xl p-5 border-purple-500/30 flex flex-col">
+            <div class="flex items-center justify-between border-b border-slate-700 pb-2.5">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-8 h-8 rounded-xl bg-purple-600/30 text-purple-400 border border-purple-500/40 flex items-center justify-center text-sm">
+                        <i class="fa-solid fa-sliders"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-sm text-slate-100">AI 逻辑规则与流水线配置</h3>
+                        <p class="text-[10px] text-slate-400">条件判断指令 & 任务分解模式</p>
+                    </div>
+                </div>
+                <button class="btn-close-modal w-7 h-7 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 flex items-center justify-center text-xs">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="py-3 flex flex-col gap-3 text-xs">
+                <!-- Section 1: If-Else Directive -->
+                <div class="glass-card p-3 rounded-xl space-y-2">
+                    <div class="font-bold text-sky-300 flex items-center gap-1.5">
+                        <i class="fa-solid fa-code-branch"></i> 点点机器人条件指令（If-Else）
+                    </div>
+                    <div class="flex flex-wrap items-center gap-2 text-slate-200 bg-slate-900/60 p-2.5 rounded-lg">
+                        <span class="text-amber-400 font-mono font-bold">如果 (IF)</span>
+                        <select id="rule-if" class="bg-slate-800 border border-slate-700 rounded px-2 py-1 text-sky-200">
+                            <option value="noise_high">环境噪声迷雾 > 40%</option>
+                            <option value="storage_full">存储空间利用率 > 80%</option>
+                            <option value="rgb_low">RGB光晶存量 < 5</option>
+                        </select>
+                        <span class="text-amber-400 font-mono font-bold">就执行 (THEN)</span>
+                        <select id="rule-then" class="bg-slate-800 border border-slate-700 rounded px-2 py-1 text-emerald-200">
+                            <option value="boost_denoise">开启去噪塔加倍加速</option>
+                            <option value="compress_storage">开启无损数据压缩</option>
+                            <option value="harvest_rgb">调高RGB光晶产出效率</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Section 2: Task Decomposition Pipeline -->
+                <div class="glass-card p-3 rounded-xl space-y-2">
+                    <div class="font-bold text-purple-300 flex items-center gap-1.5">
+                        <i class="fa-solid fa-network-wired"></i> 披萨工坊任务分解模式
+                    </div>
+                    <div class="grid grid-cols-2 gap-2.5">
+                        <label class="glass-card p-2.5 rounded-lg flex flex-col gap-1 cursor-pointer hover:border-purple-400">
+                            <div class="flex items-center gap-1.5">
+                                <input type="radio" name="pipeline-mode" value="serial" checked class="accent-purple-500">
+                                <span class="font-bold text-slate-200">串行模式 (Serial)</span>
+                            </div>
+                            <span class="text-[9px] text-slate-400">按顺序执行：和面 ➔ 擀面饼 ➔ 烤制（基础效率 100%）</span>
+                        </label>
+
+                        <label class="glass-card p-2.5 rounded-lg flex flex-col gap-1 cursor-pointer hover:border-purple-400">
+                            <div class="flex items-center gap-1.5">
+                                <input type="radio" name="pipeline-mode" value="parallel" class="accent-purple-500">
+                                <span class="font-bold text-slate-200">并行流水线 (Parallel)</span>
+                            </div>
+                            <span class="text-[9px] text-slate-400">烘烤时同步切芝士并准备饮料（效率增至 200%！）</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <button id="btn-save-rules" class="mt-1 w-full py-2 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold text-xs shadow-lg transition">
+                <i class="fa-solid fa-check-double mr-1"></i>应用逻辑配置
+            </button>
+        </div>
+    </div>
+
+    <div id="modal-victory" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/80 backdrop-blur-sm p-4">
+        <div class="glass-panel max-w-md w-full rounded-3xl p-7 text-center border border-emerald-400/50 shadow-2xl">
+            <div class="w-20 h-20 mx-auto rounded-3xl bg-gradient-to-br from-emerald-400 to-sky-500 flex items-center justify-center shadow-lg overflow-hidden"><span class="game-sprite sprite-townhall" role="img" aria-label="智慧小镇建成"></span></div>
+            <h2 class="text-2xl font-black text-emerald-300 mt-4">智慧示范小镇建成！</h2>
+            <p class="text-sm text-slate-300 mt-2 leading-relaxed">你让能源、存储、生产、去噪和规则系统协同运转，完成了一座真正会思考的小镇。</p>
+            <button id="btn-restart" class="mt-5 w-full py-3 rounded-xl bg-gradient-to-r from-emerald-500 to-sky-500 text-slate-950 font-black"><i class="fa-solid fa-rotate-right mr-2"></i>重新建设</button>
+        </div>
+    </div>
+
+    <script>
+        // Sound FX Synthesizer
+        class SoundFX {
+            constructor() {
+                this.ctx = null;
+                this.enabled = true;
+            }
+            init() {
+                if (!this.ctx) {
+                    this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+                }
+            }
+            playTone(freq, type='sine', duration=0.15) {
+                if (!this.ctx || !this.enabled) return;
+                try {
+                    const osc = this.ctx.createOscillator();
+                    const gain = this.ctx.createGain();
+                    osc.type = type;
+                    osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+                    gain.gain.setValueAtTime(0.08, this.ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + duration);
+                    osc.connect(gain);
+                    gain.connect(this.ctx.destination);
+                    osc.start();
+                    osc.stop(this.ctx.currentTime + duration);
+                } catch(e){}
+            }
+            build() { this.playTone(523.25, 'triangle', 0.2); }
+            click() { this.playTone(880, 'sine', 0.05); }
+            unlock() { this.playTone(659.25, 'sine', 0.3); }
+            alert() { this.playTone(220, 'sawtooth', 0.4); }
+        }
+        const sfx = new SoundFX();
+        const bgm = document.getElementById('bgm');
+        bgm.volume = 0.14;
+
+        function startBgm() {
+            if (sfx.enabled) bgm.play().catch(() => {});
+        }
+
+        function reportProgress(completed = false) {
+            const goalCount = getGoalState().filter(goal => goal.done).length;
+            window.parent.postMessage({
+                type: 'aibook-featured-game-progress',
+                gameId: 'town-development',
+                completed,
+                score: goalCount * 200 + Game.data * 5,
+                seconds: Math.max(1, Math.floor((Date.now() - Game.startedAt) / 1000))
+            }, '*');
+        }
+
+        // Core Game State
+        const Game = {
+            wood: 50,
+            power: 20,
+            maxPower: 20,
+            rgb: 10,
+            data: 5,
+            population: 4,
+            storageUsed: 65,
+            storageMax: 100,
+            
+            // Environmental Pressures
+            noiseFog: 0,
+            disaster: null,
+            nextDisasterTicks: 20,
+            tickCount: 0,
+
+            // Rules & Automation Configuration
+            ifRule: 'noise_high',
+            thenRule: 'boost_denoise',
+            pipelineMode: 'serial',
+
+            // Unlocked Techs
+            techsUnlocked: new Set(['lesson_2_power', 'lesson_4_storage']),
+
+            // Map Grid System
+            cols: 10,
+            rows: 10,
+            tileSize: 45,
+            grid: [],
+
+            // Entities with functional gameplay logic
+            entities: [],
+            selectedBuilding: 'house',
+            selectedEntity: null,
+            selectedBuildingCell: null,
+            isPaused: false,
+            isCompleted: false,
+            startedAt: Date.now(),
+            lastAlertAt: 0,
+            lastReportedGoalCount: -1,
+            
+            // Floating Text Particles
+            particles: []
+        };
+
+        const BUILDING_CONFIG = {
+            townhall: { name: '中枢大楼', baseCost: 0, benefit: '提升全镇抗灾调度能力' },
+            house: { name: '居民小屋', baseCost: 15, benefit: '每级增加2名居民' },
+            lumberyard: { name: '像素伐木场', baseCost: 20, benefit: '每级提高木材产量' },
+            powerplant: { name: '0/1发电站', baseCost: 25, benefit: '每级提高供电上限与雷暴防护' },
+            warehouse: { name: '格子存储仓库', baseCost: 30, benefit: '每级增加50存储容量并抵御洪水' },
+            denoise_tower: { name: '去噪灯塔', baseCost: 40, benefit: '每级增强沙尘与噪声净化' },
+            pizza_factory: { name: '披萨工坊', baseCost: 50, benefit: '每级提高特征数据产量' },
+            debug_station: { name: '事实调试站', baseCost: 45, benefit: '每级加快异常修复' }
+        };
+
+        function countBuildingLevels() {
+            const levels = { townhall:0, lumberyard:0, powerplant:0, warehouse:0, denoise_tower:0, pizza_factory:0, debug_station:0, house:0 };
+            Game.grid.flat().forEach(cell => {
+                if (cell.building) {
+                    const damageEfficiency = cell.building.damaged ? 0.5 : 1;
+                    levels[cell.building.type] = (levels[cell.building.type] || 0) + (cell.building.level || 1) * damageEfficiency;
+                }
+            });
+            return levels;
+        }
+
+        function getUpgradeCost(building) {
+            const config = BUILDING_CONFIG[building.type];
+            const level = building.level || 1;
+            return {
+                wood: Math.max(20, Math.round(config.baseCost * (0.8 + level * 0.7))),
+                data: level * 3
+            };
+        }
+
+        function getRepairCost(building) {
+            const config = BUILDING_CONFIG[building.type];
+            return {
+                wood: Math.max(8, Math.round(config.baseCost * 0.35)),
+                data: Math.max(1, building.level || 1)
+            };
+        }
+
+        // Strict Storage Resource Addition Guard
+        function addResource(type, amount) {
+            if (amount <= 0) return 0;
+            let currentUsed = Game.wood + Game.rgb + Game.data;
+            let spaceLeft = Math.max(0, Game.storageMax - currentUsed);
+            if (spaceLeft <= 0) return 0;
+            let actualAdd = Math.min(amount, spaceLeft);
+            Game[type] += actualAdd;
+            Game.storageUsed = Game.wood + Game.rgb + Game.data;
+            return actualAdd;
+        }
+
+        // Tutorial Steps Definition
+        const TUTORIAL_STEPS = [
+            {
+                title: "欢迎来到奇智小镇！",
+                content: "在这里，没有战争和怪物袭扰！你需要通过<b>采集资源</b>、<b>建造房屋</b>、<b>提升 AI 科技</b>来不断扩展小镇。顶部面板实时显示着木材、0/1 能源和存储容量等关键指标。"
+            },
+            {
+                title: "建造与居民分工",
+                content: "选择左侧【建造工坊】中的建筑放置在网格中。<br>• <b>居民小屋</b>：吸引新居民入住。<br>• <b>像素伐木场</b>：自动砍伐木材。<br>• <b>0/1 发电站</b>：提供设备运转所需的开关逻辑能源。"
+            },
+            {
+                title: "团团与点点巡逻队的作用",
+                content: "地图上移动的小人各有作用哦！<br>• <b class='text-purple-300'>点点 AI</b>：会自动散发脉冲，<b>吸收并消退迷雾</b>！<br>• <b class='text-amber-300'>团团</b>：靠近晶体或工坊时会自动<b>收集特征数据</b>！<br>• <b class='text-sky-300'>居民</b>：在房屋与工坊间往返<b>搬运货物</b>提高产能！<br>直接点击任何角色可进行互动获取点击奖励！"
+            },
+            {
+                title: "自然灾害：噪声迷雾与存储危机",
+                content: "小镇会遇到非战斗自然挑战！比如<b>存储容量溢出</b>会导致货物积压，<b>环境噪声迷雾</b>会降低全镇生产效率。通过建造【去噪灯塔】或【格子存储仓库】可以轻松化解危机。"
+            },
+            {
+                title: "解锁 AI 科技树与规则配置",
+                content: "利用收集到的【特征数据】，点击顶部<b>【AI 科技树】</b>解锁去噪、任务分解等高级算法。还可以在<b>【规则配置】</b>中设定 If-Else 自动化条件判断与并行流水线！"
+            },
+            {
+                title: "升级建筑，建立抗灾小镇",
+                content: "点击地图中已经建成的建筑，可以消耗<b>像素木和特征数据</b>把建筑升级到最高3级。灾害造成的红色裂痕不会自动恢复，必须点击建筑并选择<b>【修复建筑】</b>；同一建筑累计第二次受损会直接倒塌。"
+            }
+        ];
+        let currentTutStep = 0;
+
+        // 32-Lesson AI Knowledge Tree Mapping
+        const TECH_TREE_NODES = [
+            { id: 'lesson_2_power', title: '第2课 · 0与1开关', cost: 0, unlocked: true, desc: '学会基础数据状态，解锁0/1发电站。', icon: 'fa-bolt' },
+            { id: 'lesson_4_storage', title: '第4课 · 存储格子', cost: 0, unlocked: true, desc: '用格子存放信息，解锁格子存储仓库。', icon: 'fa-box-archive' },
+            { id: 'lesson_6_rgb', title: '第6课 · RGB调色板', cost: 8, unlocked: false, desc: '学会红绿蓝配比，维持环境光效平衡。', icon: 'fa-palette' },
+            { id: 'lesson_8_denoise', title: '第8课 · 噪声与去噪', cost: 12, unlocked: false, desc: '解锁去噪灯塔，驱散干扰迷雾！', icon: 'fa-tower-broadcast' },
+            { id: 'lesson_11_pipeline', title: '第11课 · 任务分解', cost: 15, unlocked: false, desc: '拆解步骤，解锁披萨自动化工坊（串/并行）。', icon: 'fa-pizza-slice' },
+            { id: 'lesson_12_debug', title: '第12课 · Bug与调试', cost: 20, unlocked: false, desc: '学会调试步骤，解锁事实调试站。', icon: 'fa-bug' }
+        ];
+
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const gameSprites = new Image();
+        gameSprites.src = './game05-sprites.png';
+        const SPRITE_CELLS = {
+            townhall: [0, 0], house: [1, 0], lumberyard: [2, 0], powerplant: [3, 0],
+            warehouse: [0, 1], denoise_tower: [1, 1], pizza_factory: [2, 1], debug_station: [3, 1],
+            tree: [0, 2], crystal: [1, 2], tuantuan: [2, 2], citizen: [2, 2], diandian: [3, 2]
+        };
+
+        function drawGameSprite(type, x, y, width, height = width) {
+            if (!gameSprites.complete || !gameSprites.naturalWidth || !SPRITE_CELLS[type]) return false;
+            const [column, row] = SPRITE_CELLS[type];
+            const sourceWidth = gameSprites.naturalWidth / 4;
+            const sourceHeight = gameSprites.naturalHeight / 3;
+            const sourceRatio = sourceWidth / sourceHeight;
+            let drawWidth = width;
+            let drawHeight = drawWidth / sourceRatio;
+            if (drawHeight > height) {
+                drawHeight = height;
+                drawWidth = drawHeight * sourceRatio;
+            }
+            ctx.drawImage(gameSprites, column * sourceWidth, row * sourceHeight, sourceWidth, sourceHeight, x + (width - drawWidth) / 2, y + (height - drawHeight) / 2, drawWidth, drawHeight);
+            return true;
+        }
+
+        function resizeCanvas() {
+            const container = document.getElementById('canvas-container');
+            canvas.width = container.clientWidth;
+            canvas.height = container.clientHeight;
+
+            // Dynamically adjust tile size based on container view
+            const maxW = Math.floor((canvas.width - 24) / Game.cols);
+            const maxH = Math.floor((canvas.height - 24) / Game.rows);
+            Game.tileSize = Math.max(36, Math.min(maxW, maxH, 76));
+        }
+
+        // Initialize Map Grid
+        function initGrid() {
+            Game.grid = [];
+            for (let r = 0; r < Game.rows; r++) {
+                let row = [];
+                for (let c = 0; c < Game.cols; c++) {
+                    let type = 'grass';
+                    if (Math.random() < 0.12) type = 'tree';
+                    else if (Math.random() < 0.04) type = 'crystal';
+                    row.push({ type: type, building: null, x: c, y: r });
+                }
+                Game.grid.push(row);
+            }
+
+            // Spawn initial town center buildings (Ensure tile ground type is cleared to grass)
+            Game.grid[4][6].type = 'grass';
+            Game.grid[4][6].building = { type: 'townhall', name: '中枢大楼', level: 1, damaged: false, damageCount: 0 };
+            Game.grid[4][7].type = 'grass';
+            Game.grid[4][7].building = { type: 'house', name: '居民小屋', level: 1, damaged: false, damageCount: 0 };
+
+            // Spawn Functional Entities (Tuantuan, Diandian, Citizens)
+            const offsetX = 100;
+            const offsetY = 100;
+            Game.entities = [
+                { id: 'diandian', name: '点点 AI', type: 'diandian', x: offsetX + 150, y: offsetY + 100, dx: 0.6, dy: 0.4, cargo: null, desc: '散发吸收迷雾光环，点击可领特征数据奖励' },
+                { id: 'tuantuan', name: '团团', type: 'tuantuan', x: offsetX + 200, y: offsetY + 150, dx: -0.5, dy: 0.5, cargo: null, desc: '自动搜集附近晶体与工坊特征，点击触发生产加速' },
+                { id: 'citizen1', name: '居民·阿杰', type: 'citizen', x: offsetX + 100, y: offsetY + 120, dx: 0.4, dy: -0.6, cargo: '木', desc: '正在往返搬运像素木材' },
+                { id: 'citizen2', name: '居民·小美', type: 'citizen', x: offsetX + 250, y: offsetY + 180, dx: -0.6, dy: -0.3, cargo: '电', desc: '正在传输 0/1 开关电流' }
+            ];
+        }
+
+        function renderMap() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            const gridWidth = Game.cols * Game.tileSize;
+            const gridHeight = Game.rows * Game.tileSize;
+            const offsetX = (canvas.width - gridWidth) / 2;
+            const offsetY = (canvas.height - gridHeight) / 2;
+
+            // Draw Grid Tiles
+            for (let r = 0; r < Game.rows; r++) {
+                for (let c = 0; c < Game.cols; c++) {
+                    const cell = Game.grid[r][c];
+                    const px = offsetX + c * Game.tileSize;
+                    const py = offsetY + r * Game.tileSize;
+
+                    // Base Land
+                    ctx.fillStyle = '#1e293b';
+                    ctx.fillRect(px, py, Game.tileSize - 1, Game.tileSize - 1);
+
+                    ctx.strokeStyle = 'rgba(51, 65, 85, 0.35)';
+                    ctx.strokeRect(px, py, Game.tileSize, Game.tileSize);
+
+                    // Render Nature Elements
+                    if (!cell.building) {
+                        if (cell.type === 'tree') {
+                            drawGameSprite('tree', px + 5, py + 5, Game.tileSize - 10);
+                        } else if (cell.type === 'crystal') {
+                            drawGameSprite('crystal', px + 5, py + 5, Game.tileSize - 10);
+                        }
+                    }
+
+                    // Render Buildings
+                    if (cell.building) {
+                        drawBuilding(cell.building, px, py);
+                    }
+                }
+            }
+
+            // Update & Render Moving Entities (Tuantuan, Diandian, Citizens)
+            Game.entities.forEach(ent => {
+                // Functional Logic updates
+                if (!Game.isPaused) {
+                    ent.x += ent.dx;
+                    ent.y += ent.dy;
+
+                    const boundMargin = 30;
+                    if (ent.x < boundMargin || ent.x > gridWidth - boundMargin) ent.dx *= -1;
+                    if (ent.y < boundMargin || ent.y > gridHeight - boundMargin) ent.dy *= -1;
+
+                    // Diandian Aura Effect: Clears noise fog in vicinity!
+                    if (ent.type === 'diandian' && Game.noiseFog > 0) {
+                        Game.noiseFog = Math.max(0, Game.noiseFog - 0.05);
+                    }
+
+                    // Tuantuan Data Harvesting Effect when near crystals
+                    if (ent.type === 'tuantuan' && Math.random() < 0.01) {
+                        let added = addResource('data', 1);
+                        if (added > 0) {
+                            addParticle(offsetX + ent.x, offsetY + ent.y - 15, '+1 特征数据', '#818cf8');
+                        }
+                    }
+                }
+
+                const px = offsetX + ent.x;
+                const py = offsetY + ent.y;
+
+                // Functional Aura Waves
+                if (ent.type === 'diandian') {
+                    ctx.fillStyle = 'rgba(168, 85, 247, 0.2)';
+                    ctx.beginPath();
+                    ctx.arc(px, py, 22, 0, Math.PI * 2);
+                    ctx.fill();
+                } else if (ent.type === 'tuantuan') {
+                    ctx.fillStyle = 'rgba(245, 158, 11, 0.2)';
+                    ctx.beginPath();
+                    ctx.arc(px, py, 20, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+
+                drawGameSprite(ent.type, px - 12, py - 12, 24);
+
+                // Display Cargo Icon carried by working citizens
+                if (ent.cargo) {
+                    ctx.font = '12px sans-serif';
+                    ctx.fillText(ent.cargo, px + 10, py - 10);
+                }
+            });
+
+            // 外部灾难画面表现：不只是数值提示，地图本身同步变化
+            if (Game.disaster) {
+                const time = Date.now() * 0.001;
+                ctx.save();
+                if (Game.disaster.type === 'storm') {
+                    ctx.fillStyle = 'rgba(15, 23, 42, 0.42)';
+                    ctx.fillRect(offsetX, offsetY, gridWidth, gridHeight);
+                    ctx.strokeStyle = 'rgba(250, 204, 21, 0.9)';
+                    ctx.lineWidth = 4;
+                    for (let i = 0; i < 3; i++) {
+                        const boltX = offsetX + ((time * 130 + i * 210) % gridWidth);
+                        ctx.beginPath();
+                        ctx.moveTo(boltX, offsetY);
+                        ctx.lineTo(boltX - 16, offsetY + gridHeight * 0.35);
+                        ctx.lineTo(boltX + 8, offsetY + gridHeight * 0.35);
+                        ctx.lineTo(boltX - 20, offsetY + gridHeight * 0.72);
+                        ctx.stroke();
+                    }
+                } else if (Game.disaster.type === 'sandstorm') {
+                    ctx.fillStyle = 'rgba(180, 83, 9, 0.3)';
+                    ctx.fillRect(offsetX, offsetY, gridWidth, gridHeight);
+                    ctx.strokeStyle = 'rgba(253, 186, 116, 0.7)';
+                    ctx.lineWidth = 3;
+                    for (let i = 0; i < 16; i++) {
+                        const x = offsetX + ((i * 83 + time * 150) % (gridWidth + 100)) - 50;
+                        const y = offsetY + (i * 47 % gridHeight);
+                        ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x + 70, y - 22); ctx.stroke();
+                    }
+                } else if (Game.disaster.type === 'flood') {
+                    const waveY = offsetY + gridHeight * 0.58 + Math.sin(time * 3) * 8;
+                    ctx.fillStyle = 'rgba(14, 165, 233, 0.3)';
+                    ctx.fillRect(offsetX, waveY, gridWidth, offsetY + gridHeight - waveY);
+                    ctx.strokeStyle = 'rgba(125, 211, 252, 0.9)';
+                    ctx.lineWidth = 5;
+                    ctx.beginPath();
+                    for (let x = 0; x <= gridWidth; x += 12) {
+                        const y = waveY + Math.sin(x * 0.045 + time * 5) * 8;
+                        if (x === 0) ctx.moveTo(offsetX + x, y); else ctx.lineTo(offsetX + x, y);
+                    }
+                    ctx.stroke();
+                }
+                ctx.fillStyle = 'rgba(2, 6, 23, 0.82)';
+                ctx.fillRect(offsetX + gridWidth / 2 - 110, offsetY + 14, 220, 34);
+                ctx.fillStyle = '#fef3c7';
+                ctx.font = 'bold 15px system-ui, sans-serif';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(`灾难：${Game.disaster.name}`, offsetX + gridWidth / 2, offsetY + 31);
+                ctx.restore();
+            }
+
+            // Render Environmental Noise Fog Overlay
+            if (Game.noiseFog > 0) {
+                ctx.fillStyle = `rgba(148, 163, 184, ${Math.min(Game.noiseFog / 120, 0.7)})`;
+                ctx.fillRect(offsetX, offsetY, gridWidth, gridHeight);
+
+                ctx.fillStyle = '#f8fafc';
+                ctx.font = 'bold 12px "Noto Sans SC", sans-serif';
+                ctx.textAlign = 'left';
+                ctx.fillText(`注意：环境噪声迷雾（干扰率: ${Math.floor(Game.noiseFog)}%）`, offsetX + 15, offsetY + 25);
+            }
+
+            // Render Particle Text System
+            for (let i = Game.particles.length - 1; i >= 0; i--) {
+                const p = Game.particles[i];
+                ctx.fillStyle = p.color || '#38bdf8';
+                ctx.font = 'bold 11px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText(p.text, p.x, p.y);
+
+                p.y -= 0.6;
+                p.life -= 0.02;
+                if (p.life <= 0) Game.particles.splice(i, 1);
+            }
+        }
+
+        // Add Floating Text Particle
+        function addParticle(x, y, text, color) {
+            Game.particles.push({ x, y, text, color, life: 1.0 });
+        }
+
+        // Draw local generated building sprites
+        function drawBuilding(building, x, y) {
+            const type = building.type;
+            const bgColors = {
+                townhall: 'rgba(56, 189, 248, 0.35)',
+                house: 'rgba(245, 158, 11, 0.35)',
+                lumberyard: 'rgba(16, 185, 129, 0.35)',
+                powerplant: 'rgba(234, 179, 8, 0.35)',
+                warehouse: 'rgba(168, 85, 247, 0.35)',
+                denoise_tower: 'rgba(6, 182, 212, 0.35)',
+                pizza_factory: 'rgba(249, 115, 22, 0.35)',
+                debug_station: 'rgba(239, 68, 68, 0.35)'
+            };
+
+            // Base Plate
+            ctx.fillStyle = bgColors[type] || 'rgba(255, 255, 255, 0.2)';
+            ctx.beginPath();
+            ctx.roundRect(x + 3, y + 3, Game.tileSize - 6, Game.tileSize - 6, 6);
+            ctx.fill();
+
+            drawGameSprite(type, x + 5, y + 5, Game.tileSize - 10);
+
+            const level = building.level || 1;
+            ctx.fillStyle = level >= 3 ? '#f59e0b' : '#0f172a';
+            ctx.beginPath();
+            ctx.arc(x + Game.tileSize - 8, y + 8, 7, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = '#ffffff';
+            ctx.font = 'bold 8px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(`L${level}`, x + Game.tileSize - 8, y + 8);
+            if (building.damaged) {
+                ctx.strokeStyle = '#fb7185';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.moveTo(x + 9, y + Game.tileSize - 10);
+                ctx.lineTo(x + 18, y + Game.tileSize - 22);
+                ctx.lineTo(x + 25, y + Game.tileSize - 15);
+                ctx.lineTo(x + Game.tileSize - 9, y + 10);
+                ctx.stroke();
+                ctx.fillStyle = 'rgba(127,29,29,.82)';
+                ctx.fillRect(x + 5, y + Game.tileSize - 15, Game.tileSize - 10, 11);
+                ctx.fillStyle = '#fecdd3';
+                ctx.font = 'bold 8px sans-serif';
+                ctx.fillText('受损', x + Game.tileSize / 2, y + Game.tileSize - 9);
+            }
+        }
+
+        function triggerExternalDisaster() {
+            const levels = countBuildingLevels();
+            const disasters = [
+                {
+                    type: 'storm', name: '强雷暴停电', duration: 4,
+                    desc: '雷暴干扰0/1供电，高级设施效率下降。升级发电站可减轻影响。'
+                },
+                {
+                    type: 'sandstorm', name: '沙尘噪声风暴', duration: 5,
+                    desc: '外部沙尘携带噪声侵入小镇，生产效率下降。去噪灯塔可快速净化。'
+                },
+                {
+                    type: 'flood', name: '数据洪水冲击', duration: 3,
+                    desc: '突发洪水冲击仓储与建筑。升级仓库可以保护资源和建筑。'
+                }
+            ];
+            const disaster = disasters[Math.floor(Math.random() * disasters.length)];
+            Game.disaster = { ...disaster, remaining: disaster.duration };
+            Game.nextDisasterTicks = 20;
+
+            let resourceLossText = '';
+            let protection = 0;
+
+            if (disaster.type === 'storm') {
+                const shield = Math.min(12, levels.powerplant * 2);
+                const powerLoss = Math.max(4, Math.round(16 - shield));
+                const dataLoss = Math.max(2, Math.round(10 - levels.powerplant * 2));
+                Game.power = Math.max(0, Game.power - powerLoss);
+                Game.data = Math.max(0, Game.data - dataLoss);
+                protection = levels.powerplant;
+                resourceLossText = `损失 ${powerLoss} 点能源、${dataLoss} 份数据`;
+            } else if (disaster.type === 'sandstorm') {
+                Game.noiseFog = Math.min(100, Game.noiseFog + Math.max(15, 42 - levels.denoise_tower * 6));
+                const woodLoss = Math.max(3, Math.round(14 - levels.denoise_tower * 2));
+                const rgbLoss = Math.max(1, Math.round(5 - levels.denoise_tower));
+                Game.wood = Math.max(0, Game.wood - woodLoss);
+                Game.rgb = Math.max(0, Game.rgb - rgbLoss);
+                protection = levels.denoise_tower;
+                resourceLossText = `损失 ${woodLoss} 份木材、${rgbLoss} 枚RGB光晶`;
+            } else {
+                protection = levels.warehouse;
+                const woodLoss = Math.max(5, Math.round(24 - protection * 5));
+                const dataLoss = Math.max(2, Math.round(12 - protection * 2));
+                Game.wood = Math.max(0, Game.wood - woodLoss);
+                Game.data = Math.max(0, Game.data - dataLoss);
+                resourceLossText = `损失 ${woodLoss} 份木材、${dataLoss} 份数据`;
+            }
+
+            const vulnerable = Game.grid.flat().filter(cell => cell.building && cell.building.type !== 'townhall');
+            let buildingLossText = '暂无建筑受损';
+            if (vulnerable.length) {
+                const targetCell = vulnerable[Math.floor(Math.random() * vulnerable.length)];
+                const target = targetCell.building;
+                if ((target.damageCount || 0) >= 1) {
+                    const destroyedName = BUILDING_CONFIG[target.type].name;
+                    targetCell.building = null;
+                    buildingLossText = `${destroyedName} 第二次受损，建筑已经倒塌消失`;
+                    if (Game.selectedBuildingCell?.cell === targetCell) {
+                        Game.selectedBuildingCell = null;
+                        const panel = document.getElementById('building-inspector');
+                        panel.classList.add('hidden');
+                        panel.classList.remove('flex');
+                    }
+                } else {
+                    target.damageCount = 1;
+                    target.damaged = true;
+                    buildingLossText = `${BUILDING_CONFIG[target.type].name} 首次受损，需手动修复；未修复时只有50%产能`;
+                }
+            }
+            Game.storageUsed = Math.floor(Game.wood + Game.rgb + Game.data);
+            showAlert(`外部灾难：${disaster.name}！${resourceLossText}；${buildingLossText}`);
+            setDiandianSpeech(`【${disaster.name}】造成了资源损失和建筑损伤！红色裂痕建筑必须点击后手动修复；同一建筑第二次受损会直接倒塌。`);
+        }
+
+        function gameTick() {
+            if (Game.isPaused || Game.isCompleted) return;
+
+            Game.tickCount += 1;
+            if (Game.disaster) {
+                Game.nextDisasterTicks -= 1;
+                Game.disaster.remaining -= 1;
+                if (Game.disaster.remaining <= 0) {
+                    setDiandianSpeech(`【${Game.disaster.name}】已经结束，小镇恢复正常运转。`);
+                    Game.disaster = null;
+                }
+            } else {
+                Game.nextDisasterTicks -= 1;
+                if (Game.nextDisasterTicks <= 0) triggerExternalDisaster();
+            }
+
+            // Count Buildings
+            let counts = { lumberyard:0, powerplant:0, warehouse:0, denoise_tower:0, pizza_factory:0, debug_station:0, house:0 };
+            for (let r = 0; r < Game.rows; r++) {
+                for (let c = 0; c < Game.cols; c++) {
+                    let b = Game.grid[r][c].building;
+                    if (b) {
+                        counts[b.type] = (counts[b.type] || 0) + 1;
+                    }
+                }
+            }
+            const levels = countBuildingLevels();
+
+            // Base Storage Limit calculation
+            let baseStorage = 100 + levels.warehouse * 50;
+
+            // 0/1 发电站为高级设施供能，避免原版本能源数值只显示却不参与玩法。
+            const poweredBuildings = counts.denoise_tower + counts.pizza_factory + counts.debug_station;
+            Game.maxPower = 20 + levels.powerplant * 12;
+            Game.power = Math.max(0, Math.min(Game.maxPower, Game.power + levels.powerplant * 4 - poweredBuildings * 2));
+            const powerEfficiency = poweredBuildings > 0 && Game.power === 0 ? 0.5 : 1;
+
+            // 1. If-Else Rule Automation check (Compress Storage)
+            let currentUsed = Math.floor(Game.wood + Game.rgb + Game.data);
+            if (Game.ifRule === 'storage_full' && Game.thenRule === 'compress_storage' && (currentUsed / baseStorage) > 0.8) {
+                Game.storageMax = Math.floor(baseStorage * 1.3); // Apply 30% compression boost
+            } else {
+                Game.storageMax = baseStorage;
+            }
+
+            // 2. Fog Penalty Effect (Noise Fog directly scales down output efficiency!)
+            let fogPenalty = Math.max(0.2, (100 - Game.noiseFog) / 100);
+            const disasterEfficiency = Game.disaster?.type === 'storm' ? Math.min(0.9, 0.55 + levels.powerplant * 0.08)
+                : (Game.disaster?.type === 'sandstorm' ? Math.min(0.9, 0.5 + levels.denoise_tower * 0.1) : 1);
+            let woodGain = Math.floor(levels.lumberyard * 6 * fogPenalty * powerEfficiency * disasterEfficiency);
+            let pizzaBoost = (Game.pipelineMode === 'parallel') ? 2.0 : 1.0;
+            let dataGain = Math.floor((levels.pizza_factory * 2 * pizzaBoost + levels.debug_station * 2 + 1) * fogPenalty * powerEfficiency * disasterEfficiency);
+
+            if (Game.techsUnlocked.has('lesson_6_rgb') && Game.ifRule === 'rgb_low' && Game.thenRule === 'harvest_rgb' && Game.rgb < 5) {
+                addResource('rgb', 2 + levels.powerplant);
+            }
+
+            // 3. Strict Storage Capacity Enforcement
+            let spaceLeft = Game.storageMax - currentUsed;
+            if (spaceLeft <= 0) {
+                showAlert("注意：存储空间已满！新生产物资无法入库！");
+                setDiandianSpeech("存储仓库已经爆满啦！物资无法入库，请建造【格子存储仓库】扩容或消耗木材建造！");
+            } else {
+                let addedWood = addResource('wood', woodGain);
+                let addedData = addResource('data', dataGain);
+                if ((woodGain > 0 && addedWood < woodGain) || (dataGain > 0 && addedData < dataGain)) {
+                    showAlert("存储容量达上限，部分新生产资源流失！");
+                }
+            }
+
+            Game.storageUsed = Math.floor(Game.wood + Game.rgb + Game.data);
+
+            // Random Noise Fog Occurrence
+            if (Math.random() < 0.1 && Game.noiseFog < 80) {
+                Game.noiseFog += 12;
+            }
+
+            // If Denoising Tower active, reduce noise
+            if (levels.denoise_tower > 0) {
+                let denoiseRate = levels.denoise_tower * 8;
+                if (Game.ifRule === 'noise_high' && Game.thenRule === 'boost_denoise' && Game.noiseFog > 40) {
+                    denoiseRate *= 2; // Rule Executed
+                }
+                Game.noiseFog = Math.max(0, Game.noiseFog - denoiseRate);
+            }
+            if (levels.debug_station > 0) {
+                Game.noiseFog = Math.max(0, Game.noiseFog - levels.debug_station * 3);
+            }
+
+            if (Game.noiseFog > 40 && counts.denoise_tower === 0) {
+                showAlert(`注意：噪声干扰率 ${Math.floor(Game.noiseFog)}%！全镇生产效率仅为 ${Math.floor(fogPenalty * 100)}%！`);
+                setDiandianSpeech(`迷雾太浓啦！生产效率降到了 ${Math.floor(fogPenalty * 100)}%！快建【去噪灯塔】或点击【点点 AI】前去吸收吧！`);
+            }
+
+            updateHUD();
+            updateGoalProgress(counts);
+        }
+
+        function countBuildings() {
+            const counts = { lumberyard:0, powerplant:0, warehouse:0, denoise_tower:0, pizza_factory:0, debug_station:0, house:0 };
+            Game.grid.flat().forEach(cell => {
+                if (cell.building) counts[cell.building.type] = (counts[cell.building.type] || 0) + 1;
+            });
+            return counts;
+        }
+
+        function getGoalState(counts = countBuildings()) {
+            const levels = countBuildingLevels();
+            const population = 4 + levels.house * 2;
+            const advancedBuildings = counts.denoise_tower + counts.pizza_factory + counts.debug_station;
+            return [
+                { label: '伐木场', done: counts.lumberyard >= 1 },
+                { label: '发电站', done: counts.powerplant >= 1 },
+                { label: '存储仓库', done: counts.warehouse >= 1 },
+                { label: '8名居民', done: population >= 8 },
+                { label: '4项科技', done: Game.techsUnlocked.size >= 4 },
+                { label: '高级设施', done: advancedBuildings >= 1 },
+                { label: '三级建筑', done: Object.values(levels).some(level => level >= 3) }
+            ];
+        }
+
+        function updateGoalProgress(counts = countBuildings()) {
+            const goals = getGoalState(counts);
+            const completedCount = goals.filter(goal => goal.done).length;
+            document.getElementById('goal-summary').innerText = `完成 ${completedCount} / ${goals.length} 项建设目标`;
+            document.getElementById('goal-progress').style.width = `${completedCount / goals.length * 100}%`;
+            document.getElementById('goal-list').innerHTML = goals.map(goal => `<span class="${goal.done ? 'text-emerald-300' : ''}">${goal.done ? '✓' : '○'} ${goal.label}</span>`).join('');
+            if (completedCount !== Game.lastReportedGoalCount) {
+                Game.lastReportedGoalCount = completedCount;
+                reportProgress(false);
+            }
+            if (completedCount === goals.length && !Game.isCompleted) {
+                Game.isCompleted = true;
+                Game.isPaused = true;
+                bgm.pause();
+                sfx.unlock();
+                reportProgress(true);
+                const modal = document.getElementById('modal-victory');
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+            }
+        }
+
+        // Update Top HUD Display
+        function updateHUD() {
+            document.getElementById('res-wood').innerText = Game.wood;
+            document.getElementById('res-power').innerText = `${Game.power}/${Game.maxPower}`;
+            document.getElementById('res-rgb').innerText = Game.rgb;
+            document.getElementById('res-data').innerText = Game.data;
+            document.getElementById('res-pop').innerText = `${4 + countBuildingLevels().house * 2} 人`;
+            
+            const storageEl = document.getElementById('res-storage');
+            const hazardEl = document.getElementById('hazard-status');
+            storageEl.innerText = `${Game.storageUsed} / ${Game.storageMax}`;
+            if (Game.storageUsed >= Game.storageMax) {
+                storageEl.classList.add('text-rose-400');
+            } else {
+                storageEl.classList.remove('text-rose-400');
+            }
+
+            // Update Hazard Status Card
+            let fogPenalty = Math.max(0.2, (100 - Game.noiseFog) / 100);
+            if (Game.disaster) {
+                hazardEl.innerHTML = `<span class="text-rose-300 font-black">外部灾难：${Game.disaster.name}</span><br>${Game.disaster.desc}<br><span class="text-amber-300">预计 ${Game.disaster.remaining * 1.5} 秒后结束</span>`;
+            } else if (Game.storageUsed >= Game.storageMax) {
+                hazardEl.innerHTML = `<span class="text-rose-400 font-bold">注意：存储容量爆满！</span><br>新资源停止增加，请建仓库扩容。`;
+            } else if (Game.noiseFog > 30) {
+                hazardEl.innerHTML = `<span class="text-amber-400 font-bold">迷雾干扰: ${Math.floor(Game.noiseFog)}%</span><br>产出效率受损: ${Math.floor(fogPenalty * 100)}%！`;
+            } else {
+                hazardEl.innerHTML = `<span class="text-emerald-400 font-bold">小镇环境正常</span><br>下一次外部气候变化约 ${Game.nextDisasterTicks * 1.5} 秒后到来。`;
+            }
+        }
+
+        // Show Alert Banner
+        function showAlert(msg) {
+            const now = Date.now();
+            if (now - Game.lastAlertAt < 2200) return;
+            Game.lastAlertAt = now;
+            const banner = document.getElementById('alert-banner');
+            document.getElementById('alert-text').innerText = msg;
+            banner.classList.remove('hidden');
+            sfx.alert();
+            setTimeout(() => {
+                banner.classList.add('hidden');
+            }, 3500);
+        }
+
+        function setDiandianSpeech(msg) {
+            document.getElementById('diandian-speech').innerText = msg;
+        }
+
+        function showBuildingInspector(cell, row, column) {
+            Game.selectedBuildingCell = { cell, row, column };
+            Game.selectedEntity = null;
+            document.getElementById('entity-inspector').classList.add('hidden');
+            const panel = document.getElementById('building-inspector');
+            const building = cell.building;
+            const config = BUILDING_CONFIG[building.type];
+            const level = building.level || 1;
+            const cost = getUpgradeCost(building);
+            const repairCost = getRepairCost(building);
+            document.getElementById('building-inspector-icon').innerHTML = `<span class="game-sprite sprite-${building.type}" role="img" aria-label="${config.name}"></span>`;
+            document.getElementById('building-inspector-title').innerText = `${config.name} · 等级 ${level}${building.damaged ? ' · 受损' : ''}`;
+            document.getElementById('building-inspector-desc').innerText = building.damaged
+                ? `产能降至50%；手动修复消耗 ${repairCost.wood} 木材 + ${repairCost.data} 数据。再次受损将倒塌。`
+                : (level >= 3 ? `已满级 · ${config.benefit}` : `${config.benefit}；升级消耗 ${cost.wood} 木材 + ${cost.data} 数据`);
+            const button = document.getElementById('btn-upgrade-building');
+            button.disabled = !building.damaged && (level >= 3 || building.type === 'townhall');
+            button.innerHTML = building.damaged
+                ? '<i class="fa-solid fa-screwdriver-wrench mr-1"></i>修复建筑'
+                : (building.type === 'townhall'
+                ? '<i class="fa-solid fa-lock mr-1"></i>中枢不可升级'
+                : (level >= 3 ? '<i class="fa-solid fa-circle-check mr-1"></i>已达到满级' : `<i class="fa-solid fa-arrow-up-right-dots mr-1"></i>升级到 L${level + 1}`));
+            button.classList.toggle('opacity-50', button.disabled);
+            panel.classList.remove('hidden');
+            panel.classList.add('flex');
+        }
+
+        document.getElementById('btn-upgrade-building').addEventListener('click', () => {
+            const selected = Game.selectedBuildingCell;
+            if (!selected?.cell?.building) return;
+            const building = selected.cell.building;
+            const level = building.level || 1;
+            if (building.damaged) {
+                const repairCost = getRepairCost(building);
+                if (Game.wood < repairCost.wood || Game.data < repairCost.data) {
+                    sfx.alert();
+                    setDiandianSpeech(`修复资源不足，需要 ${repairCost.wood} 像素木和 ${repairCost.data} 特征数据。`);
+                    return;
+                }
+                Game.wood -= repairCost.wood;
+                Game.data -= repairCost.data;
+                building.damaged = false;
+                sfx.unlock();
+                addParticle((selected.column + 0.5) * Game.tileSize, (selected.row + 0.5) * Game.tileSize, '修复完成', '#34d399');
+                setDiandianSpeech(`【${BUILDING_CONFIG[building.type].name}】修复完成，产能恢复；但它再次受灾时仍会倒塌，请加强防灾设施。`);
+                updateHUD();
+                updateGoalProgress();
+                showBuildingInspector(selected.cell, selected.row, selected.column);
+                return;
+            }
+            if (level >= 3 || building.type === 'townhall') return;
+            const cost = getUpgradeCost(building);
+            if (Game.wood < cost.wood || Game.data < cost.data) {
+                sfx.alert();
+                setDiandianSpeech(`升级资源不足，需要 ${cost.wood} 像素木和 ${cost.data} 特征数据。`);
+                return;
+            }
+            Game.wood -= cost.wood;
+            Game.data -= cost.data;
+            building.level = level + 1;
+            sfx.unlock();
+            addParticle((selected.column + 0.5) * Game.tileSize, (selected.row + 0.5) * Game.tileSize, `升级到 L${building.level}`, '#fbbf24');
+            setDiandianSpeech(`【${BUILDING_CONFIG[building.type].name}】升级成功！产能与抗灾能力得到提升。`);
+            updateHUD();
+            updateGoalProgress();
+            showBuildingInspector(selected.cell, selected.row, selected.column);
+        });
+
+        function updateTutorialView() {
+            const step = TUTORIAL_STEPS[currentTutStep];
+            document.getElementById('tutorial-step-container').innerHTML = `
+                <div class="font-bold text-sm text-amber-300 mb-1">${step.title}</div>
+                <div class="text-xs text-slate-200 leading-relaxed">${step.content}</div>
+            `;
+            document.getElementById('tut-step-counter').innerText = `第 ${currentTutStep + 1} / ${TUTORIAL_STEPS.length} 步`;
+
+            document.getElementById('btn-tut-prev').style.visibility = currentTutStep === 0 ? 'hidden' : 'visible';
+            document.querySelector('#btn-tut-next span').innerText = currentTutStep === TUTORIAL_STEPS.length - 1 ? '完成指引 (+30木材)' : '下一步';
+        }
+
+        // Render Tech Tree Modal Nodes
+        function renderTechTree() {
+            const container = document.getElementById('tech-nodes-container');
+            container.innerHTML = '';
+
+            TECH_TREE_NODES.forEach(node => {
+                const isUnlocked = Game.techsUnlocked.has(node.id);
+                const card = document.createElement('div');
+                card.className = `glass-card p-2.5 rounded-xl flex flex-col justify-between border ${isUnlocked ? 'border-emerald-500/50 bg-emerald-950/10' : 'border-slate-700'}`;
+                
+                card.innerHTML = `
+                    <div>
+                        <div class="flex items-center justify-between mb-1">
+                            <span class="font-bold text-xs ${isUnlocked ? 'text-emerald-300' : 'text-slate-200'}">
+                                <i class="fa-solid ${node.icon} mr-1"></i> ${node.title}
+                            </span>
+                            <span class="text-[9px] ${isUnlocked ? 'bg-emerald-500/20 text-emerald-300' : 'bg-indigo-500/20 text-indigo-300'} px-2 py-0.5 rounded-full">
+                                ${isUnlocked ? '已解锁' : `需要特征数据 -${node.cost}`}
+                            </span>
+                        </div>
+                        <p class="text-[10px] text-slate-400 leading-relaxed">${node.desc}</p>
+                    </div>
+                    <button data-techid="${node.id}" data-cost="${node.cost}" class="btn-unlock-tech mt-2 w-full py-1 rounded-lg text-xs font-bold transition ${isUnlocked ? 'bg-slate-800 text-slate-500 cursor-default' : 'bg-indigo-600 hover:bg-indigo-500 text-white shadow-md'}" ${isUnlocked ? 'disabled' : ''}>
+                        <i class="fa-solid ${isUnlocked ? 'fa-circle-check' : 'fa-flask'} mr-1"></i>${isUnlocked ? '研学达成' : '研发解锁'}
+                    </button>
+                `;
+                container.appendChild(card);
+            });
+
+            // Unlock Events
+            document.querySelectorAll('.btn-unlock-tech').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const tid = e.target.getAttribute('data-techid');
+                    const cost = parseInt(e.target.getAttribute('data-cost'));
+
+                    if (Game.data >= cost) {
+                        Game.data -= cost;
+                        Game.techsUnlocked.add(tid);
+                        sfx.unlock();
+                        
+                        if (tid === 'lesson_8_denoise') {
+                            document.getElementById('btn-build-denoise').classList.remove('opacity-60', 'cursor-not-allowed');
+                        } else if (tid === 'lesson_11_pipeline') {
+                            document.getElementById('btn-build-pizza').classList.remove('opacity-60', 'cursor-not-allowed');
+                        } else if (tid === 'lesson_12_debug') {
+                            document.getElementById('btn-build-debug').classList.remove('opacity-60', 'cursor-not-allowed');
+                        }
+
+                        renderTechTree();
+                        updateHUD();
+                        updateGoalProgress();
+                        setDiandianSpeech(`太棒啦！解锁了【${tid}】科技！`);
+                    } else {
+                        sfx.alert();
+                        setDiandianSpeech("提示：特征数据还不够哦，请建造自动工坊或点击团团收集！");
+                    }
+                });
+            });
+        }
+
+        canvas.addEventListener('click', (e) => {
+            sfx.click();
+            const rect = canvas.getBoundingClientRect();
+            const cx = e.clientX - rect.left;
+            const cy = e.clientY - rect.top;
+
+            const gridWidth = Game.cols * Game.tileSize;
+            const gridHeight = Game.rows * Game.tileSize;
+            const offsetX = (canvas.width - gridWidth) / 2;
+            const offsetY = (canvas.height - gridHeight) / 2;
+
+            // 1. Check if clicked on an entity (Tuantuan, Diandian, Citizen)
+            let clickedEntity = null;
+            Game.entities.forEach(ent => {
+                const ex = offsetX + ent.x;
+                const ey = offsetY + ent.y;
+                const dist = Math.hypot(cx - ex, cy - ey);
+                if (dist < 20) clickedEntity = ent;
+            });
+
+            if (clickedEntity) {
+                Game.selectedEntity = clickedEntity;
+                const inspector = document.getElementById('entity-inspector');
+                document.getElementById('inspector-title').innerText = clickedEntity.name;
+                document.getElementById('inspector-desc').innerText = clickedEntity.desc;
+                document.getElementById('inspector-avatar').innerHTML = `<span class="game-sprite sprite-${clickedEntity.type}" role="img" aria-label="${clickedEntity.name}"></span>`;
+                inspector.classList.remove('hidden');
+                const buildingPanel = document.getElementById('building-inspector');
+                buildingPanel.classList.add('hidden');
+                buildingPanel.classList.remove('flex');
+
+                // Trigger Click Reward Effect
+                if (clickedEntity.type === 'diandian') {
+                    let added = addResource('data', 2);
+                    if (added > 0) {
+                        addParticle(cx, cy - 20, `+${added} 特征数据`, '#c084fc');
+                        setDiandianSpeech("“感谢互动！点点额外为你分析提炼出了特征数据！”");
+                    } else {
+                        showAlert("存储已满，无法接收点点提炼的特征数据！");
+                    }
+                } else if (clickedEntity.type === 'tuantuan') {
+                    let added = addResource('wood', 8);
+                    if (added > 0) {
+                        addParticle(cx, cy - 20, `+${added} 像素木`, '#f59e0b');
+                        setDiandianSpeech("“团团巡逻发现了运木小道！收获了像素木！”");
+                    } else {
+                        showAlert("存储已满，无法存放运木小道的木材！");
+                    }
+                }
+                return;
+            } else {
+                document.getElementById('entity-inspector').classList.add('hidden');
+            }
+
+            // 2. Check Map Grid Tile Click to Build or Harvest Trees
+            const c = Math.floor((cx - offsetX) / Game.tileSize);
+            const r = Math.floor((cy - offsetY) / Game.tileSize);
+
+            if (r >= 0 && r < Game.rows && c >= 0 && c < Game.cols) {
+                const cell = Game.grid[r][c];
+
+                if (cell.building) {
+                    showBuildingInspector(cell, r, c);
+                    return;
+                }
+
+                // Natural Tree Chopping Interaction
+                if (cell.type === 'tree' && !cell.building) {
+                    cell.type = 'grass';
+                    let added = addResource('wood', 10);
+                    sfx.click();
+                    if (added > 0) {
+                        addParticle(cx, cy - 10, `+${added} 像素木`, '#10b981');
+                        setDiandianSpeech("手动砍伐了树木！获得了 10 像素木！");
+                    } else {
+                        showAlert("存储空间已满，无法容纳更多木材！");
+                    }
+                    updateHUD();
+                    return;
+                }
+
+                if (cell.type === 'crystal' && !cell.building) {
+                    cell.type = 'grass';
+                    const added = addResource('rgb', 5);
+                    sfx.unlock();
+                    if (added > 0) addParticle(cx, cy - 10, `+${added} RGB光晶`, '#34d399');
+                    setDiandianSpeech('采集到RGB光晶！它能帮助小镇维持色彩与环境平衡。');
+                    updateHUD();
+                    return;
+                }
+
+                if (!cell.building) {
+                    const btype = Game.selectedBuilding;
+                    let costWood = 15;
+
+                    if (btype === 'house') costWood = 15;
+                    else if (btype === 'lumberyard') costWood = 20;
+                    else if (btype === 'powerplant') costWood = 25;
+                    else if (btype === 'warehouse') costWood = 30;
+                    else if (btype === 'denoise_tower') {
+                        if (!Game.techsUnlocked.has('lesson_8_denoise')) {
+                            setDiandianSpeech("尚未解锁：该建筑需要先在 AI 科技树解锁【第8课·去噪算法】哦！");
+                            return;
+                        }
+                        costWood = 40;
+                    } else if (btype === 'pizza_factory') {
+                        if (!Game.techsUnlocked.has('lesson_11_pipeline')) {
+                            setDiandianSpeech("尚未解锁：该建筑需要先在 AI 科技树解锁【第11课·任务分解】哦！");
+                            return;
+                        }
+                        costWood = 50;
+                    } else if (btype === 'debug_station') {
+                        if (!Game.techsUnlocked.has('lesson_12_debug')) {
+                            setDiandianSpeech('该建筑需要先在 AI 科技树解锁【第12课·Bug与调试】！');
+                            return;
+                        }
+                        costWood = 45;
+                    }
+
+                    if (Game.wood >= costWood) {
+                        Game.wood -= costWood;
+                        cell.type = 'grass'; // Clear tree/crystal when built on
+                        cell.building = { type: btype, name: BUILDING_CONFIG[btype].name, level: 1, damaged: false, damageCount: 0 };
+                        sfx.build();
+                        addParticle(cx, cy - 10, '建造成功!', '#10b981');
+                        updateHUD();
+                        updateGoalProgress();
+                        setDiandianSpeech(`成功建造了【${btype}】！小镇生产效率得到了极大提升！`);
+                    } else {
+                        setDiandianSpeech("像素木资源不够啦，快建【像素伐木场】吧！");
+                    }
+                }
+            }
+        });
+
+        // Setup Building Selection Buttons
+        document.querySelectorAll('.build-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                sfx.click();
+                document.querySelectorAll('.build-btn').forEach(b => b.classList.remove('border-sky-400', 'bg-sky-950/30'));
+                btn.classList.add('border-sky-400', 'bg-sky-950/30');
+                Game.selectedBuilding = btn.getAttribute('data-btype');
+            });
+        });
+
+        // Modals Toggle Event Handlers
+        document.getElementById('btn-tutorial').addEventListener('click', () => {
+            sfx.click();
+            currentTutStep = 0;
+            updateTutorialView();
+            document.getElementById('modal-tutorial').classList.remove('hidden');
+        });
+
+        document.getElementById('btn-tut-next').addEventListener('click', () => {
+            sfx.click();
+            if (currentTutStep < TUTORIAL_STEPS.length - 1) {
+                currentTutStep++;
+                updateTutorialView();
+            } else {
+                addResource('wood', 30);
+                updateHUD();
+                document.getElementById('modal-tutorial').classList.add('hidden');
+                setDiandianSpeech("完成教程！获得了奖励像素木！快开始打造奇智小镇吧！");
+            }
+        });
+
+        document.getElementById('btn-tut-prev').addEventListener('click', () => {
+            sfx.click();
+            if (currentTutStep > 0) {
+                currentTutStep--;
+                updateTutorialView();
+            }
+        });
+
+        document.getElementById('btn-tech-tree').addEventListener('click', () => {
+            sfx.click();
+            renderTechTree();
+            document.getElementById('modal-tech-tree').classList.remove('hidden');
+        });
+
+        document.getElementById('btn-pipeline').addEventListener('click', () => {
+            sfx.click();
+            document.getElementById('modal-pipeline').classList.remove('hidden');
+        });
+
+        document.querySelectorAll('.btn-close-modal').forEach(btn => {
+            btn.addEventListener('click', () => {
+                sfx.click();
+                document.getElementById('modal-tutorial').classList.add('hidden');
+                document.getElementById('modal-tech-tree').classList.add('hidden');
+                document.getElementById('modal-pipeline').classList.add('hidden');
+            });
+        });
+
+        // Save Rules Event Handler
+        document.getElementById('btn-save-rules').addEventListener('click', () => {
+            sfx.click();
+            Game.ifRule = document.getElementById('rule-if').value;
+            Game.thenRule = document.getElementById('rule-then').value;
+            
+            const radios = document.getElementsByName('pipeline-mode');
+            for (let r of radios) {
+                if (r.checked) Game.pipelineMode = r.value;
+            }
+
+            document.getElementById('modal-pipeline').classList.add('hidden');
+            setDiandianSpeech(`机器人逻辑规则更新成功！当前模式：${Game.pipelineMode === 'parallel' ? '【并行高效流水线】' : '【串行标准流水线】'}`);
+        });
+
+        // Pause Game Loop
+        document.getElementById('btn-pause').addEventListener('click', () => {
+            sfx.click();
+            Game.isPaused = !Game.isPaused;
+            document.getElementById('btn-pause').innerHTML = Game.isPaused
+                ? '<i class="fa-solid fa-play"></i><span class="text-[10px] font-bold">继续</span>'
+                : '<i class="fa-solid fa-pause"></i><span class="text-[10px] font-bold">暂停</span>';
+        });
+
+        document.getElementById('btn-sound').addEventListener('click', () => {
+            sfx.enabled = !sfx.enabled;
+            if (sfx.enabled) startBgm(); else bgm.pause();
+            document.getElementById('sound-icon').className = sfx.enabled ? 'fa-solid fa-volume-high' : 'fa-solid fa-volume-xmark text-rose-400';
+            document.getElementById('sound-label').innerText = sfx.enabled ? '声音' : '静音';
+        });
+
+        document.getElementById('btn-restart').addEventListener('click', () => location.reload());
+
+        // Inspector Action Button
+        document.getElementById('btn-inspector-action').addEventListener('click', () => {
+            sfx.click();
+            if (Game.selectedEntity) {
+                setDiandianSpeech(`正在跟进【${Game.selectedEntity.name}】的状态：${Game.selectedEntity.desc}`);
+            }
+        });
+
+        // Window Initialization
+        window.onload = function() {
+            document.body.addEventListener('click', () => sfx.init(), { once: true });
+            document.body.addEventListener('pointerdown', startBgm, { once: true });
+
+            window.addEventListener('resize', resizeCanvas);
+            resizeCanvas();
+            initGrid();
+            updateHUD();
+            updateGoalProgress();
+
+            // Game Logic Tick (Every 1.5 Seconds)
+            setInterval(gameTick, 1500);
+
+            // Canvas Animation Loop
+            function animate() {
+                renderMap();
+                requestAnimationFrame(animate);
+            }
+            animate();
+        };
+    </script>
+</body>
+</html>

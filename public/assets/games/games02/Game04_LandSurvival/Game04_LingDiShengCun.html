@@ -1,0 +1,1944 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>智能小镇：AI领地生存记 - AI启蒙结合回合据点塔防</title>
+    <script src="../../../libs/libs/tailwind.min.js"></script>
+    <link rel="stylesheet" href="../../../libs/libs/font-awesome.all.min.css">
+    <link rel="stylesheet" href="../../../libs/libs/game-icon-fallback.css">
+    
+    <style>
+        body {
+            font-family: "Microsoft YaHei", "PingFang SC", system-ui, sans-serif;
+            background-color: #0b0f19;
+            color: #e2e8f0;
+            user-select: none;
+            overflow-x: hidden;
+        }
+
+        .font-orbitron {
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        /* Glassmorphism panel styling */
+        .glass-panel {
+            background: rgba(17, 24, 39, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        .glass-panel-glow {
+            background: rgba(17, 24, 39, 0.9);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(56, 189, 248, 0.5);
+            box-shadow: 0 0 20px rgba(56, 189, 248, 0.2);
+        }
+
+        /* Sci-Fi glowing text effects */
+        .neon-text-cyan { text-shadow: 0 0 8px rgba(6, 182, 212, 0.8); }
+        .neon-text-green { text-shadow: 0 0 8px rgba(34, 197, 94, 0.8); }
+        .neon-text-purple { text-shadow: 0 0 8px rgba(168, 85, 247, 0.8); }
+        .neon-text-amber { text-shadow: 0 0 8px rgba(245, 158, 11, 0.8); }
+
+        /* Custom scrollbars */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.6);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(59, 130, 246, 0.5);
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(56, 189, 248, 0.8);
+        }
+
+        canvas {
+            image-rendering: pixelated;
+        }
+
+        .btn-sci-fi {
+            position: relative;
+            transition: all 0.2s ease;
+            overflow: hidden;
+        }
+        .btn-sci-fi::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(60deg, transparent, rgba(255,255,255,0.1), transparent);
+            transform: rotate(30deg);
+            transition: 0.5s;
+        }
+        .btn-sci-fi:hover::after {
+            left: 100%;
+        }
+
+        @keyframes pulse-slow {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.85; transform: scale(0.98); }
+        }
+        .animate-pulse-slow {
+            animation: pulse-slow 3s infinite ease-in-out;
+        }
+        .game-sprite {
+            display: inline-block;
+            width: 100%;
+            height: 100%;
+            background: url('./game04-sprites.png') no-repeat;
+            background-size: 400% 200%;
+            border-radius: inherit;
+            transform: scale(.86);
+            transform-origin: center;
+        }
+        .game04-frame { aspect-ratio: 3 / 4; overflow: hidden; flex-shrink: 0; }
+        .sprite-core { background-position: 0% 0%; }
+        .sprite-bit_farm { background-position: 33.333% 0%; }
+        .sprite-compute_node { background-position: 66.667% 0%; }
+        .sprite-logic_wall { background-position: 100% 0%; }
+        .sprite-encoder_turret { background-position: 0% 100%; }
+        .sprite-rgb_cannon, .sprite-denoise_turret, .sprite-classifier_turret, .sprite-neural_turret {
+            background-image: url('./game04-advanced-towers.png');
+            background-size: 400% 100%;
+            width: 91%;
+            margin-left: 4.5%;
+        }
+        .sprite-rgb_cannon { background-position: 0% 0%; }
+        .sprite-denoise_turret { background-position: 33.333% 0%; }
+        .sprite-classifier_turret { background-position: 66.667% 0%; }
+        .sprite-neural_turret { background-position: 100% 0%; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between text-slate-100">
+    <audio id="bgm" src="bgm.mp3" loop preload="auto"></audio>
+
+    <!-- TOP HEADER / DASHBOARD -->
+    <header class="glass-panel sticky top-0 z-30 px-4 py-2 border-b border-cyan-500/30 flex flex-wrap items-center justify-between shadow-lg">
+        <div class="flex items-center space-x-3">
+            <div class="w-10 h-10 rounded-lg bg-gradient-to-tr from-cyan-600 to-blue-600 flex items-center justify-center text-white text-xl font-bold shadow-lg shadow-cyan-500/30 border border-cyan-300">
+                <svg viewBox="0 0 24 24" width="23" height="23" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="城堡游戏标识">
+                    <path d="M22 20v-9H2v9M18 11V4H6v7M15 4V2M9 4V2M12 11v9M2 20h20M7 15h2M15 15h2"></path>
+                </svg>
+            </div>
+            <div>
+                <h1 class="text-lg font-bold font-orbitron tracking-wider text-cyan-400 neon-text-cyan flex items-center gap-2">
+                    智能小镇 <span class="text-xs px-2 py-0.5 rounded bg-cyan-900/60 border border-cyan-500/40 text-cyan-200">AI 领地生存</span>
+                </h1>
+                <p class="text-xs text-slate-400 hidden sm:block">运用 AI 启蒙知识点：建防御塔、打除 Bug、抵抗四面涌入的噪声怪物！</p>
+            </div>
+        </div>
+
+        <!-- RESOURCE DASHBOARD -->
+        <div class="flex items-center space-x-4 sm:space-x-6 my-1 sm:my-0 text-sm">
+            <!-- Data Bits (0与1) -->
+            <div class="flex items-center space-x-2 bg-slate-900/80 px-3 py-1.5 rounded-lg border border-cyan-500/30" title="数据字节 (0与1二进制资源，通过数据站获取)">
+                <i class="fa-solid fa-binary text-cyan-400 text-base"></i>
+                <div>
+                    <div class="text-[10px] text-slate-400 uppercase tracking-wider">数据字节</div>
+                    <div id="res-data" class="font-bold font-orbitron text-cyan-300 text-base">100</div>
+                </div>
+            </div>
+
+            <!-- Compute FLOPs (算力) -->
+            <div class="flex items-center space-x-2 bg-slate-900/80 px-3 py-1.5 rounded-lg border border-purple-500/30" title="神经网络算力 (用于高阶塔与科技研究)">
+                <i class="fa-solid fa-bolt text-purple-400 text-base"></i>
+                <div>
+                    <div class="text-[10px] text-slate-400 uppercase tracking-wider">算力 FLOPs</div>
+                    <div id="res-compute" class="font-bold font-orbitron text-purple-300 text-base">30</div>
+                </div>
+            </div>
+
+            <!-- Central Core HP (领地核心生命) -->
+            <div class="flex items-center space-x-2 bg-slate-900/80 px-3 py-1.5 rounded-lg border border-emerald-500/30" title="城镇数据内核生命">
+                <i class="fa-solid fa-heart-pulse text-emerald-400 text-base"></i>
+                <div>
+                    <div class="text-[10px] text-slate-400 uppercase tracking-wider">内核健康</div>
+                    <div id="res-hp" class="font-bold font-orbitron text-emerald-300 text-base">100 / 100</div>
+                    <div class="w-28 h-2 mt-0.5 rounded-full bg-slate-950 border border-emerald-900/80 overflow-hidden shadow-inner" aria-label="内核健康血条">
+                        <div id="core-hp-bar" class="h-full rounded-full bg-gradient-to-r from-emerald-500 to-lime-300 transition-all duration-300" style="width:100%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Wave Counter -->
+            <div class="flex items-center space-x-2 bg-slate-900/80 px-3 py-1.5 rounded-lg border border-amber-500/30">
+                <i class="fa-solid fa-shield-halved text-amber-400 text-base"></i>
+                <div>
+                    <div class="text-[10px] text-slate-400 uppercase tracking-wider">当前波次</div>
+                    <div id="wave-counter" class="font-bold font-orbitron text-amber-300 text-base">第 1 / 15 波</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ACTION CONTROLS -->
+        <div class="flex items-center space-x-2">
+            <button id="btn-sound" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-600 text-xs font-semibold transition flex items-center gap-1.5" title="开关音效">
+                <i class="fa-solid fa-volume-high" id="sound-icon"></i><span id="sound-label">声音</span>
+            </button>
+            <button id="btn-ai-wiki" class="px-3 py-1.5 rounded-lg bg-blue-900/60 hover:bg-blue-800 text-blue-200 border border-blue-500/50 text-xs font-semibold flex items-center gap-1.5 transition">
+                <i class="fa-solid fa-book-open"></i> <span class="hidden md:inline">AI 知识图谱</span>
+            </button>
+            <button id="btn-tech-tree" class="px-3 py-1.5 rounded-lg bg-purple-900/60 hover:bg-purple-800 text-purple-200 border border-purple-500/50 text-xs font-semibold flex items-center gap-1.5 transition relative">
+                <i class="fa-solid fa-network-wired"></i> <span class="hidden md:inline">解锁科技树</span>
+                <span id="tech-badge" class="hidden absolute -top-1 -right-1 w-2.5 h-2.5 bg-red-500 rounded-full animate-ping"></span>
+            </button>
+            <button id="btn-next-turn" class="btn-sci-fi px-4 py-2 rounded-lg bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-900 font-bold font-orbitron text-sm shadow-lg shadow-cyan-500/30 border border-cyan-300 flex items-center gap-2">
+                <i class="fa-solid fa-play"></i> <span id="turn-btn-text">开始抵御本波进攻</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT AREA -->
+    <main class="flex-1 max-w-7xl w-full mx-auto p-2 sm:p-4 grid grid-cols-1 lg:grid-cols-12 gap-4 items-start">
+        
+        <!-- LEFT: GAME CANVAS / BASE MAP (8 cols on lg) -->
+        <div class="lg:col-span-8 flex flex-col items-center">
+            <div class="glass-panel-glow p-2 rounded-2xl w-full flex flex-col items-center relative overflow-hidden">
+                <!-- Canvas Header Bar -->
+                <div class="w-full flex justify-between items-center px-3 py-1.5 mb-2 bg-slate-900/60 rounded-xl border border-slate-800 text-xs text-slate-300">
+                    <span class="flex items-center gap-1.5">
+                        <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                        <strong class="text-cyan-300 font-orbitron">中央方形领地: 13x13 矩阵网格</strong>
+                    </span>
+                    <span id="game-status-hint" class="text-amber-300 font-medium">【建设阶段】在网格上放置 AI 节点建筑</span>
+                    <span class="text-slate-400"><i class="fa-solid fa-arrows-to-dot mr-1"></i>悬停查看塔防攻击射程</span>
+                </div>
+
+                <!-- Canvas Wrapper -->
+                <div class="relative w-full aspect-square max-w-[620px] flex justify-center items-center rounded-xl overflow-hidden border border-slate-700/80 bg-slate-950/90 shadow-inner">
+                    <canvas id="gameCanvas" width="620" height="620" class="cursor-crosshair w-full h-full object-contain"></canvas>
+                    
+                    <!-- Overlay floating info popup for selected grid -->
+                    <div id="grid-info-card" class="hidden absolute top-4 left-4 glass-panel p-3 rounded-xl border border-cyan-500/40 max-w-xs shadow-2xl text-xs z-10 animate-fade-in">
+                        <div class="flex justify-between items-start mb-1">
+                            <h4 id="grid-card-title" class="font-bold text-cyan-300 text-sm">建筑名称</h4>
+                            <button id="btn-close-card" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+                        </div>
+                        <p id="grid-card-desc" class="text-slate-300 mb-2 leading-relaxed">建筑描述。</p>
+                        <div id="grid-card-stats" class="text-slate-400 space-y-0.5 mb-3"></div>
+                        <div class="flex gap-2">
+                            <button id="btn-upgrade-building" class="flex-1 py-1 px-2 rounded bg-cyan-600 hover:bg-cyan-500 text-white font-bold text-xs transition"><i class="fa-solid fa-arrow-up-right-dots mr-1"></i>升级建筑 (Cost: 0)</button>
+                            <button id="btn-demolish-building" class="py-1 px-2 rounded bg-rose-900/80 hover:bg-rose-700 text-rose-200 text-xs transition"><i class="fa-solid fa-trash"></i> 拆除 (+50% 返还)</button>
+                        </div>
+                    </div>
+
+                    <!-- AI Lesson Tooltip floating preview -->
+                    <div id="lesson-hover-badge" class="hidden absolute bottom-3 right-3 glass-panel px-3 py-1.5 rounded-lg border border-purple-500/40 text-[11px] text-purple-200 shadow-lg flex items-center gap-2">
+                        <i class="fa-solid fa-graduation-cap text-purple-400"></i>
+                        <span id="lesson-hover-text">课时联动知识点 preview</span>
+                    </div>
+                </div>
+
+                <!-- Phase & Legend Footer -->
+                <div class="w-full mt-3 grid grid-cols-2 sm:grid-cols-4 gap-2 text-center text-xs">
+                    <div class="bg-slate-900/60 p-2 rounded-lg border border-slate-800 flex items-center justify-center gap-1.5">
+                        <span class="w-3 h-3 rounded bg-cyan-500 border border-cyan-300 inline-block"></span>
+                        <span class="text-slate-300">防守塔/建筑</span>
+                    </div>
+                    <div class="bg-slate-900/60 p-2 rounded-lg border border-slate-800 flex items-center justify-center gap-1.5">
+                        <span class="w-3 h-3 rounded bg-emerald-500 border border-emerald-300 inline-block"></span>
+                        <span class="text-slate-300">中央内核镇</span>
+                    </div>
+                    <div class="bg-slate-900/60 p-2 rounded-lg border border-slate-800 flex items-center justify-center gap-1.5">
+                        <span class="w-3 h-3 rounded-full bg-rose-500 border border-rose-300 inline-block"></span>
+                        <span class="text-slate-300">数据 Bug 怪物</span>
+                    </div>
+                    <div class="bg-slate-900/60 p-2 rounded-lg border border-slate-800 flex items-center justify-center gap-1.5">
+                        <span class="w-3 h-3 rounded bg-purple-500/40 border border-purple-400 inline-block"></span>
+                        <span class="text-slate-300">逻辑闸门障壁</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT: CONSTRUCTION & TOOL MENU (4 cols on lg) -->
+        <div class="lg:col-span-4 space-y-4">
+            
+            <!-- BUILD TURRETS / STRUCTURES PANEL -->
+            <div class="glass-panel p-4 rounded-2xl border border-cyan-500/30">
+                <div class="flex justify-between items-center mb-2">
+                    <h3 class="font-bold text-cyan-300 font-orbitron tracking-wide flex items-center gap-2 text-sm">
+                        <i class="fa-solid fa-hammer text-cyan-400"></i> AI 建筑建造
+                    </h3>
+                    <span class="text-[11px] text-slate-400">点击选中后放于网格</span>
+                </div>
+
+                <!-- CATEGORY FILTER TABS -->
+                <div class="flex gap-1.5 mb-3 text-xs">
+                    <button id="tab-build-all" class="flex-1 py-1 px-2 rounded-lg bg-cyan-600 text-white font-bold transition shadow">
+                        <i class="fa-solid fa-border-all mr-1"></i>全部
+                    </button>
+                    <button id="tab-build-prod" class="flex-1 py-1 px-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold transition">
+                        <i class="fa-solid fa-wheat-awn text-cyan-400 mr-1"></i>生产型
+                    </button>
+                    <button id="tab-build-def" class="flex-1 py-1 px-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold transition">
+                        <i class="fa-solid fa-shield-halved text-purple-400 mr-1"></i>防守型
+                    </button>
+                </div>
+
+                <div id="building-menu" class="grid grid-cols-1 gap-2.5 max-h-[460px] overflow-y-auto pr-1">
+                    <!-- Dynamic Building Cards populated by JS -->
+                </div>
+            </div>
+
+            <!-- CURRENT WAVE ENEMY FORECAST -->
+            <div class="glass-panel p-3.5 rounded-2xl border border-rose-500/30">
+                <h4 class="font-bold text-rose-300 text-xs font-orbitron mb-2 flex items-center gap-2">
+                    <i class="fa-solid fa-radar text-rose-400"></i> 本波敌情侦测 (第1课:小侦探找线索)
+                </h4>
+                <div id="enemy-preview-list" class="flex flex-wrap gap-2 text-xs text-slate-300">
+                    <!-- Populated dynamically -->
+                </div>
+            </div>
+
+            <!-- QUICK AI TRIVIA CHALLENGE BUTTON -->
+            <div class="glass-panel p-3 rounded-xl border border-amber-500/30 bg-amber-950/20 flex items-center justify-between">
+                <div>
+                    <div class="text-xs font-bold text-amber-300 flex items-center gap-1">
+                        <i class="fa-solid fa-brain"></i> AI 知识快速问答
+                    </div>
+                    <div id="quiz-status-desc" class="text-[11px] text-slate-400">完成一波敌群抵御后解锁 1 次答题领赏机会！</div>
+                </div>
+                <button id="btn-open-quiz" disabled class="px-3 py-1.5 rounded-lg bg-slate-800 text-slate-500 font-bold text-xs border border-slate-700 cursor-not-allowed transition">
+                    <i class="fa-solid fa-lock mr-1"></i>需完成本波
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <!-- TECH TREE MODAL -->
+    <div id="modal-tech-tree" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
+        <div class="glass-panel-glow max-w-4xl w-full rounded-2xl p-6 border border-purple-500/50 max-h-[90vh] flex flex-col">
+            <div class="flex justify-between items-center pb-4 border-b border-slate-800 mb-4">
+                <div>
+                    <h2 class="text-xl font-bold font-orbitron text-purple-300 flex items-center gap-2">
+                        <i class="fa-solid fa-network-wired text-purple-400"></i> AI 启蒙科技树 (32课知识点解锁)
+                    </h2>
+                    <p class="text-xs text-slate-400 mt-1">消耗【算力 FLOPs】解锁核心知识科技，强化全盘建筑与据点战力。</p>
+                </div>
+                <button class="btn-close-modal text-slate-400 hover:text-white text-xl"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+
+            <div id="tech-tree-container" class="flex-1 overflow-y-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 p-1">
+                <!-- Tech Nodes dynamically populated -->
+            </div>
+
+            <div class="mt-4 pt-3 border-t border-slate-800 flex justify-between items-center text-xs text-slate-400">
+                <span>提示：通过建造算力研发中心或每波胜利可获得算力 FLOPs。</span>
+                <button class="btn-close-modal px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-white font-bold"><i class="fa-solid fa-xmark mr-1"></i>关闭</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- AI ENCYCLOPEDIA / LESSON WIKI MODAL -->
+    <div id="modal-ai-wiki" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
+        <div class="glass-panel max-w-3xl w-full rounded-2xl p-6 border border-blue-500/50 max-h-[85vh] flex flex-col">
+            <div class="flex justify-between items-center pb-3 border-b border-slate-800 mb-3">
+                <h2 class="text-lg font-bold font-orbitron text-blue-300 flex items-center gap-2">
+                    <i class="fa-solid fa-book-open text-blue-400"></i> 《小云雀AI探险记》32课知识点大全
+                </h2>
+                <button class="btn-close-modal text-slate-400 hover:text-white text-xl"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+
+            <div id="wiki-lessons-list" class="flex-1 overflow-y-auto space-y-3 pr-2 text-xs">
+                <!-- Populated dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <!-- AI TRIVIA QUIZ MODAL -->
+    <div id="modal-quiz" class="fixed inset-0 bg-slate-950/85 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
+        <div class="glass-panel max-w-lg w-full rounded-2xl p-6 border border-amber-500/50 shadow-2xl">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="font-bold text-amber-300 text-base flex items-center gap-2">
+                    <i class="fa-solid fa-lightbulb text-amber-400"></i> AI 探险知识问答题
+                </h3>
+                <button class="btn-close-modal text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+
+            <div id="quiz-content">
+                <div id="quiz-question" class="text-sm text-slate-200 font-medium mb-4 bg-slate-900/80 p-3 rounded-xl border border-slate-800 leading-relaxed">
+                    题目加载中...
+                </div>
+                <div id="quiz-options" class="space-y-2 mb-4">
+                    <!-- Option Buttons -->
+                </div>
+                <div id="quiz-feedback" class="hidden text-xs p-2.5 rounded-lg mb-3"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- GAME OVER / VICTORY MODAL -->
+    <div id="modal-game-over" class="fixed inset-0 bg-slate-950/90 backdrop-blur-lg z-50 flex items-center justify-center p-4 hidden">
+        <div class="glass-panel max-w-md w-full rounded-2xl p-6 border text-center shadow-2xl" id="game-over-box">
+            <div id="game-over-icon" class="text-5xl mb-3"></div>
+            <h2 id="game-over-title" class="text-2xl font-bold font-orbitron mb-2"></h2>
+            <p id="game-over-desc" class="text-xs text-slate-300 mb-6 leading-relaxed"></p>
+            <button id="btn-restart-game" class="btn-sci-fi w-full py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 font-bold text-slate-950 text-sm shadow-lg">
+                <i class="fa-solid fa-rotate-right mr-2"></i>重新启动 AI 领地保卫战
+            </button>
+        </div>
+    </div>
+
+    <!-- FOOTER STATUS -->
+    <footer class="glass-panel text-center py-2 text-[11px] text-slate-500 border-t border-slate-800/60">
+        AI启蒙绘本 32节课结合领地生存塔防游戏 | 核心机制：0与1数据收集、条件判断、逻辑闸门、分类器与神经网络应用
+    </footer>
+
+    <script>
+        // Web Audio API Sound Synthesizer for retro SFX
+        class SoundEngine {
+            constructor() {
+                this.ctx = null;
+                this.muted = false;
+            }
+
+            init() {
+                if (!this.ctx) {
+                    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+                    if (AudioCtx) this.ctx = new AudioCtx();
+                }
+                if (this.ctx && this.ctx.state === 'suspended') {
+                    this.ctx.resume();
+                }
+            }
+
+            playTone(freq, type, duration, gainVal = 0.1) {
+                if (this.muted) return;
+                this.init();
+                if (!this.ctx) return;
+                try {
+                    const osc = this.ctx.createOscillator();
+                    const gain = this.ctx.createGain();
+                    osc.type = type;
+                    osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+                    gain.gain.setValueAtTime(gainVal, this.ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + duration);
+                    osc.connect(gain);
+                    gain.connect(this.ctx.destination);
+                    osc.start();
+                    osc.stop(this.ctx.currentTime + duration);
+                } catch(e) {}
+            }
+
+            playLaser() {
+                if (this.muted) return;
+                this.init();
+                if (!this.ctx) return;
+                try {
+                    const osc = this.ctx.createOscillator();
+                    const gain = this.ctx.createGain();
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(800, this.ctx.currentTime);
+                    osc.frequency.exponentialRampToValueAtTime(150, this.ctx.currentTime + 0.15);
+                    gain.gain.setValueAtTime(0.08, this.ctx.currentTime);
+                    gain.gain.linearRampToValueAtTime(0.01, this.ctx.currentTime + 0.15);
+                    osc.connect(gain);
+                    gain.connect(this.ctx.destination);
+                    osc.start();
+                    osc.stop(this.ctx.currentTime + 0.15);
+                } catch(e) {}
+            }
+
+            playHit() {
+                this.playTone(120, 'square', 0.1, 0.08);
+            }
+
+            playExplosion() {
+                this.playTone(60, 'sawtooth', 0.3, 0.15);
+            }
+
+            playBuild() {
+                this.init();
+                this.playTone(440, 'sine', 0.08, 0.1);
+                setTimeout(() => this.playTone(880, 'sine', 0.12, 0.1), 80);
+            }
+
+            playVictory() {
+                const notes = [523.25, 659.25, 783.99, 1046.50];
+                notes.forEach((f, i) => {
+                    setTimeout(() => this.playTone(f, 'sine', 0.25, 0.12), i * 150);
+                });
+            }
+        }
+
+        const sound = new SoundEngine();
+        const bgm = document.getElementById('bgm');
+        bgm.volume = 0.15;
+
+        function startBgm() {
+            if (!sound.muted) bgm.play().catch(() => {});
+        }
+
+        function reportFeaturedProgress(completed = false) {
+            window.parent.postMessage({
+                type: 'aibook-featured-game-progress',
+                gameId: 'land-survival',
+                completed,
+                wave: Math.min(gameState.wave, gameState.maxWaves),
+                seconds: Math.max(1, Math.floor((Date.now() - gameState.startedAt) / 1000)),
+                score: Math.max(0, (gameState.wave - 1) * 100 + gameState.hp)
+            }, '*');
+        }
+
+        // 1. BUILDINGS DATA (Connected to AI Curriculum)
+        const BUILDINGS_DEF = {
+            'bit_farm': {
+                id: 'bit_farm',
+                name: '0与1数据采样站',
+                category: 'prod',
+                code: '01',
+                lesson: '第2课《开关城的两兄弟》',
+                costData: 35,
+                costCompute: 0,
+                color: '#06b6d4',
+                icon: 'fa-binary',
+                desc: '生产型：每回合增加 +20 数据字节（二进制资源）。',
+                type: 'resource',
+                incomeData: 20,
+                incomeCompute: 0,
+                hp: 60
+            },
+            'compute_node': {
+                id: 'compute_node',
+                name: '算力研发中心',
+                category: 'prod',
+                code: 'CPU',
+                lesson: '第4课《仓库管理员机器人》',
+                costData: 50,
+                costCompute: 0,
+                color: '#a855f7',
+                icon: 'fa-microchip',
+                desc: '生产型：每回合稳定产出 +10 算力 FLOPs（研发科技）。',
+                type: 'resource',
+                incomeData: 0,
+                incomeCompute: 10,
+                hp: 80
+            },
+            'logic_wall': {
+                id: 'logic_wall',
+                name: '红绿灯逻辑闸门',
+                category: 'def',
+                code: '逻辑',
+                lesson: '第9课《红灯停绿灯行》',
+                costData: 20,
+                costCompute: 0,
+                color: '#10b981',
+                icon: 'fa-shield',
+                desc: '防守屏障：高耐久墙壁，利用条件判断阻挡敌人路线。',
+                type: 'wall',
+                hp: 200
+            },
+            'encoder_turret': {
+                id: 'encoder_turret',
+                name: '密码脉冲塔',
+                category: 'def',
+                code: '脉冲',
+                lesson: '第3课《小邮差的密码信》',
+                costData: 50,
+                costCompute: 10,
+                color: '#3b82f6',
+                icon: 'fa-tower-cell',
+                desc: '防守型：单体高频精准脉冲攻击。',
+                type: 'turret',
+                range: 3.2,
+                damage: 25,
+                fireRate: 1,
+                hp: 100
+            },
+            'rgb_cannon': {
+                id: 'rgb_cannon',
+                name: 'RGB三原色炮',
+                category: 'def',
+                code: 'RGB',
+                lesson: '第6课《红绿蓝灯的合唱团》',
+                costData: 80,
+                costCompute: 20,
+                color: '#f43f5e',
+                icon: 'fa-wand-magic-sparkles',
+                desc: '防守型：混合三原色，造成群体溅射伤害 (AoE)。',
+                type: 'turret',
+                range: 2.8,
+                damage: 18,
+                splash: true,
+                hp: 110
+            },
+            'denoise_array': {
+                id: 'denoise_array',
+                name: '去噪滤波塔',
+                category: 'def',
+                code: '去噪',
+                lesson: '第8课《雾气里的照片》',
+                costData: 70,
+                costCompute: 15,
+                color: '#eab308',
+                icon: 'fa-filter',
+                desc: '防守型：清除噪声干扰，使范围敌人减速 50%。',
+                type: 'turret',
+                range: 3.5,
+                damage: 10,
+                slowEffect: 0.5,
+                hp: 90
+            },
+            'classifier_sentinel': {
+                id: 'classifier_sentinel',
+                name: '特征分类哨塔',
+                category: 'def',
+                code: '特征',
+                lesson: '第13-14课《袜子整理/特征放大镜》',
+                costData: 100,
+                costCompute: 30,
+                color: '#f97316',
+                icon: 'fa-glasses',
+                desc: '防守型：精准克制，对过拟合幻影等特殊怪造成 1.8 倍伤害。',
+                type: 'turret',
+                range: 3.8,
+                damage: 35,
+                hp: 120
+            },
+            'neural_citadel': {
+                id: 'neural_citadel',
+                name: '深度神经网络炮',
+                category: 'def',
+                code: '神经',
+                lesson: '第21-24课《神经网络/梯度下降》',
+                costData: 140,
+                costCompute: 50,
+                color: '#ec4899',
+                icon: 'fa-diagram-project',
+                desc: '防守型：梯度下降成长高伤，攻击越多权重伤害越高！',
+                type: 'turret',
+                range: 4.0,
+                damage: 30,
+                scalingWeight: 3,
+                hp: 150
+            }
+        };
+
+        // 2. ENEMY TYPES
+        const ENEMY_TYPES = {
+            'code_bug': {
+                name: '代码错误 Bug',
+                lesson: '第12课 Bug',
+                hp: 45,
+                speed: 1,
+                rewardData: 12,
+                color: '#ef4444',
+                icon: 'fa-bug'
+            },
+            'noise_fog': {
+                name: '高频噪声怪',
+                lesson: '第8课 噪声',
+                hp: 80,
+                speed: 0.8,
+                rewardData: 18,
+                color: '#a855f7',
+                icon: 'fa-smog'
+            },
+            'overfit_spectre': {
+                name: '过拟合幻影',
+                lesson: '第16课 背答案的鹦鹉',
+                hp: 140,
+                speed: 0.6,
+                rewardData: 25,
+                color: '#3b82f6',
+                icon: 'fa-ghost'
+            },
+            'hallucination_boss': {
+                name: '大模型幻觉巨兽',
+                lesson: '第28课 会编故事的机器人',
+                hp: 350,
+                speed: 0.5,
+                rewardData: 60,
+                color: '#f59e0b',
+                icon: 'fa-dragon'
+            }
+        };
+
+        // 3. AI TECH TREE DATA (8 core tech unlocks)
+        const TECH_TREE = [
+            {
+                id: 'tech_info',
+                name: '线索侦探 (第1课)',
+                cost: 15,
+                desc: '掌握信息收集：全局防守塔攻击范围 +10%。',
+                unlocked: false
+            },
+            {
+                id: 'tech_binary',
+                name: '0与1高密度编码 (第2课)',
+                cost: 20,
+                desc: '数据采样站产出额外增加 +30%。',
+                unlocked: false
+            },
+            {
+                id: 'tech_debur',
+                name: '自动调试修复 (第12课)',
+                cost: 25,
+                desc: '找Bug四步法：每回合准备阶段，自动修复所有建筑 15 HP。',
+                unlocked: false
+            },
+            {
+                id: 'tech_pipeline',
+                name: '流水线并行处理 (第11课)',
+                cost: 35,
+                desc: '任务并行分解：全盘防御塔基础伤害与效率提升 +25%。',
+                unlocked: false
+            },
+            {
+                id: 'tech_classifier',
+                name: '关键特征提取 (第14课)',
+                cost: 40,
+                desc: '特征放大镜：所有炮塔有 20% 概率触发双倍暴击伤害。',
+                unlocked: false
+            },
+            {
+                id: 'tech_neural',
+                name: '梯度下降优化 (第24课)',
+                cost: 60,
+                desc: '小箭头持续微调：神经网络炮基础伤害提升 +40%。',
+                unlocked: false
+            },
+            {
+                id: 'tech_prompt',
+                name: '提示词工程 (第26课)',
+                cost: 75,
+                desc: '清晰的指令：击败敌人获得的数据字节奖励 +50%。',
+                unlocked: false
+            },
+            {
+                id: 'tech_synergy',
+                name: '超级搭档人机协作 (第31课)',
+                cost: 100,
+                desc: '人类决策+AI计算：领地内核生命上限提升至 150，并补满健康！',
+                unlocked: false
+            }
+        ];
+
+        // 4. AI TRIVIA DATASET (Questions from textbook)
+        const AI_QUIZ_DATA = [
+            {
+                q: '【第1课】妈妈问“今天出门要不要带伞？”，你看窗外天黑黑的。这个“天黑黑”属于什么？',
+                options: ['A. 信息/线索，帮助做决定', 'B. 没有任何用处', 'C. 噪声', 'D. 编码密码'],
+                ans: 0,
+                explain: '信息就是帮助我们做决定的线索！'
+            },
+            {
+                q: '【第2课】电脑内部用来“说话”和储存信息的最小两个符号是什么？',
+                options: ['A. 1和2', 'B. 0和1', 'C. A和B', 'D. 红和绿'],
+                ans: 1,
+                explain: '电脑内部用0(关)和1(开)的组合来表示所有信息。'
+            },
+            {
+                q: '【第3课】你和好朋友约定“眨两下眼=快跑”，但朋友误以为是“我困了”。这是因为什么？',
+                options: ['A. 朋友耳朵不好', 'B. 没有使用同一套编码与解码规则', 'C. 0和1不够用', 'D. 压缩过度'],
+                ans: 1,
+                explain: '编码和解码必须使用同一套规则，否则会引起误解。'
+            },
+            {
+                q: '【第6课】RGB三原色指的是哪三种颜色？组合在一起会变成什么光？',
+                options: ['A. 红黄蓝 / 黑色', 'B. 红绿蓝 / 白色', 'C. 红绿黄 / 彩虹色', 'D. 蓝绿紫 / 透明'],
+                ans: 1,
+                explain: 'R(红)、G(绿)、B(蓝)三种光按不同亮度混合可以变出世间色彩，全开为白光。'
+            },
+            {
+                q: '【第8课】“垃圾进，垃圾出 (Garbage In, Garbage Out)”在AI中指什么？',
+                options: ['A. AI需要倒垃圾', 'B. 输入错误的数据，AI输出的结果也是错的', 'C. 电脑内部满了', 'D. 0和1变成了垃圾'],
+                ans: 1,
+                explain: '信息越准确清晰，AI判断越靠谱；坏数据会导致坏结果。'
+            },
+            {
+                q: '【第12课】当我们在代码或电路里找到“ Bug ”并修好它的过程叫什么？',
+                options: ['A. 压缩', 'B. 调试 (Debugging)', 'C. 分类', 'D. 编码'],
+                ans: 1,
+                explain: '调试四步骤：发现问题→找到原因→修改→再试。'
+            },
+            {
+                q: '【第16课】AI练习题全对，但一遇到没见过的考题就全错。这现象叫什么？',
+                options: ['A. 强化学习', 'B. 过拟合（死记硬背答案）', 'C. 任务分解', 'D. 梯度下降'],
+                ans: 1,
+                explain: '过拟合就像只会背答案的鹦鹉，没有真正理解规律。'
+            },
+            {
+                q: '【第26课】给AI下指令时，好的提示词三要素通常包含什么？',
+                options: ['A. 角色、目标、限制', 'B. 时间、地点、天气', 'C. 0、1、2', 'D. 搜索、点击、关闭'],
+                ans: 0,
+                explain: '清晰的提示词应包含角色(你是谁)、目标(做什么)和限制(规则)。'
+            },
+            {
+                q: '【第31课】在“超级搭档”人机协作中，人类最擅长什么，是AI永远无法替代的？',
+                options: ['A. 1秒读一万本书', 'B. 不知疲倦地重复工作', 'C. 情感理解、创造力与道德判断', 'D. 快速二进制计算'],
+                ans: 2,
+                explain: 'AI擅长快速处理海量数据，人类擅长创造力、情感理解与价值判断！'
+            }
+        ];
+
+        const GRID_SIZE = 13; // 13x13 square grid
+        const CENTER_START = 5; // Town Core spans (5,5) to (7,7)
+        const CENTER_END = 7;
+
+        let activeBuildingTab = 'all';
+
+        let gameState = {
+            dataBits: 100,
+            computeFLOPs: 30,
+            hp: 100,
+            maxHp: 100,
+            wave: 1,
+            maxWaves: 15,
+            phase: 'PLANNING', // 'PLANNING' or 'ACTION'
+            canQuiz: false, // 解锁答题的标记
+            selectedBuildingId: 'bit_farm',
+            grid: [], // 13x13 array
+            enemies: [],
+            pendingEnemies: [],
+            projectiles: [],
+            particles: [],
+            floatingTexts: [],
+            selectedGridCell: null,
+            hoverGridCell: null,
+            globalTime: 0,
+            actionTicks: 0,
+            startedAt: Date.now()
+        };
+
+        let canvas, ctx, cellSize;
+        const game04Sprites = new Image();
+        game04Sprites.src = './game04-sprites.png';
+        const game04AdvancedSprites = new Image();
+        game04AdvancedSprites.src = './game04-advanced-towers.png';
+        const GAME04_SPRITE_CELLS = {
+            core: [0, 0], bit_farm: [1, 0], compute_node: [2, 0], logic_wall: [3, 0],
+            encoder_turret: [0, 1], rgb_cannon: [1, 1], denoise_turret: [2, 1],
+            classifier_turret: [3, 1], neural_turret: [3, 1]
+        };
+
+        function drawGame04Sprite(type, centerX, centerY, maxHeight) {
+            const advancedColumn = { rgb_cannon:0, denoise_turret:1, classifier_turret:2, neural_turret:3 }[type];
+            if (advancedColumn !== undefined && game04AdvancedSprites.complete && game04AdvancedSprites.naturalWidth) {
+                const sourceWidth = game04AdvancedSprites.naturalWidth / 4;
+                const sourceHeight = game04AdvancedSprites.naturalHeight;
+                const drawHeight = maxHeight;
+                const drawWidth = drawHeight * (sourceWidth / sourceHeight);
+                ctx.drawImage(game04AdvancedSprites, advancedColumn * sourceWidth, 0, sourceWidth, sourceHeight, centerX - drawWidth / 2, centerY - drawHeight / 2, drawWidth, drawHeight);
+                return true;
+            }
+            if (!game04Sprites.complete || !game04Sprites.naturalWidth || !GAME04_SPRITE_CELLS[type]) return false;
+            const [column, row] = GAME04_SPRITE_CELLS[type];
+            const sourceWidth = game04Sprites.naturalWidth / 4;
+            const sourceHeight = game04Sprites.naturalHeight / 2;
+            const drawHeight = maxHeight;
+            const drawWidth = drawHeight * (sourceWidth / sourceHeight);
+            ctx.drawImage(
+                game04Sprites,
+                column * sourceWidth, row * sourceHeight, sourceWidth, sourceHeight,
+                centerX - drawWidth / 2, centerY - drawHeight / 2, drawWidth, drawHeight
+            );
+            return true;
+        }
+
+        function initGrid() {
+            gameState.grid = [];
+            for (let r = 0; r < GRID_SIZE; r++) {
+                const row = [];
+                for (let c = 0; c < GRID_SIZE; c++) {
+                    const isTownCore = (r >= CENTER_START && r <= CENTER_END && c >= CENTER_START && c <= CENTER_END);
+                    row.push({
+                        r, c,
+                        isTownCore,
+                        building: isTownCore ? { type: 'core', name: '中央领地内核', hp: 100, maxHp: 100, level: 1 } : null
+                    });
+                }
+                gameState.grid.push(row);
+            }
+        }
+
+        function addFloatingText(x, y, text, color = '#38bdf8') {
+            gameState.floatingTexts.push({
+                x: x,
+                y: y,
+                text: text,
+                color: color,
+                life: 1.0,
+                vy: -1.2
+            });
+        }
+
+        function createParticles(x, y, color, count) {
+            for (let i = 0; i < count; i++) {
+                gameState.particles.push({
+                    x, y,
+                    vx: (Math.random() - 0.5) * 4,
+                    vy: (Math.random() - 0.5) * 4,
+                    size: Math.random() * 4 + 2,
+                    color,
+                    life: 1.0
+                });
+            }
+        }
+
+        function renderCanvas() {
+            gameState.globalTime += 0.05;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // 1. Draw Grid Background with Cyber Visuals
+            for (let r = 0; r < GRID_SIZE; r++) {
+                for (let c = 0; c < GRID_SIZE; c++) {
+                    const x = c * cellSize;
+                    const y = r * cellSize;
+                    const isTownCore = (r >= CENTER_START && r <= CENTER_END && c >= CENTER_START && c <= CENTER_END);
+
+                    if (isTownCore) {
+                        const pulseAlpha = 0.15 + Math.sin(gameState.globalTime * 2) * 0.05;
+                        ctx.fillStyle = `rgba(16, 185, 129, ${pulseAlpha})`;
+                    } else {
+                        ctx.fillStyle = (r + c) % 2 === 0 ? 'rgba(15, 23, 42, 0.85)' : 'rgba(30, 41, 59, 0.85)';
+                    }
+                    ctx.fillRect(x, y, cellSize, cellSize);
+
+                    ctx.strokeStyle = isTownCore ? 'rgba(52, 211, 153, 0.5)' : 'rgba(51, 65, 85, 0.25)';
+                    ctx.lineWidth = 1;
+                    ctx.strokeRect(x, y, cellSize, cellSize);
+
+                    const cell = gameState.grid[r][c];
+                    if (cell.building) {
+                        renderBuildingOnCell(cell.building, x, y);
+                    }
+                }
+            }
+
+            // Highlight Town Core Center Perimeter
+            const coreX = CENTER_START * cellSize;
+            const coreY = CENTER_START * cellSize;
+            const coreW = (CENTER_END - CENTER_START + 1) * cellSize;
+            ctx.strokeStyle = `rgba(16, 185, 129, ${0.7 + Math.sin(gameState.globalTime * 3) * 0.2})`;
+            ctx.lineWidth = 3;
+            ctx.strokeRect(coreX, coreY, coreW, coreW);
+
+            // Generated AI core artwork inside the battlefield
+            const coreCenterX = (CENTER_START + 1.5) * cellSize;
+            const coreCenterY = (CENTER_START + 1.5) * cellSize;
+            ctx.save();
+            ctx.shadowColor = '#10b981';
+            ctx.shadowBlur = 18;
+            drawGame04Sprite('core', coreCenterX, coreCenterY - cellSize * 0.12, cellSize * 2.15);
+            ctx.restore();
+
+            ctx.fillStyle = 'rgba(2, 44, 34, 0.86)';
+            ctx.fillRect(coreCenterX - cellSize * 0.72, coreCenterY + cellSize * 0.7, cellSize * 1.44, 18);
+            ctx.fillStyle = '#a7f3d0';
+            ctx.font = `bold ${Math.max(10, cellSize * 0.24)}px Orbitron, sans-serif`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('中央 AI 内核', coreCenterX, coreCenterY + cellSize * 0.7 + 9);
+
+            // 2. Render Range Overlay Preview for Hovered/Selected Cell
+            const activeCell = gameState.selectedGridCell || gameState.hoverGridCell;
+            if (activeCell && activeCell.building && activeCell.building.type === 'turret') {
+                const def = BUILDINGS_DEF[activeCell.building.id];
+                if (def && def.range) {
+                    let rangeRadius = def.range * (hasTech('tech_info') ? 1.1 : 1.0);
+                    if (activeCell.building.level > 1) rangeRadius += (activeCell.building.level - 1) * 0.4;
+
+                    const centerX = (activeCell.c + 0.5) * cellSize;
+                    const centerY = (activeCell.r + 0.5) * cellSize;
+
+                    ctx.save();
+                    ctx.fillStyle = 'rgba(6, 182, 212, 0.12)';
+                    ctx.strokeStyle = '#06b6d4';
+                    ctx.lineWidth = 1.5;
+                    ctx.setLineDash([6, 4]);
+                    ctx.beginPath();
+                    ctx.arc(centerX, centerY, rangeRadius * cellSize, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.stroke();
+                    ctx.restore();
+                }
+            }
+
+            // 3. Render Projectiles
+            gameState.projectiles.forEach(p => {
+                ctx.save();
+                ctx.shadowColor = p.color || '#38bdf8';
+                ctx.shadowBlur = 12;
+                ctx.strokeStyle = p.color || '#38bdf8';
+                ctx.lineWidth = p.splash ? 4 : 2.5;
+                ctx.beginPath();
+                ctx.moveTo(p.sx, p.sy);
+                ctx.lineTo(p.tx, p.ty);
+                ctx.stroke();
+
+                ctx.fillStyle = '#ffffff';
+                ctx.beginPath();
+                ctx.arc(p.tx, p.ty, p.splash ? 9 : 5, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+            });
+            gameState.projectiles = [];
+
+            // 4. Render Enemies with Models
+            gameState.enemies.forEach(e => {
+                ctx.save();
+                ctx.shadowColor = e.color;
+                ctx.shadowBlur = 12;
+
+                if (e.type === 'code_bug') {
+                    ctx.fillStyle = e.color;
+                    ctx.beginPath();
+                    ctx.arc(e.x, e.y, cellSize * 0.32, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.strokeStyle = '#f87171';
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    ctx.moveTo(e.x - 12, e.y - 10); ctx.lineTo(e.x + 12, e.y + 10);
+                    ctx.moveTo(e.x - 12, e.y + 10); ctx.lineTo(e.x + 12, e.y - 10);
+                    ctx.stroke();
+                } else if (e.type === 'noise_fog') {
+                    ctx.fillStyle = e.color;
+                    ctx.beginPath();
+                    ctx.arc(e.x, e.y, cellSize * 0.36 + Math.sin(gameState.globalTime * 5) * 3, 0, Math.PI * 2);
+                    ctx.fill();
+                } else if (e.type === 'overfit_spectre') {
+                    ctx.strokeStyle = '#60a5fa';
+                    ctx.lineWidth = 3;
+                    ctx.beginPath();
+                    ctx.arc(e.x, e.y, cellSize * 0.35, 0, Math.PI * 2);
+                    ctx.stroke();
+                    ctx.fillStyle = 'rgba(59, 130, 246, 0.6)';
+                    ctx.fill();
+                } else {
+                    ctx.fillStyle = e.color;
+                    ctx.beginPath();
+                    ctx.arc(e.x, e.y, cellSize * 0.45, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.strokeStyle = '#fef08a';
+                    ctx.lineWidth = 3;
+                    ctx.stroke();
+                }
+                ctx.restore();
+
+                // HP Bar
+                const hpPercent = Math.max(0, e.hp / e.maxHp);
+                const barW = cellSize * 0.75;
+                const barH = 5;
+                ctx.fillStyle = 'rgba(0,0,0,0.7)';
+                ctx.fillRect(e.x - barW / 2, e.y - cellSize * 0.48, barW, barH);
+                ctx.fillStyle = hpPercent > 0.5 ? '#22c55e' : (hpPercent > 0.2 ? '#eab308' : '#ef4444');
+                ctx.fillRect(e.x - barW / 2, e.y - cellSize * 0.48, barW * hpPercent, barH);
+            });
+
+            // 5. Particles (Explosions/Hits)
+            gameState.particles.forEach(p => {
+                ctx.save();
+                ctx.fillStyle = p.color;
+                ctx.globalAlpha = Math.max(0, p.life);
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+
+                p.x += p.vx;
+                p.y += p.vy;
+                p.life -= 0.05;
+            });
+            gameState.particles = gameState.particles.filter(p => p.life > 0);
+
+            // 6. Floating Text Effects
+            gameState.floatingTexts.forEach(ft => {
+                ctx.save();
+                ctx.font = 'bold 12px Orbitron, sans-serif';
+                ctx.fillStyle = ft.color;
+                ctx.globalAlpha = Math.max(0, ft.life);
+                ctx.textAlign = 'center';
+                ctx.fillText(ft.text, ft.x, ft.y);
+                ctx.restore();
+
+                ft.y += ft.vy;
+                ft.life -= 0.03;
+            });
+            gameState.floatingTexts = gameState.floatingTexts.filter(ft => ft.life > 0);
+
+            // 7. Selected & Hover Cell Highlights
+            if (gameState.hoverGridCell) {
+                const hc = gameState.hoverGridCell;
+                ctx.strokeStyle = 'rgba(56, 189, 248, 0.6)';
+                ctx.lineWidth = 2;
+                ctx.strokeRect(hc.c * cellSize + 2, hc.r * cellSize + 2, cellSize - 4, cellSize - 4);
+            }
+
+            if (gameState.selectedGridCell) {
+                const sc = gameState.selectedGridCell;
+                ctx.strokeStyle = '#f59e0b';
+                ctx.lineWidth = 3;
+                ctx.strokeRect(sc.c * cellSize + 2, sc.r * cellSize + 2, cellSize - 4, cellSize - 4);
+            }
+        }
+
+        function renderBuildingOnCell(b, x, y) {
+            if (b.type === 'core') {
+                return;
+            }
+
+            const def = BUILDINGS_DEF[b.id];
+            if (!def) return;
+
+            ctx.save();
+            ctx.fillStyle = def.color;
+            ctx.shadowColor = def.color;
+            ctx.shadowBlur = 8;
+
+            const padding = 4;
+            const size = cellSize - padding * 2;
+            if (ctx.roundRect) {
+                ctx.beginPath();
+                ctx.roundRect(x + padding, y + padding, size, size, 8);
+                ctx.fill();
+            } else {
+                ctx.fillRect(x + padding, y + padding, size, size);
+            }
+            ctx.restore();
+
+            drawGame04Sprite(b.id, x + cellSize / 2, y + cellSize / 2 - 1, cellSize - 8);
+
+            if (b.level && b.level > 1) {
+                ctx.fillStyle = '#f59e0b';
+                ctx.font = 'bold 9px Orbitron';
+                ctx.fillText('L' + b.level, x + cellSize / 2, y + cellSize / 2 + 10);
+            }
+
+            if (b.hp < b.maxHp) {
+                const hpPct = b.hp / b.maxHp;
+                ctx.fillStyle = 'rgba(0,0,0,0.6)';
+                ctx.fillRect(x + 4, y + cellSize - 6, cellSize - 8, 3);
+                ctx.fillStyle = '#22c55e';
+                ctx.fillRect(x + 4, y + cellSize - 6, (cellSize - 8) * hpPct, 3);
+            }
+        }
+
+        function updateGamePhysics() {
+            if (gameState.phase !== 'ACTION') return;
+
+            gameState.actionTicks++;
+            const targetX = (CENTER_START + 1.5) * cellSize;
+            const targetY = (CENTER_START + 1.5) * cellSize;
+
+            // 1. Natural Vector Movement for Enemies
+            gameState.enemies.forEach(e => {
+                const currentGridR = Math.floor(e.y / cellSize);
+                const currentGridC = Math.floor(e.x / cellSize);
+
+                // Reach Center Core Check
+                if (currentGridR >= CENTER_START && currentGridR <= CENTER_END &&
+                    currentGridC >= CENTER_START && currentGridC <= CENTER_END) {
+                    gameState.hp = Math.max(0, gameState.hp - 10);
+                    sound.playHit();
+                    e.hp = 0;
+                    createParticles(e.x, e.y, '#ef4444', 10);
+                    addFloatingText(e.x, e.y - 10, '-10 内核健康', '#ef4444');
+                    return;
+                }
+
+                // Wall Intercept Check
+                if (currentGridR >= 0 && currentGridR < GRID_SIZE && currentGridC >= 0 && currentGridC < GRID_SIZE) {
+                    const currentCell = gameState.grid[currentGridR][currentGridC];
+                    if (currentCell.building && currentCell.building.type === 'wall') {
+                        currentCell.building.hp -= 0.3; // Continuous wall damage
+                        if (Math.random() < 0.04) sound.playHit();
+                        if (currentCell.building.hp <= 0) {
+                            addFloatingText((currentGridC + 0.5) * cellSize, (currentGridR + 0.5) * cellSize, '闸门破损!', '#f87171');
+                            currentCell.building = null;
+                        }
+                        return; // Stop moving while destroying wall
+                    }
+                }
+
+                // Calculate direction vector toward central core
+                const dx = targetX - e.x;
+                const dy = targetY - e.y;
+                const dist = Math.hypot(dx, dy);
+
+                if (dist > 1) {
+                    const moveSpeed = (e.slowDuration > 0 ? e.speed * 0.5 : e.speed) * 0.85;
+                    e.x += (dx / dist) * moveSpeed;
+                    e.y += (dy / dist) * moveSpeed;
+                }
+
+                if (e.slowDuration > 0) e.slowDuration -= 0.016;
+            });
+
+            gameState.enemies = gameState.enemies.filter(e => e.hp > 0);
+
+            // 2. Continuous Turret Attack Cooldowns
+            for (let r = 0; r < GRID_SIZE; r++) {
+                for (let c = 0; c < GRID_SIZE; c++) {
+                    const cell = gameState.grid[r][c];
+                    if (!cell.building || cell.building.type !== 'turret') continue;
+
+                    const b = cell.building;
+                    b.cooldown = (b.cooldown || 0) - 1;
+
+                    if (b.cooldown > 0) continue;
+
+                    const def = BUILDINGS_DEF[b.id];
+                    const turretX = (c + 0.5) * cellSize;
+                    const turretY = (r + 0.5) * cellSize;
+
+                    let effectiveRange = def.range * (hasTech('tech_info') ? 1.1 : 1.0);
+                    if (b.level > 1) effectiveRange += (b.level - 1) * 0.4;
+
+                    const inRange = gameState.enemies.filter(e => {
+                        const dist = Math.hypot(e.x - turretX, e.y - turretY) / cellSize;
+                        return dist <= effectiveRange;
+                    });
+
+                    if (inRange.length > 0) {
+                        const target = inRange[0];
+                        let totalDmg = def.damage;
+
+                        if (b.level > 1) totalDmg += (b.level - 1) * 10;
+                        if (b.weightDmg) totalDmg += b.weightDmg;
+
+                        if (hasTech('tech_pipeline')) totalDmg *= 1.25;
+                        if (def.id === 'neural_citadel' && hasTech('tech_neural')) totalDmg *= 1.4;
+
+                        if (def.id === 'classifier_sentinel' && target.type === 'overfit_spectre') {
+                            totalDmg *= 1.8;
+                        }
+
+                        let isCrit = false;
+                        if (hasTech('tech_classifier') && Math.random() < 0.2) {
+                            totalDmg *= 2.0;
+                            isCrit = true;
+                        }
+
+                        const finalDmg = Math.round(totalDmg);
+                        target.hp -= finalDmg;
+                        sound.playLaser();
+
+                        addFloatingText(target.x, target.y - 15, isCrit ? `暴击 -${finalDmg}!` : `-${finalDmg}`, isCrit ? '#f59e0b' : '#38bdf8');
+
+                        if (def.slowEffect) target.slowDuration = 3;
+
+                        gameState.projectiles.push({
+                            sx: turretX, sy: turretY,
+                            tx: target.x, ty: target.y,
+                            color: def.color,
+                            splash: def.splash
+                        });
+
+                        if (def.splash) {
+                            inRange.forEach(ne => {
+                                ne.hp -= finalDmg * 0.5;
+                            });
+                        }
+
+                        if (def.id === 'neural_citadel') {
+                            b.weightDmg = (b.weightDmg || 0) + def.scalingWeight;
+                        }
+
+                        b.cooldown = 20; // Cooldown frames before next attack
+
+                        if (target.hp <= 0) {
+                            let reward = target.rewardData;
+                            if (hasTech('tech_prompt')) reward = Math.round(reward * 1.5);
+                            gameState.dataBits += reward;
+                            addFloatingText(target.x, target.y, `+${reward} 字节`, '#06b6d4');
+                            createParticles(target.x, target.y, target.color, 12);
+                            sound.playExplosion();
+                        }
+                    }
+                }
+            }
+
+            gameState.enemies = gameState.enemies.filter(e => e.hp > 0);
+
+            updateResourceDisplay();
+            updateTechBadge();
+
+            if (gameState.hp <= 0) {
+                endGame(false);
+                return;
+            }
+
+            if (gameState.enemies.length === 0) {
+                finishWave();
+                return;
+            }
+        }
+
+        function startAnimationLoop() {
+            function loop() {
+                updateGamePhysics();
+                renderCanvas();
+                requestAnimationFrame(loop);
+            }
+            requestAnimationFrame(loop);
+        }
+
+        function setupTabEvents() {
+            const btnAll = document.getElementById('tab-build-all');
+            const btnProd = document.getElementById('tab-build-prod');
+            const btnDef = document.getElementById('tab-build-def');
+
+            const setTabActive = (activeBtn, tabName) => {
+                [btnAll, btnProd, btnDef].forEach(b => {
+                    b.className = 'flex-1 py-1 px-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold transition';
+                });
+                activeBtn.className = 'flex-1 py-1 px-2 rounded-lg bg-cyan-600 text-white font-bold transition shadow';
+                activeBuildingTab = tabName;
+                renderBuildingMenu();
+            };
+
+            btnAll.onclick = () => setTabActive(btnAll, 'all');
+            btnProd.onclick = () => setTabActive(btnProd, 'prod');
+            btnDef.onclick = () => setTabActive(btnDef, 'def');
+        }
+
+        function renderBuildingMenu() {
+            const container = document.getElementById('building-menu');
+            container.innerHTML = '';
+
+            const filteredBuildings = Object.values(BUILDINGS_DEF).filter(b => {
+                if (activeBuildingTab === 'all') return true;
+                return b.category === activeBuildingTab;
+            });
+
+            filteredBuildings.forEach(b => {
+                const isSelected = gameState.selectedBuildingId === b.id;
+                const canAfford = gameState.dataBits >= b.costData && gameState.computeFLOPs >= b.costCompute;
+
+                const card = document.createElement('div');
+                card.className = `p-3 rounded-xl border transition cursor-pointer flex items-center justify-between ${
+                    isSelected 
+                        ? 'bg-cyan-950/80 border-cyan-400 shadow-md shadow-cyan-500/20' 
+                        : 'bg-slate-900/70 border-slate-800 hover:border-slate-600'
+                } ${!canAfford ? 'opacity-60' : ''}`;
+
+                card.onclick = () => {
+                    gameState.selectedBuildingId = b.id;
+                    sound.playTone(600, 'sine', 0.05);
+                    renderBuildingMenu();
+                    updateLessonHoverText(b.lesson + ": " + b.name);
+                };
+
+                card.innerHTML = `
+                    <div class="flex items-center space-x-3">
+                        <div class="game04-frame w-10 rounded-lg flex items-center justify-center text-white font-bold text-xs shadow" style="background-color: ${b.color}">
+                            <span class="game-sprite sprite-${b.id}" role="img" aria-label="${b.name}"></span>
+                        </div>
+                        <div>
+                            <div class="font-bold text-xs text-slate-100 flex items-center gap-1.5">
+                                ${b.name}
+                                <span class="text-[9px] px-1.5 py-0.2 rounded border ${
+                                    b.category === 'prod' 
+                                        ? 'bg-cyan-950 text-cyan-300 border-cyan-500/40' 
+                                        : 'bg-purple-950 text-purple-300 border-purple-500/40'
+                                }">
+                                    ${b.category === 'prod' ? '生产' : '防守'}
+                                </span>
+                            </div>
+                            <div class="text-[10px] text-cyan-400 font-medium">${b.lesson}</div>
+                            <div class="text-[11px] text-slate-400 line-clamp-1">${b.desc}</div>
+                        </div>
+                    </div>
+                    <div class="text-right text-xs font-orbitron font-semibold ml-2">
+                        <div class="${gameState.dataBits >= b.costData ? 'text-cyan-300' : 'text-rose-400'}">
+                            ${b.costData} <span class="text-[10px]">字节</span>
+                        </div>
+                        ${b.costCompute > 0 ? `
+                            <div class="${gameState.computeFLOPs >= b.costCompute ? 'text-purple-300' : 'text-rose-400'}">
+                                ${b.costCompute} <span class="text-[10px]">算力</span>
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function updateLessonHoverText(txt) {
+            const badge = document.getElementById('lesson-hover-badge');
+            const el = document.getElementById('lesson-hover-text');
+            el.textContent = txt;
+            badge.classList.remove('hidden');
+        }
+
+        function getWaveEnemies(waveNum) {
+            const enemies = [];
+            // 第一波保留教学节奏；第二波开始同时提高数量、生命和速度。
+            const count = waveNum === 1 ? 7 : 8 + waveNum * 4;
+            
+            for (let i = 0; i < count; i++) {
+                let typeKey = 'code_bug';
+                if (waveNum >= 3 && Math.random() < 0.35) typeKey = 'noise_fog';
+                if (waveNum >= 6 && Math.random() < 0.3) typeKey = 'overfit_spectre';
+                if (waveNum >= 8 && i === 0 && waveNum % 2 === 0) typeKey = 'hallucination_boss';
+
+                let r, c;
+                const side = Math.floor(Math.random() * 4);
+                if (side === 0) { r = 0; c = Math.floor(Math.random() * GRID_SIZE); }
+                else if (side === 1) { r = Math.floor(Math.random() * GRID_SIZE); c = GRID_SIZE - 1; }
+                else if (side === 2) { r = GRID_SIZE - 1; c = Math.floor(Math.random() * GRID_SIZE); }
+                else { r = Math.floor(Math.random() * GRID_SIZE); c = 0; }
+
+                const def = ENEMY_TYPES[typeKey];
+                const hpMult = waveNum === 1 ? 1 : 1 + Math.pow(waveNum - 1, 1.12) * 0.42;
+                const speedMult = waveNum === 1 ? 1 : Math.min(1.48, 1 + (waveNum - 1) * 0.035);
+
+                enemies.push({
+                    id: 'enemy_' + Math.random().toString(36).substr(2, 6),
+                    type: typeKey,
+                    name: def.name,
+                    r: r,
+                    c: c,
+                    x: (c + 0.5) * cellSize,
+                    y: (r + 0.5) * cellSize,
+                    hp: Math.round(def.hp * hpMult),
+                    maxHp: Math.round(def.hp * hpMult),
+                    speed: def.speed * speedMult,
+                    rewardData: def.rewardData,
+                    color: def.color,
+                    icon: def.icon,
+                    slowDuration: 0
+                });
+            }
+            return enemies;
+        }
+
+        function updateEnemyForecast() {
+            const container = document.getElementById('enemy-preview-list');
+            container.innerHTML = '';
+            
+            gameState.pendingEnemies = getWaveEnemies(gameState.wave);
+            const list = gameState.pendingEnemies;
+            const counts = {};
+            list.forEach(e => {
+                counts[e.name] = (counts[e.name] || 0) + 1;
+            });
+
+            Object.entries(counts).forEach(([name, qty]) => {
+                const tag = document.createElement('span');
+                tag.className = 'px-2 py-1 rounded bg-rose-950/80 border border-rose-500/40 text-rose-200 font-medium text-[11px]';
+                tag.innerHTML = `<i class="fa-solid fa-bug text-rose-400 mr-1"></i> ${name} x${qty}`;
+                container.appendChild(tag);
+            });
+        }
+
+        function updateQuizButtonState() {
+            const btn = document.getElementById('btn-open-quiz');
+            const desc = document.getElementById('quiz-status-desc');
+            if (!btn) return;
+
+            if (gameState.canQuiz && gameState.phase === 'PLANNING') {
+                btn.disabled = false;
+                btn.className = "px-3 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs shadow-md transition cursor-pointer animate-bounce";
+                btn.innerHTML = '<i class="fa-solid fa-graduation-cap mr-1"></i>答题领赏';
+                if (desc) desc.textContent = "恭喜击退敌群！现在可以回答 1 题赚取 +50 数据字节！";
+            } else {
+                btn.disabled = true;
+                btn.className = "px-3 py-1.5 rounded-lg bg-slate-800 text-slate-500 font-bold text-xs border border-slate-700 cursor-not-allowed transition opacity-70";
+                btn.innerHTML = gameState.phase === 'ACTION'
+                    ? '<i class="fa-solid fa-spinner fa-spin mr-1"></i>交战中...'
+                    : '<i class="fa-solid fa-lock mr-1"></i>需完成本波';
+                if (desc) desc.textContent = "完成一波敌群抵御后解锁 1 次答题领赏机会！";
+            }
+        }
+
+        function startWave() {
+            if (gameState.phase === 'ACTION') return;
+
+            const defenseCount = gameState.grid.flat().filter(cell => cell.building && cell.building.type !== 'resource' && cell.building.type !== 'core').length;
+            if (defenseCount === 0) {
+                document.getElementById('game-status-hint').textContent = '请先建造至少一座防守建筑，再开始本波进攻！';
+                sound.playTone(150, 'sawtooth', 0.18);
+                return;
+            }
+
+            gameState.phase = 'ACTION';
+            document.getElementById('turn-btn-text').textContent = '波次交战中...';
+            document.getElementById('game-status-hint').textContent = '【防守交战阶段】AI 防守塔正在自动阻击敌人！';
+            document.getElementById('btn-next-turn').disabled = true;
+
+            updateQuizButtonState();
+
+            gameState.enemies = gameState.pendingEnemies.length ? gameState.pendingEnemies : getWaveEnemies(gameState.wave);
+            gameState.pendingEnemies = [];
+            sound.playTone(300, 'sawtooth', 0.2);
+        }
+
+        function finishWave() {
+            gameState.phase = 'PLANNING';
+            gameState.canQuiz = true; // 成功抵御本波，解锁1次答题权限
+            document.getElementById('turn-btn-text').textContent = '开始下一波抵御';
+            document.getElementById('game-status-hint').textContent = '【建设阶段】在网格上放置 AI 节点建筑';
+            document.getElementById('btn-next-turn').disabled = false;
+
+            sound.playVictory();
+
+            let incomeBits = 0;
+            let incomeFLOPs = 0;
+
+            for (let r = 0; r < GRID_SIZE; r++) {
+                for (let c = 0; c < GRID_SIZE; c++) {
+                    const b = gameState.grid[r][c].building;
+                    if (b && b.type === 'resource') {
+                        const def = BUILDINGS_DEF[b.id];
+                        if (def.incomeData) {
+                            let inc = def.incomeData * (b.level || 1);
+                            if (hasTech('tech_binary')) inc = Math.round(inc * 1.3);
+                            incomeBits += inc;
+                        }
+                        if (def.incomeCompute) incomeFLOPs += def.incomeCompute * (b.level || 1);
+                    }
+                }
+            }
+
+            if (hasTech('tech_debur')) {
+                for (let r = 0; r < GRID_SIZE; r++) {
+                    for (let c = 0; c < GRID_SIZE; c++) {
+                        const b = gameState.grid[r][c].building;
+                        if (b && b.hp < b.maxHp) b.hp = Math.min(b.maxHp, b.hp + 15);
+                    }
+                }
+            }
+
+            gameState.dataBits += 30 + incomeBits;
+            gameState.computeFLOPs += 10 + incomeFLOPs;
+
+            if (gameState.wave >= gameState.maxWaves) {
+                endGame(true);
+                return;
+            }
+
+            reportFeaturedProgress(false);
+            gameState.wave++;
+            updateResourceDisplay();
+            updateEnemyForecast();
+            updateTechBadge();
+            updateQuizButtonState();
+            renderCanvas();
+
+            setTimeout(openQuizModal, 600);
+        }
+
+        function placeBuilding(r, c) {
+            const bId = gameState.selectedBuildingId;
+            const def = BUILDINGS_DEF[bId];
+            if (!def) return;
+
+            if (gameState.dataBits < def.costData || gameState.computeFLOPs < def.costCompute) {
+                sound.playTone(150, 'sawtooth', 0.15);
+                return;
+            }
+
+            gameState.dataBits -= def.costData;
+            gameState.computeFLOPs -= def.costCompute;
+
+            gameState.grid[r][c].building = {
+                id: def.id,
+                name: def.name,
+                type: def.type,
+                hp: def.hp,
+                maxHp: def.hp,
+                level: 1,
+                weightDmg: 0
+            };
+
+            sound.playBuild();
+            updateResourceDisplay();
+            updateTechBadge();
+            renderBuildingMenu();
+        }
+
+        function showBuildingCard(cell) {
+            const card = document.getElementById('grid-info-card');
+            const b = cell.building;
+            if (!b) { card.classList.add('hidden'); return; }
+
+            const def = BUILDINGS_DEF[b.id];
+            document.getElementById('grid-card-title').textContent = `${b.name} (Lv.${b.level || 1})`;
+            document.getElementById('grid-card-desc').textContent = b.type === 'core' ? '智能镇中央领地内核。若生命降为0，领地被破坏。' : (def?.desc || '');
+            document.getElementById('grid-card-stats').innerHTML = `
+                <div>健康耐久: ${Math.round(b.hp)} / ${b.maxHp}</div>
+                ${b.weightDmg ? `<div class="text-pink-400 font-bold">神经网络增加权重伤害: +${b.weightDmg}</div>` : ''}
+            `;
+
+            const upgradeBtn = document.getElementById('btn-upgrade-building');
+            const demolishBtn = document.getElementById('btn-demolish-building');
+
+            if (b.type === 'core' || !def) {
+                upgradeBtn.classList.add('hidden');
+                demolishBtn.classList.add('hidden');
+            } else {
+                upgradeBtn.classList.remove('hidden');
+                demolishBtn.classList.remove('hidden');
+
+                const upgradeCost = Math.round(def.costData * 0.6 * (b.level || 1));
+                const isMaxLevel = (b.level || 1) >= 3;
+                upgradeBtn.disabled = isMaxLevel;
+                upgradeBtn.classList.toggle('opacity-60', isMaxLevel);
+                upgradeBtn.classList.toggle('cursor-not-allowed', isMaxLevel);
+                upgradeBtn.innerHTML = isMaxLevel
+                    ? '<i class="fa-solid fa-circle-check mr-1"></i>已达到最高等级 L3'
+                    : `<i class="fa-solid fa-arrow-up-right-dots mr-1"></i>升级 (L${(b.level||1)+1}) - ${upgradeCost} 字节`;
+
+                upgradeBtn.onclick = () => {
+                    if (gameState.dataBits >= upgradeCost && (b.level || 1) < 3) {
+                        gameState.dataBits -= upgradeCost;
+                        b.level = (b.level || 1) + 1;
+                        b.maxHp += 30;
+                        b.hp = b.maxHp;
+                        sound.playBuild();
+                        updateResourceDisplay();
+                        showBuildingCard(cell);
+                    } else {
+                        sound.playTone(150, 'sawtooth', 0.15);
+                    }
+                };
+
+                demolishBtn.onclick = () => {
+                    if (b.type !== 'core') {
+                        const refund = Math.round(def.costData * 0.5);
+                        gameState.dataBits += refund;
+                        cell.building = null;
+                        card.classList.add('hidden');
+                        sound.playTone(400, 'sine', 0.1);
+                        updateResourceDisplay();
+                    }
+                };
+            }
+
+            card.classList.remove('hidden');
+        }
+
+        let lastRenderedBits = -1;
+        let lastRenderedCompute = -1;
+
+        function updateResourceDisplay() {
+            document.getElementById('res-data').textContent = gameState.dataBits;
+            document.getElementById('res-compute').textContent = gameState.computeFLOPs;
+            document.getElementById('res-hp').textContent = `${gameState.hp} / ${gameState.maxHp}`;
+            const hpRatio = Math.max(0, Math.min(1, gameState.hp / Math.max(1, gameState.maxHp)));
+            const hpBar = document.getElementById('core-hp-bar');
+            hpBar.style.width = `${hpRatio * 100}%`;
+            hpBar.className = `h-full rounded-full transition-all duration-300 ${hpRatio > .6 ? 'bg-gradient-to-r from-emerald-500 to-lime-300' : (hpRatio > .3 ? 'bg-gradient-to-r from-amber-500 to-yellow-300' : 'bg-gradient-to-r from-rose-600 to-red-400 animate-pulse')}`;
+            document.getElementById('wave-counter').textContent = `第 ${gameState.wave} / ${gameState.maxWaves} 波`;
+
+            // 当数据字节或算力发生变动时，自动实时刷新建筑菜单的可建造状态
+            if (lastRenderedBits !== gameState.dataBits || lastRenderedCompute !== gameState.computeFLOPs) {
+                lastRenderedBits = gameState.dataBits;
+                lastRenderedCompute = gameState.computeFLOPs;
+                renderBuildingMenu();
+            }
+        }
+
+        function updateTechBadge() {
+            const badge = document.getElementById('tech-badge');
+            const canUnlockAny = TECH_TREE.some(t => !t.unlocked && gameState.computeFLOPs >= t.cost);
+            if (canUnlockAny) {
+                badge.classList.remove('hidden');
+            } else {
+                badge.classList.add('hidden');
+            }
+        }
+
+        function hasTech(techId) {
+            const t = TECH_TREE.find(x => x.id === techId);
+            return t ? t.unlocked : false;
+        }
+
+        function renderTechTree() {
+            const container = document.getElementById('tech-tree-container');
+            container.innerHTML = '';
+
+            TECH_TREE.forEach(t => {
+                const canUnlock = !t.unlocked && gameState.computeFLOPs >= t.cost;
+                const node = document.createElement('div');
+                node.className = `p-3.5 rounded-xl border flex flex-col justify-between transition ${
+                    t.unlocked 
+                        ? 'bg-purple-950/70 border-purple-400 shadow-md shadow-purple-500/20' 
+                        : 'bg-slate-900/80 border-slate-800'
+                }`;
+
+                node.innerHTML = `
+                    <div>
+                        <div class="flex justify-between items-center mb-1">
+                            <h4 class="font-bold text-xs ${t.unlocked ? 'text-purple-300' : 'text-slate-200'}">${t.name}</h4>
+                            ${t.unlocked ? '<span class="text-[10px] px-2 py-0.5 rounded bg-purple-900 text-purple-200 font-bold">已研制</span>' : ''}
+                        </div>
+                        <p class="text-[11px] text-slate-400 leading-relaxed mb-2">${t.desc}</p>
+                    </div>
+                    <div class="flex justify-between items-center pt-2 border-t border-slate-800/80 text-xs font-orbitron">
+                        <span class="text-purple-300"><i class="fa-solid fa-bolt mr-1"></i>${t.cost} FLOPs</span>
+                        ${!t.unlocked ? `
+                            <button class="px-3 py-1 rounded bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs transition ${!canUnlock ? 'opacity-50 cursor-not-allowed' : ''}" 
+                                onclick="unlockTech('${t.id}')">
+                                <i class="fa-solid fa-microchip mr-1"></i>解锁科技
+                            </button>
+                        ` : ''}
+                    </div>
+                `;
+                container.appendChild(node);
+            });
+        }
+
+        window.unlockTech = function(techId) {
+            const t = TECH_TREE.find(x => x.id === techId);
+            if (!t || t.unlocked || gameState.computeFLOPs < t.cost) return;
+
+            gameState.computeFLOPs -= t.cost;
+            t.unlocked = true;
+
+            if (techId === 'tech_synergy') {
+                gameState.maxHp = 150;
+                gameState.hp = 150;
+            }
+
+            sound.playVictory();
+            updateResourceDisplay();
+            updateTechBadge();
+            renderTechTree();
+        };
+
+        function renderAIWiki() {
+            const container = document.getElementById('wiki-lessons-list');
+            container.innerHTML = '';
+
+            const lessons = [
+                { title: '第1课《小侦探找线索》', core: '信息是帮助我们做决定的线索；没有信息，AI也无法做决定。' },
+                { title: '第2课《开关城的两兄弟》', core: '0与1表示“关”与“开”两种状态，组合起来存储千变万化的电脑信息。' },
+                { title: '第3课《小邮差的密码信》', core: '编码与解码：发送方与接收方必须用同一套规则，否则信息会乱码。' },
+                { title: '第4课《仓库管理员机器人》', core: '存储与容量：信息住在格子里，格子越多能装的信息越大。' },
+                { title: '第6课《红绿蓝灯合唱团》', core: 'RGB三原色：红、绿、蓝三种光混合配比，变出世间几乎所有色彩。' },
+                { title: '第8课《雾气里的照片》', core: '噪声与垃圾进垃圾出：信息不清晰会导致不确定；错误数据导致错误输出。' },
+                { title: '第9课《红灯停绿灯行》', core: '条件判断：依靠“如果...就...”逻辑规则指挥机器运行。' },
+                { title: '第11课《做披萨的流水线》', core: '任务分解与并行：大任务分解小步骤，能同时做的并行提高效率。' },
+                { title: '第12课《找Bug的小修理工》', core: '调试四步：发现问题→找到原因→修改→再试。记录步骤最有效。' },
+                { title: '第14课《特征放大镜》', core: '关键特征：寻找有区分度的线索，快速准确分辨事物。' },
+                { title: '第16课《背答案的鹦鹉》', core: '过拟合：只会做见过的原题，遇到新题就傻眼。真正的学习是举一反三。' },
+                { title: '第24课《慢慢调准小箭头》', core: '梯度下降：每次微调一点点，朝着对的方向，持续微调越来越准。' },
+                { title: '第26课《给AI的清楚指令》', core: '提示词工程：包含角色、目标、限制三大要素，指令越清晰结果越靠谱。' },
+                { title: '第31课《超级搭档》', core: '人机协作：AI擅长海量计算与重复，人类擅长情感、道德与创造力！' }
+            ];
+
+            lessons.forEach(l => {
+                const item = document.createElement('div');
+                item.className = 'p-3 rounded-xl bg-slate-900/80 border border-slate-800';
+                item.innerHTML = `
+                    <div class="font-bold text-blue-300 text-xs mb-1">${l.title}</div>
+                    <div class="text-slate-300 text-[11px] leading-relaxed">${l.core}</div>
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        let currentQuizIdx = 0;
+        function openQuizModal() {
+            if (!gameState.canQuiz) return;
+
+            currentQuizIdx = Math.floor(Math.random() * AI_QUIZ_DATA.length);
+            const qData = AI_QUIZ_DATA[currentQuizIdx];
+
+            document.getElementById('quiz-question').textContent = qData.q;
+            const optsContainer = document.getElementById('quiz-options');
+            optsContainer.innerHTML = '';
+            document.getElementById('quiz-feedback').classList.add('hidden');
+
+            qData.options.forEach((optText, idx) => {
+                const btn = document.createElement('button');
+                btn.className = 'quiz-opt-btn w-full text-left p-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700 text-xs text-slate-200 transition font-medium';
+                btn.textContent = optText;
+                btn.onclick = () => submitQuizAnswer(idx);
+                optsContainer.appendChild(btn);
+            });
+
+            document.getElementById('modal-quiz').classList.remove('hidden');
+        }
+
+        function submitQuizAnswer(selectedIdx) {
+            const qData = AI_QUIZ_DATA[currentQuizIdx];
+            const feedback = document.getElementById('quiz-feedback');
+            feedback.classList.remove('hidden');
+
+            // Disable buttons after answering
+            document.querySelectorAll('.quiz-opt-btn').forEach(btn => btn.disabled = true);
+
+            // 消耗本次答题机会
+            gameState.canQuiz = false;
+            updateQuizButtonState();
+
+            const closeBtnHtml = `<button onclick="document.getElementById('modal-quiz').classList.add('hidden')" class="mt-3 w-full py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs shadow transition cursor-pointer flex items-center justify-center gap-1.5"><i class="fa-solid fa-check"></i> 确认并关闭窗口</button>`;
+
+            if (selectedIdx === qData.ans) {
+                feedback.className = 'text-xs p-3 rounded-xl mb-1 bg-emerald-950/90 border border-emerald-500 text-emerald-200 shadow-lg';
+                feedback.innerHTML = `<div class="font-bold text-sm mb-1 text-emerald-300"><i class="fa-solid fa-circle-check mr-1"></i> 回答正确！奖励 +50 数据字节！</div><div class="text-[11px] opacity-90 leading-relaxed mb-2">${qData.explain}</div>${closeBtnHtml}`;
+                gameState.dataBits += 50;
+                sound.playVictory();
+                updateResourceDisplay();
+            } else {
+                feedback.className = 'text-xs p-3 rounded-xl mb-1 bg-rose-950/90 border border-rose-500 text-rose-200 shadow-lg';
+                feedback.innerHTML = `<div class="font-bold text-sm mb-1 text-rose-300"><i class="fa-solid fa-circle-xmark mr-1"></i> 回答有误，再接再厉！</div><div class="text-[11px] opacity-90 leading-relaxed mb-2">${qData.explain}</div>${closeBtnHtml}`;
+                sound.playTone(150, 'sawtooth', 0.2);
+            }
+        }
+
+        function endGame(isVictory) {
+            const modal = document.getElementById('modal-game-over');
+            const icon = document.getElementById('game-over-icon');
+            const title = document.getElementById('game-over-title');
+            const desc = document.getElementById('game-over-desc');
+
+            if (isVictory) {
+                icon.innerHTML = '<span class="game-sprite sprite-core inline-block game04-frame w-14 rounded-2xl" role="img" aria-label="核心守卫成功"></span>';
+                title.textContent = '智慧领地完美保卫成功！';
+                title.className = 'text-2xl font-bold font-orbitron mb-2 text-emerald-400 neon-text-green';
+                desc.textContent = '你成功运用 AI 启蒙 32 课知识点，建造了坚不可摧的算法防线，消灭了所有噪声怪与过拟合魔鬼！';
+                sound.playVictory();
+            } else {
+                icon.innerHTML = '<span class="game-sprite sprite-core inline-block game04-frame w-14 rounded-2xl grayscale opacity-70" role="img" aria-label="核心受损"></span>';
+                title.textContent = '领地内核数据受损...';
+                title.className = 'text-2xl font-bold font-orbitron mb-2 text-rose-400';
+                desc.textContent = '噪声与代码 Bug 突破了据点防线。别灰心！回顾调试四步法，调整塔防架构重来一次吧！';
+                sound.playExplosion();
+            }
+
+            modal.classList.remove('hidden');
+            reportFeaturedProgress(isVictory);
+        }
+
+        document.getElementById('btn-restart-game').onclick = () => {
+            document.getElementById('modal-game-over').classList.add('hidden');
+            gameState.dataBits = 100;
+            gameState.computeFLOPs = 30;
+            gameState.hp = 100;
+            gameState.maxHp = 100;
+            gameState.wave = 1;
+            gameState.phase = 'PLANNING';
+            gameState.canQuiz = false;
+            gameState.enemies = [];
+            gameState.projectiles = [];
+            gameState.particles = [];
+            gameState.floatingTexts = [];
+            gameState.pendingEnemies = [];
+            gameState.selectedGridCell = null;
+            gameState.startedAt = Date.now();
+            document.getElementById('grid-info-card').classList.add('hidden');
+            document.getElementById('turn-btn-text').textContent = '开始抵御本波进攻';
+            document.getElementById('btn-next-turn').disabled = false;
+
+            // Reset tech tree
+            TECH_TREE.forEach(t => t.unlocked = false);
+            lastRenderedBits = -1;
+            lastRenderedCompute = -1;
+
+            initGrid();
+            updateResourceDisplay();
+            updateEnemyForecast();
+            updateTechBadge();
+            updateQuizButtonState();
+            renderBuildingMenu();
+        };
+
+        window.onload = function() {
+            canvas = document.getElementById('gameCanvas');
+            ctx = canvas.getContext('2d');
+            cellSize = canvas.width / GRID_SIZE;
+
+            // Canvas listeners
+            canvas.addEventListener('mousemove', (evt) => {
+                const rect = canvas.getBoundingClientRect();
+                const mouseX = evt.clientX - rect.left;
+                const mouseY = evt.clientY - rect.top;
+                const c = Math.floor(mouseX / cellSize);
+                const r = Math.floor(mouseY / cellSize);
+
+                if (r >= 0 && r < GRID_SIZE && c >= 0 && c < GRID_SIZE) {
+                    gameState.hoverGridCell = gameState.grid[r][c];
+                } else {
+                    gameState.hoverGridCell = null;
+                }
+            });
+
+            canvas.addEventListener('mouseleave', () => {
+                gameState.hoverGridCell = null;
+            });
+
+            canvas.addEventListener('click', (evt) => {
+                const rect = canvas.getBoundingClientRect();
+                const mouseX = evt.clientX - rect.left;
+                const mouseY = evt.clientY - rect.top;
+
+                const c = Math.floor(mouseX / cellSize);
+                const r = Math.floor(mouseY / cellSize);
+
+                if (r < 0 || r >= GRID_SIZE || c < 0 || c >= GRID_SIZE) return;
+
+                const cell = gameState.grid[r][c];
+                gameState.selectedGridCell = cell;
+
+                if (gameState.phase === 'PLANNING') {
+                    if (!cell.building && !cell.isTownCore) {
+                        placeBuilding(r, c);
+                    } else if (cell.building) {
+                        showBuildingCard(cell);
+                    }
+                }
+            });
+
+            // Button Event Listeners
+            document.getElementById('btn-next-turn').onclick = startWave;
+
+            document.getElementById('btn-tech-tree').onclick = () => {
+                renderTechTree();
+                document.getElementById('modal-tech-tree').classList.remove('hidden');
+            };
+
+            document.getElementById('btn-ai-wiki').onclick = () => {
+                renderAIWiki();
+                document.getElementById('modal-ai-wiki').classList.remove('hidden');
+            };
+
+            document.getElementById('btn-open-quiz').onclick = openQuizModal;
+
+            document.querySelectorAll('.btn-close-modal').forEach(btn => {
+                btn.onclick = (e) => {
+                    e.target.closest('.fixed').classList.add('hidden');
+                };
+            });
+
+            document.getElementById('btn-sound').onclick = () => {
+                sound.muted = !sound.muted;
+                if (sound.muted) bgm.pause(); else startBgm();
+                document.getElementById('sound-icon').className = sound.muted ? 'fa-solid fa-volume-xmark text-rose-400' : 'fa-solid fa-volume-high';
+                document.getElementById('sound-label').innerText = sound.muted ? '静音' : '声音';
+            };
+
+            document.body.addEventListener('pointerdown', startBgm, { once: true });
+
+            document.getElementById('btn-close-card').onclick = () => {
+                document.getElementById('grid-info-card').classList.add('hidden');
+            };
+
+            // Setup Tab filtering events & start loops
+            setupTabEvents();
+            initGrid();
+            renderBuildingMenu();
+            updateEnemyForecast();
+            updateResourceDisplay();
+            updateTechBadge();
+            updateQuizButtonState();
+
+            // Launch 60FPS continuous render/physics animation loop
+            startAnimationLoop();
+        };
+    </script>
+</body>
+</html>

@@ -1,0 +1,1285 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>点点的AI梦工坊 - 合成进化游戏</title>
+    <script src="../../../libs/libs/tailwind.min.js"></script>
+    <link rel="stylesheet" href="../../../libs/libs/font-awesome.all.min.css">
+    <link rel="stylesheet" href="../../../libs/libs/game-icon-fallback.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'ai-blue': '#3B82F6',
+                        'ai-purple': '#8B5CF6',
+                        'ai-pink': '#EC4899',
+                        'ai-yellow': '#F59E0B',
+                        'ai-dark': '#0F172A',
+                    },
+                    animation: {
+                        'bounce-short': 'bounce 0.5s ease-in-out 1',
+                        'pulse-glow': 'pulseGlow 2s infinite',
+                        'float': 'float 3s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        pulseGlow: {
+                            '0%, 100%': { filter: 'drop-shadow(0 0 8px rgba(139, 92, 246, 0.6))' },
+                            '50%': { filter: 'drop-shadow(0 0 18px rgba(236, 72, 153, 0.8))' },
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-6px)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        * {
+            box-sizing: border-box;
+            touch-action: manipulation;
+        }
+        body {
+            user-select: none;
+            -webkit-user-select: none;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #311042 100%);
+        }
+        .app-viewport {
+            height: 100vh;
+            height: 100dvh;
+            max-height: 100dvh;
+        }
+        .safe-bottom-padding {
+            padding-bottom: max(0.5rem, env(safe-area-inset-bottom, 0.5rem));
+        }
+        .board-aspect-box {
+            aspect-ratio: 5 / 6;
+            max-height: 100%;
+            max-width: 100%;
+        }
+        .game-layout {
+            width: 100%;
+            max-width: 1560px;
+            margin: 0 auto;
+            min-height: 0;
+        }
+        .sprite-frame {
+            aspect-ratio: 4 / 5;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+        .grid-cell {
+            transition: all 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.07);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+        }
+        .glass-modal {
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(139, 92, 246, 0.35);
+        }
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(0,0,0,0.1);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(139, 92, 246, 0.4);
+            border-radius: 2px;
+        }
+        .game-sprite {
+            display: inline-block;
+            width: 100%;
+            height: 100%;
+            background: url('./game06-sprites.png') no-repeat;
+            background-size: 500% 400%;
+            border-radius: inherit;
+            transform: scale(.86);
+            transform-origin: center;
+        }
+        .board-item-visual {
+            position: absolute;
+            top: 25px;
+            bottom: 19px;
+            left: 4px;
+            right: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 0;
+        }
+        .board-item-visual .sprite-frame {
+            height: 100%;
+            width: auto;
+            max-width: 100%;
+        }
+        .board-item-visual .game-sprite { transform: scale(.76); }
+        .noise-orb {
+            width: 46px;
+            height: 46px;
+            position: relative;
+            border-radius: 50%;
+            background:
+                radial-gradient(circle at 28% 30%, #f8fafc 0 4%, transparent 5%),
+                radial-gradient(circle at 70% 26%, #cbd5e1 0 5%, transparent 6%),
+                radial-gradient(circle at 60% 70%, #94a3b8 0 6%, transparent 7%),
+                radial-gradient(circle at 30% 70%, #e2e8f0 0 4%, transparent 5%),
+                radial-gradient(circle, rgba(100,116,139,.96), rgba(30,41,59,.96) 68%);
+            border: 2px solid rgba(203,213,225,.88);
+            box-shadow: 0 0 14px rgba(148,163,184,.5), inset 0 0 12px rgba(226,232,240,.22);
+            animation: pulseGlow 1.8s infinite;
+        }
+        .noise-orb::before,
+        .noise-orb::after {
+            content: '';
+            position: absolute;
+            left: 8px;
+            right: 8px;
+            height: 5px;
+            border-top: 3px solid #e2e8f0;
+            border-radius: 50%;
+            transform: rotate(-12deg);
+        }
+        .noise-orb::before { top: 15px; }
+        .noise-orb::after { top: 27px; transform: rotate(14deg); border-color: #94a3b8; }
+        @media (min-width: 800px) {
+            .game-layout {
+                display: grid;
+                grid-template-columns: minmax(360px, 430px) minmax(560px, 1fr);
+                grid-template-rows: auto 1fr auto;
+                grid-template-areas:
+                    "research board"
+                    "guide board"
+                    "actions board";
+                gap: 12px;
+                padding: 12px 18px 14px;
+            }
+            #research-panel { grid-area: research; align-self: start; }
+            #guide-panel { grid-area: guide; align-self: start; margin: 0; }
+            #board-section { grid-area: board; min-height: 0; margin: 0; }
+            #action-panel { grid-area: actions; align-self: end; }
+            .board-aspect-box {
+                width: auto;
+                height: 100%;
+                max-height: calc(100dvh - 104px);
+                max-width: 100%;
+            }
+        }
+        @media (max-width: 799px) {
+            .game-layout {
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                padding: 8px;
+                max-width: 560px;
+                overflow: hidden;
+            }
+        }
+        .sprite-r1c1 { background-position: 0% 0%; } .sprite-r1c2 { background-position: 25% 0%; }
+        .sprite-r1c3 { background-position: 50% 0%; } .sprite-r1c4 { background-position: 75% 0%; }
+        .sprite-r1c5 { background-position: 100% 0%; }
+        .sprite-r2c1 { background-position: 0% 33.333%; } .sprite-r2c2 { background-position: 25% 33.333%; }
+        .sprite-r2c3 { background-position: 50% 33.333%; } .sprite-r2c4 { background-position: 75% 33.333%; }
+        .sprite-r2c5 { background-position: 100% 33.333%; }
+        .sprite-r3c1 { background-position: 0% 66.667%; } .sprite-r3c2 { background-position: 25% 66.667%; }
+        .sprite-r3c3 { background-position: 50% 66.667%; } .sprite-r3c4 { background-position: 75% 66.667%; }
+        .sprite-r3c5 { background-position: 100% 66.667%; }
+        .sprite-r4c1 { background-position: 0% 100%; } .sprite-r4c2 { background-position: 25% 100%; }
+        .sprite-r4c3 { background-position: 50% 100%; } .sprite-r4c4 { background-position: 75% 100%; }
+        .sprite-r4c5 { background-position: 100% 100%; }
+    </style>
+</head>
+<body class="app-viewport w-screen overflow-hidden flex flex-col text-white select-none">
+    <audio id="bgm" src="bgm.mp3" loop preload="auto"></audio>
+
+    <!-- 顶栏：玩家等级、资源计数与菜单功能 -->
+    <header class="w-full px-3 sm:px-5 py-2 glass-panel flex items-center justify-between z-20 shadow-lg flex-shrink-0 min-h-16">
+        <div class="flex items-center space-x-2">
+            <div class="relative" title="游戏标识：AI知识梦工坊">
+                <div class="w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-gradient-to-tr from-ai-purple to-ai-pink p-0.5 shadow-md">
+                    <div class="w-full h-full bg-slate-900 rounded-[10px] flex items-center justify-center text-purple-200">
+                        <svg viewBox="0 0 24 24" width="23" height="23" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="合并游戏标识">
+                            <rect width="8" height="8" x="3" y="3" rx="2"></rect><path d="M7 11v4a2 2 0 0 0 2 2h4"></path><rect width="8" height="8" x="13" y="13" rx="2"></rect>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <div class="flex items-center gap-1.5">
+                    <h1 id="scene-name" class="font-bold text-xs sm:text-sm text-purple-200 truncate max-w-[100px] sm:max-w-none">开关城与代码溪谷</h1>
+                    <span class="text-[9px] text-purple-300 font-bold whitespace-nowrap">LV.<span id="player-level">1</span></span>
+                </div>
+                <div class="w-20 sm:w-28 h-1.5 bg-slate-800 rounded-full overflow-hidden mt-1 p-0.5 border border-slate-700">
+                    <div id="exp-bar" class="h-full bg-gradient-to-r from-ai-blue to-ai-purple rounded-full transition-all duration-300" style="width: 20%"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex items-center space-x-1.5 sm:space-x-2">
+            <!-- 连击提示 -->
+            <div id="combo-badge" class="hidden items-center bg-gradient-to-r from-pink-500 to-purple-600 px-2 py-0.5 rounded-full animate-bounce text-[10px] font-black text-yellow-300 border border-yellow-400/50 shadow-md">
+                <i class="fa-solid fa-fire mr-1 text-amber-300"></i><span id="combo-text">Combo x2</span>
+            </div>
+            <!-- 能量计数 -->
+            <div class="flex items-center bg-slate-900/80 border border-amber-500/30 rounded-full px-2 sm:px-2.5 py-1 shadow-inner">
+                <i class="fa-solid fa-bolt text-amber-400 text-xs sm:text-sm mr-1 animate-pulse"></i>
+                <span id="energy-count" class="font-extrabold text-xs sm:text-sm text-amber-300">100</span>
+                <span class="text-[9px] text-amber-500/70 ml-0.5 hidden xs:inline">/100</span>
+            </div>
+            <!-- 金币计数 -->
+            <div class="flex items-center bg-slate-900/80 border border-yellow-500/30 rounded-full px-2 sm:px-2.5 py-1 shadow-inner">
+                <i class="fa-solid fa-coins text-yellow-400 text-xs sm:text-sm mr-1"></i>
+                <span id="coin-count" class="font-extrabold text-xs sm:text-sm text-yellow-300">120</span>
+            </div>
+            <button id="btn-sound" class="h-9 px-2.5 rounded-xl bg-slate-800 border border-emerald-500/50 flex items-center justify-center gap-1.5 text-emerald-300 active:scale-95 transition" title="背景音乐与音效">
+                <i id="sound-icon" class="fa-solid fa-volume-high text-xs sm:text-sm"></i><span id="sound-label" class="text-xs font-bold hidden sm:inline">声音</span>
+            </button>
+            <!-- 教程按钮 -->
+            <button id="btn-tutorial" class="h-9 px-2.5 rounded-xl bg-slate-800 border border-cyan-500/50 flex items-center justify-center gap-1.5 text-cyan-300 active:scale-95 transition" title="玩法指南">
+                <i class="fa-solid fa-graduation-cap text-xs sm:text-sm"></i><span class="text-xs font-bold hidden sm:inline">玩法说明</span>
+            </button>
+            <!-- 图鉴按钮 -->
+            <button id="btn-handbook" class="h-9 px-2.5 rounded-xl bg-slate-800 border border-purple-500/50 flex items-center justify-center gap-1.5 text-purple-300 active:scale-95 transition" title="AI启蒙图鉴">
+                <i class="fa-solid fa-book-open text-xs sm:text-sm"></i><span class="text-xs font-bold hidden sm:inline">知识图鉴</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- 主界面：研究课题、点点提示、合成棋盘与操作栏 -->
+    <main class="game-layout flex-1 relative z-10">
+        
+        <!-- 1. 团团的研究课题 -->
+        <div id="research-panel" class="w-full flex-shrink-0 glass-panel rounded-2xl p-3">
+            <div class="flex items-center justify-between mb-1 px-1">
+                <span class="text-[11px] sm:text-xs font-bold text-slate-300 flex items-center">
+                    <i class="fa-solid fa-clipboard-check text-ai-purple mr-1"></i>团团的研究课题
+                </span>
+                <span class="text-[9px] text-slate-400">完成课题获得金币与经验</span>
+            </div>
+            <div class="mb-1.5 px-2 py-1.5 rounded-xl bg-purple-950/55 border border-purple-500/30 flex items-center gap-2">
+                <span id="goal-text" class="text-xs sm:text-sm font-bold text-purple-100 min-w-[190px]">梦工坊目标：订单 0/5 · 图鉴 4/8</span>
+                <div class="flex-1 h-1.5 rounded-full bg-slate-800 overflow-hidden"><div id="goal-progress" class="h-full bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-400 transition-all duration-500" style="width:0%"></div></div>
+            </div>
+            <div id="orders-container" class="grid grid-cols-2 gap-1.5">
+                <!-- 动态由 JS 渲染订单 -->
+            </div>
+        </div>
+
+        <!-- 2. 云朵机器人点点提示 -->
+        <div id="guide-panel" class="flex items-center space-x-2 my-1 px-1 flex-shrink-0">
+            <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-gradient-to-tr from-cyan-400 to-blue-500 p-0.5 animate-float flex-shrink-0 shadow-lg shadow-cyan-500/20">
+                <div class="w-full h-full bg-slate-900 rounded-full flex items-center justify-center">
+                    <i class="fa-solid fa-cloud text-cyan-300 text-xs sm:text-sm"></i>
+                </div>
+            </div>
+            <div class="flex-1 bg-slate-900/80 border border-cyan-500/30 rounded-xl px-2.5 py-1.5 text-[10px] sm:text-xs text-cyan-100 shadow-md relative">
+                <div class="absolute -left-1 top-2.5 w-2 h-2 bg-slate-900 border-l border-b border-cyan-500/30 transform rotate-45"></div>
+            <p id="diandian-speech" class="line-clamp-2 leading-tight">像华容道一样，只能上下左右移动到相邻空格；相邻的同类同等级物件才能合并。</p>
+            </div>
+        </div>
+
+        <!-- 3. 5x6 核心合成棋盘区 -->
+        <div id="board-section" class="w-full flex-1 flex items-center justify-center my-0.5 min-h-0 overflow-hidden">
+            <div class="board-aspect-box w-full h-full bg-slate-900/70 p-2 rounded-2xl border border-purple-500/30 shadow-2xl backdrop-blur-md flex items-center justify-center">
+                <div id="board-grid" class="grid grid-cols-5 grid-rows-6 gap-1.5 lg:gap-2 w-full h-full justify-items-center items-center">
+                    <!-- 30个格子动态生成 -->
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. 底部操作面板 -->
+        <div id="action-panel" class="w-full flex-shrink-0 safe-bottom-padding pt-1 z-20">
+            <div class="w-full bg-slate-900/80 border border-purple-500/30 backdrop-blur-md rounded-2xl p-1.5 sm:p-2 flex items-center justify-between space-x-1.5 sm:space-x-2 shadow-2xl">
+                <!-- 消除噪声 -->
+                <button id="btn-clear-noise" class="flex-1 bg-slate-800/80 hover:bg-slate-700/80 border border-purple-500/20 py-1.5 sm:py-2 rounded-xl flex flex-col items-center justify-center text-slate-300 active:scale-95 transition">
+                    <i class="fa-solid fa-wand-magic-sparkles text-purple-400 text-xs sm:text-sm mb-0.5"></i>
+                    <span class="text-[9px] sm:text-[10px] font-bold">消除噪声 (30金币)</span>
+                </button>
+
+                <!-- 获得新灵感（主发射按钮） -->
+                <button id="btn-spawner" class="flex-[2] py-1.5 sm:py-2 bg-gradient-to-r from-ai-purple via-indigo-600 to-ai-pink rounded-xl shadow-lg shadow-purple-500/30 border border-purple-300/40 flex items-center justify-center space-x-1.5 active:scale-95 transition transform animate-pulse-glow">
+                    <div class="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-white/20 flex items-center justify-center flex-shrink-0">
+                        <i class="fa-solid fa-lightbulb text-yellow-300 text-xs sm:text-sm"></i>
+                    </div>
+                    <div class="text-left">
+                        <div class="text-xs sm:text-sm font-black text-white leading-none">获得新灵感</div>
+                        <div class="text-[8px] sm:text-[9px] text-purple-200/90 mt-0.5 flex items-center">
+                            <i class="fa-solid fa-bolt text-amber-300 text-[8px] mr-0.5"></i>消耗 1 能量
+                        </div>
+                    </div>
+                </button>
+
+                <!-- 能量补给 -->
+                <button id="btn-boost" class="flex-1 bg-slate-800/80 hover:bg-slate-700/80 border border-amber-500/20 py-1.5 sm:py-2 rounded-xl flex flex-col items-center justify-center text-slate-300 active:scale-95 transition">
+                    <i class="fa-solid fa-battery-charging text-amber-400 text-xs sm:text-sm mb-0.5"></i>
+                    <span class="text-[9px] sm:text-[10px] font-bold">能量补给 (50金币)</span>
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <!-- 玩法指南 Modal -->
+    <div id="tutorial-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 hidden">
+        <div class="absolute inset-0 bg-slate-950/80 backdrop-blur-sm" id="tutorial-bg"></div>
+        <div class="relative w-full max-w-sm glass-modal rounded-3xl p-5 flex flex-col shadow-2xl z-10 border border-cyan-500/40 animate-bounce-short">
+            <div class="flex items-center justify-between pb-2 border-b border-slate-800">
+                <div class="flex items-center space-x-2 text-cyan-300">
+                    <i class="fa-solid fa-graduation-cap text-lg"></i>
+                    <h3 class="font-bold text-sm text-white">点点的AI梦工坊 - 探险指南</h3>
+                </div>
+                <button id="close-tutorial" class="w-7 h-7 rounded-full bg-slate-800 text-slate-400 flex items-center justify-center hover:text-white">
+                    <i class="fa-solid fa-xmark text-xs"></i>
+                </button>
+            </div>
+            <div id="tutorial-content" class="my-4 space-y-3"></div>
+            <div class="flex items-center justify-between pt-2 border-t border-slate-800">
+                <div id="tutorial-dots" class="flex space-x-1.5"></div>
+                <div class="flex space-x-2">
+                    <button id="btn-tutorial-prev" class="px-3 py-1.5 rounded-xl bg-slate-800 text-xs font-bold text-slate-300 disabled:opacity-30"><i class="fa-solid fa-arrow-left mr-1"></i>上一步</button>
+                    <button id="btn-tutorial-next" class="px-4 py-1.5 rounded-xl bg-gradient-to-r from-ai-purple to-ai-pink text-xs font-bold text-white shadow-md"><i id="tutorial-next-icon" class="fa-solid fa-arrow-right mr-1"></i><span id="tutorial-next-label">下一步</span></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- AI启蒙图鉴 Modal -->
+    <div id="handbook-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 hidden">
+        <div class="absolute inset-0 bg-slate-950/80 backdrop-blur-sm" id="handbook-bg"></div>
+        <div class="relative w-full max-w-md glass-modal rounded-3xl p-4 sm:p-5 max-h-[85vh] flex flex-col shadow-2xl z-10 border border-purple-500/40">
+            <div class="flex items-center justify-between pb-2 border-b border-slate-800">
+                <div class="flex items-center space-x-2">
+                    <i class="fa-solid fa-book-bookmark text-ai-purple text-lg"></i>
+                    <h2 class="text-base font-bold text-white">AI启蒙知识图鉴</h2>
+                </div>
+                <button id="close-handbook" class="w-7 h-7 rounded-full bg-slate-800 text-slate-400 flex items-center justify-center hover:text-white">
+                    <i class="fa-solid fa-xmark text-xs"></i>
+                </button>
+            </div>
+            <div class="my-2.5 p-2.5 rounded-2xl bg-slate-900/80 border border-slate-800 flex items-center justify-between">
+                <span class="text-xs text-slate-400">已点亮知识节点：</span>
+                <span id="handbook-progress" class="text-xs font-black text-ai-pink">0 / 20</span>
+            </div>
+            <div id="handbook-grid" class="flex-1 overflow-y-auto space-y-3 pr-1"></div>
+        </div>
+    </div>
+
+    <!-- 知识卡片 Modal -->
+    <div id="item-info-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 hidden">
+        <div class="absolute inset-0 bg-slate-950/80 backdrop-blur-sm" id="item-info-bg"></div>
+        <div class="relative w-full max-w-sm glass-modal rounded-3xl p-5 flex flex-col items-center text-center shadow-2xl z-10 border border-cyan-500/40 animate-bounce-short">
+            <button id="close-item-info" class="absolute top-4 right-4 w-7 h-7 rounded-full bg-slate-800 text-slate-400 flex items-center justify-center hover:text-white">
+                <i class="fa-solid fa-xmark text-xs"></i>
+            </button>
+            <div id="modal-item-icon-bg" class="sprite-frame w-20 rounded-2xl bg-gradient-to-tr from-purple-500 to-pink-500 p-0.5 my-2 shadow-lg">
+                <div class="w-full h-full bg-slate-900 rounded-[14px] flex items-center justify-center">
+                    <span id="modal-item-icon" class="game-sprite sprite-r1c1" role="img" aria-label="0与1开关"></span>
+                </div>
+            </div>
+            <span id="modal-item-chain" class="text-[9px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-300 mb-1">数据与感知链</span>
+            <h3 id="modal-item-name" class="text-lg font-black text-white">0与1开关</h3>
+            <p id="modal-item-level" class="text-xs text-slate-400 mb-2.5">等级 1 知识物件</p>
+            <div class="w-full bg-slate-900/90 border border-cyan-500/30 rounded-xl p-3 text-left mb-3 shadow-inner">
+                <div class="flex items-center space-x-1.5 text-cyan-400 text-xs font-bold mb-1">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                    <span id="modal-lesson-title">第2课：0与1是什么</span>
+                </div>
+                <p id="modal-lesson-desc" class="text-xs text-slate-300 leading-relaxed">
+                    0代表“关/没有”，1代表“开/有”。电脑内部全是用0和1排列组合来表达精彩世界的！
+                </p>
+            </div>
+            <button id="btn-modal-confirm" class="w-full py-2.5 bg-gradient-to-r from-ai-purple to-ai-pink rounded-xl font-bold text-xs text-white shadow-lg active:scale-95 transition">
+                <i class="fa-solid fa-check mr-1"></i>收到，继续探索！
+            </button>
+        </div>
+    </div>
+
+    <div id="victory-modal" class="fixed inset-0 z-[60] hidden items-center justify-center p-4 bg-slate-950/85 backdrop-blur-sm">
+        <div class="relative w-full max-w-sm glass-modal rounded-3xl p-6 text-center border border-amber-400/50 shadow-2xl">
+            <div class="sprite-frame w-24 mx-auto rounded-3xl bg-gradient-to-br from-amber-300 via-pink-400 to-purple-500 flex items-center justify-center shadow-lg"><span class="game-sprite sprite-r4c5" role="img" aria-label="超级搭档机甲"></span></div>
+            <h2 id="stage-result-title" class="text-xl font-black text-amber-200 mt-4">第1关挑战完成！</h2>
+            <p id="stage-result-desc" class="text-xs text-slate-300 mt-2 leading-relaxed">你完成了本关研学目标，准备进入难度更高的梦工坊区域。</p>
+            <button id="btn-next-stage" class="mt-5 w-full py-2.5 bg-gradient-to-r from-ai-purple to-ai-pink rounded-xl font-black text-sm text-white shadow-lg"><i class="fa-solid fa-arrow-right mr-2"></i>进入下一关</button>
+        </div>
+    </div>
+
+    <script>
+        const TOTAL_CELLS = 30; // 5x6 棋盘网格
+        const STAGE_CONFIGS = [
+            { name: '开关城入门工坊', orderGoal: 5, handbookGoal: 8, initialNoise: 6, noiseInterval: 25, noiseChance: .35, maxOrderLevel: 3, orderSlots: 2, orderTimeFactor: 1, energy: 100, coins: 120 },
+            { name: '代码溪谷进阶区', orderGoal: 7, handbookGoal: 10, initialNoise: 7, noiseInterval: 22, noiseChance: .45, maxOrderLevel: 3, orderSlots: 2, orderTimeFactor: .92, energy: 90, coins: 110 },
+            { name: '算法齿轮实验室', orderGoal: 9, handbookGoal: 12, initialNoise: 8, noiseInterval: 18, noiseChance: .55, maxOrderLevel: 4, orderSlots: 3, orderTimeFactor: .84, energy: 80, coins: 100 },
+            { name: '神经网络控制塔', orderGoal: 11, handbookGoal: 15, initialNoise: 9, noiseInterval: 15, noiseChance: .65, maxOrderLevel: 4, orderSlots: 3, orderTimeFactor: .76, energy: 70, coins: 90 },
+            { name: '超级搭档终极工坊', orderGoal: 14, handbookGoal: 18, initialNoise: 10, noiseInterval: 12, noiseChance: .75, maxOrderLevel: 5, orderSlots: 3, orderTimeFactor: .68, energy: 60, coins: 80 }
+        ];
+        const NOISE_SEQUENCE = [0, 4, 25, 29, 12, 17, 1, 3, 26, 28];
+
+        // 结合《小云雀AI探险记》32课知识体系设计的 4 条核心知识进化链（增加视觉主题配色）
+        const CHAINS = [
+            {
+                id: 'data',
+                name: '数据与感知链',
+                tag: '数据',
+                borderColor: 'border-cyan-400/50',
+                textColor: 'text-cyan-300',
+                gradient: 'from-cyan-950/80 via-slate-900 to-blue-950/80',
+                items: [
+                    { level: 1, name: '0与1开关', sprite: 'sprite-r1c1', lesson: '第2课：0与1是什么', desc: '0代表“关/没有”，1代表“开/有”。电脑内部是用0和1的排列组合来表达信息的！' },
+                    { level: 2, name: '密码信封', sprite: 'sprite-r1c2', lesson: '第3课：小邮差的密码信', desc: '编码是给信息穿外套，解码是脱去外套恢复原样。双方必须使用同一套规则！' },
+                    { level: 3, name: '存储小抽屉', sprite: 'sprite-r1c3', lesson: '第4课：仓库管理员机器人', desc: '信息需要住在格子里。格子越多，能存的信息就越多！容量满了就需要清理或更大空间。' },
+                    { level: 4, name: 'RGB三色灯', sprite: 'sprite-r1c4', lesson: '第6课：红绿蓝合唱团', desc: '红绿蓝RGB三种颜色的光混合可以变出几乎所有颜色！调节红绿蓝亮度就能配出千变万化的色彩。' },
+                    { level: 5, name: '高清像素画', sprite: 'sprite-r1c5', lesson: '第5课：小方块拼大世界', desc: '电脑里的图片是由许许多多像素小方块拼出来的，像素越多越小，画面就越清晰！' }
+                ]
+            },
+            {
+                id: 'algo',
+                name: '算法与逻辑链',
+                tag: '算法',
+                borderColor: 'border-emerald-400/50',
+                textColor: 'text-emerald-300',
+                gradient: 'from-emerald-950/80 via-slate-900 to-teal-950/80',
+                items: [
+                    { level: 1, name: '红绿条件灯', sprite: 'sprite-r2c1', lesson: '第9课：红灯停绿灯行', desc: '“如果...就...”是条件判断，根据条件来决定做什么。电脑靠无数条条件规则运行！' },
+                    { level: 2, name: '循环齿轮', sprite: 'sprite-r2c2', lesson: '第10课：会数数的刷牙机器人', desc: '循环就是重复做同一个步骤直到完成。电脑最擅长不嫌烦、不偷懒地重复做一件事！' },
+                    { level: 3, name: '披萨流水线', sprite: 'sprite-r2c3', lesson: '第11课：做披萨的流水线', desc: '任务分解是将大任务切成小步骤。串行按顺序做，并行可以同时做，效率翻倍！' },
+                    { level: 4, name: '调试小扳手', sprite: 'sprite-r2c4', lesson: '第12课：找Bug的小修理工', desc: 'Bug是程序里的错误。调试步骤：发现问题 → 找到原因 → 修改 → 再试一次！' },
+                    { level: 5, name: '自动算法核心', sprite: 'sprite-r2c5', lesson: '第10-12课：逻辑综合应用', desc: '条件、循环与任务分解组合在一起，构成了强大而精确的计算机算法体系！' }
+                ]
+            },
+            {
+                id: 'learning',
+                name: '学习与大脑链',
+                tag: '学习',
+                borderColor: 'border-amber-400/50',
+                textColor: 'text-amber-300',
+                gradient: 'from-amber-950/80 via-slate-900 to-orange-950/80',
+                items: [
+                    { level: 1, name: '分类特征镜', sprite: 'sprite-r3c1', lesson: '第13-14课：特征放大镜', desc: '特征是能区分不同事物的线索。找到最有区分度的特征，就能准确分门别类！' },
+                    { level: 2, name: '强化骨头', sprite: 'sprite-r3c2', lesson: '第18课：小狗学握手', desc: '强化学习通过奖励来引导行为！做对了给奖励，经过“尝试→反馈→调整”就能越学越好！' },
+                    { level: 3, name: '标签提示卡', sprite: 'sprite-r3c3', lesson: '第19-20课：贴标签的老师', desc: '监督学习有标准答案（标签），无监督学习没有标签但能自己按相似性发现隐藏规律！' },
+                    { level: 4, name: '神经元灯泡', sprite: 'sprite-r3c4', lesson: '第21-22课：点亮聪明灯', desc: '很多个神经元节点连成多层网络！第一层看简单线条，后面层拼成整张脸，逐层组合！' },
+                    { level: 5, name: '智慧调音旋钮', sprite: 'sprite-r3c5', lesson: '第23-24课：音量旋钮与梯度下降', desc: '权重决定线索的重要性。通过“梯度下降”小步微调方向，AI就能越来越精准！' }
+                ]
+            },
+            {
+                id: 'creative',
+                name: '创想与应用链',
+                tag: '创想',
+                borderColor: 'border-pink-400/50',
+                textColor: 'text-pink-300',
+                gradient: 'from-purple-950/80 via-slate-900 to-pink-950/80',
+                items: [
+                    { level: 1, name: '提示词羽毛笔', sprite: 'sprite-r4c1', lesson: '第26课：给AI的清楚指令', desc: '提示词是给AI的指令。明确设定【角色+目标+限制】，AI的回答就会非常靠谱！' },
+                    { level: 2, name: '接话鹦鹉', sprite: 'sprite-r4c2', lesson: '第25课：会接话的鹦鹉', desc: '语言模型根据前面的话（上下文）预测下一个最可能的词。AI不是真懂，而是在做概率预测！' },
+                    { level: 3, name: '降噪调色盘', sprite: 'sprite-r4c3', lesson: '第27课：从乱点点到清图画', desc: '生成式AI画画是从一片噪点乱一步步去掉噪声变清晰的，就像窗户上的雾慢慢散去！' },
+                    { level: 4, name: '事实放大镜', sprite: 'sprite-r4c4', lesson: '第28课：会编故事的机器人', desc: 'AI可能会产生“幻觉”编出听起来对但实际错的内容。要学会多方验证，不盲目轻信！' },
+                    { level: 5, name: '超级搭档机甲', sprite: 'sprite-r4c5', lesson: '第31课：超级搭档人机协作', desc: 'AI擅长快速处理海量数据，人类擅长情感、创造力与道德判断。人和AI做超级搭档最厉害！' }
+                ]
+            }
+        ];
+
+        // 教程步骤
+        const TUTORIAL_STEPS = [
+            { sprite: 'sprite-r3c4', title: '1. 获得新灵感', desc: '点击底部【获得新灵感】按钮（消耗1能量），会在棋盘上随机生成低阶知识物件。' },
+            { sprite: 'sprite-r2c2', title: '2. 邻格移动与合并', desc: '像华容道一样，物件只能上下左右移动一格到相邻空位；只有相邻的【同种类且同等级】物件才能合并升级。' },
+            { sprite: 'sprite-r3c3', title: '3. 完成研学课题', desc: '棋盘上方显示团团的课题需求。合成出对应物件后点击【提交】，即可赚取大量金币与经验！' },
+            { sprite: 'sprite-r4c3', title: '4. 消除噪声迷雾', desc: '棋盘上的迷雾可以通过消耗金币点击【消除噪声】来净化，扩容你的合成场地！' }
+        ];
+
+        // Web Audio 音效合成器
+        const sound = {
+            ctx: null,
+            enabled: true,
+            init() {
+                if (!this.ctx) {
+                    this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+                }
+            },
+            playPop() {
+                if (!this.enabled) return;
+                try {
+                    this.init();
+                    const osc = this.ctx.createOscillator();
+                    const gain = this.ctx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(400, this.ctx.currentTime);
+                    osc.frequency.exponentialRampToValueAtTime(800, this.ctx.currentTime + 0.08);
+                    gain.gain.setValueAtTime(0.3, this.ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.08);
+                    osc.connect(gain);
+                    gain.connect(this.ctx.destination);
+                    osc.start();
+                    osc.stop(this.ctx.currentTime + 0.08);
+                } catch (e) {}
+            },
+            playMerge() {
+                if (!this.enabled) return;
+                try {
+                    this.init();
+                    const osc = this.ctx.createOscillator();
+                    const gain = this.ctx.createGain();
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(523.25, this.ctx.currentTime); // C5
+                    osc.frequency.setValueAtTime(659.25, this.ctx.currentTime + 0.08); // E5
+                    osc.frequency.setValueAtTime(783.99, this.ctx.currentTime + 0.16); // G5
+                    gain.gain.setValueAtTime(0.4, this.ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.3);
+                    osc.connect(gain);
+                    gain.connect(this.ctx.destination);
+                    osc.start();
+                    osc.stop(this.ctx.currentTime + 0.3);
+                } catch (e) {}
+            },
+            playCoin() {
+                if (!this.enabled) return;
+                try {
+                    this.init();
+                    const osc = this.ctx.createOscillator();
+                    const gain = this.ctx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(987.77, this.ctx.currentTime); // B5
+                    osc.frequency.setValueAtTime(1318.51, this.ctx.currentTime + 0.08); // E6
+                    gain.gain.setValueAtTime(0.3, this.ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.25);
+                    osc.connect(gain);
+                    gain.connect(this.ctx.destination);
+                    osc.start();
+                    osc.stop(this.ctx.currentTime + 0.25);
+                } catch (e) {}
+            }
+        };
+        const bgm = document.getElementById('bgm');
+        bgm.volume = 0.15;
+
+        function startBgm() {
+            if (sound.enabled) bgm.play().catch(() => {});
+        }
+
+        function reportProgress(completed = false) {
+            window.parent.postMessage({
+                type: 'aibook-featured-game-progress',
+                gameId: 'card-merge',
+                completed,
+                score: gameState.completedOrders * 250 + gameState.unlockedItems.size * 80 + gameState.level * 100 + gameState.stage * 500,
+                seconds: Math.max(1, Math.floor((Date.now() - gameState.startedAt) / 1000))
+            }, '*');
+        }
+
+        let gameState = {
+            stage: 1,
+            level: 1,
+            exp: 20,
+            maxExp: 100,
+            energy: 100,
+            maxEnergy: 100,
+            coins: 120,
+            unlockedItems: new Set(['data_1', 'algo_1', 'learning_1', 'creative_1']),
+            board: Array(TOTAL_CELLS).fill(null),
+            orders: [],
+            combo: 0,
+            comboTimer: null,
+            completedOrders: 0,
+            stageCompletedOrders: 0,
+            isStageComplete: false,
+            isCompleted: false,
+            noiseElapsed: 0,
+            startedAt: Date.now(),
+            lastProgressSignature: ''
+        };
+
+        let selectedIndex = null;
+        let currentTutorialStep = 0;
+
+        function getStageConfig() {
+            return STAGE_CONFIGS[Math.min(STAGE_CONFIGS.length - 1, gameState.stage - 1)];
+        }
+
+        function applyStageHeader() {
+            const config = getStageConfig();
+            document.getElementById('scene-name').innerText = `第${gameState.stage}/${STAGE_CONFIGS.length}关 · ${config.name}`;
+        }
+
+        function initGame() {
+            applyStageHeader();
+            setupInitialBoard();
+            generateOrders();
+            renderBoard();
+            renderOrders();
+            updateUI();
+
+            // 能量时间恢复定时器（每5秒恢复1点）
+            setInterval(() => {
+                if (gameState.isStageComplete) return;
+                if (gameState.energy < gameState.maxEnergy) {
+                    gameState.energy = Math.min(gameState.maxEnergy, gameState.energy + 1);
+                    updateUI();
+                }
+            }, 5000);
+
+            // 订单倒计时心跳
+            setInterval(() => {
+                if (gameState.isStageComplete || gameState.isCompleted || document.hidden || document.querySelector('.fixed:not(.hidden)')) return;
+                let orderUpdated = false;
+                gameState.orders.forEach(order => {
+                    if (order.timeLeft > 0) {
+                        order.timeLeft -= 1;
+                        orderUpdated = true;
+                    } else if (order.timeLeft === 0) {
+                        refreshSingleOrder(order.id);
+                        showDiandianSpeech("课题超时失效啦，已为你刷新新的研学课题！");
+                        orderUpdated = true;
+                    }
+                });
+                if (orderUpdated) renderOrders();
+            }, 1000);
+
+            // 数据噪声滋生机制：随关卡提高频率和概率。
+            setInterval(() => {
+                if (gameState.isStageComplete || gameState.isCompleted || document.hidden || document.querySelector('.fixed:not(.hidden)')) return;
+                const config = getStageConfig();
+                gameState.noiseElapsed += 1;
+                if (gameState.noiseElapsed < config.noiseInterval) return;
+                gameState.noiseElapsed = 0;
+                const emptyIndices = gameState.board
+                    .map((cell, idx) => cell === null ? idx : null)
+                    .filter(idx => idx !== null);
+
+                if (emptyIndices.length > 4 && Math.random() < config.noiseChance) {
+                    const targetIdx = emptyIndices[Math.floor(Math.random() * emptyIndices.length)];
+                    gameState.board[targetIdx] = { isNoise: true };
+                    renderBoard();
+                    showDiandianSpeech("警告！数据噪声侵蚀了1块格子，点击【消除噪声】净化它！");
+                }
+            }, 1000);
+
+            if (!localStorage.getItem('diandian_tutorial_done')) {
+                showTutorialModal();
+            }
+        }
+
+        function setupInitialBoard() {
+            gameState.board = Array(TOTAL_CELLS).fill(null);
+            // 初始迷雾地块
+            const lockedIndices = NOISE_SEQUENCE.slice(0, getStageConfig().initialNoise);
+            lockedIndices.forEach(idx => {
+                gameState.board[idx] = { isNoise: true };
+            });
+
+            // 初始物件放置
+            const initialSpawns = [
+                { idx: 7, chain: 'data', level: 1 },
+                { idx: 8, chain: 'data', level: 1 },
+                { idx: 13, chain: 'algo', level: 1 },
+                { idx: 21, chain: 'learning', level: 1 },
+                { idx: 22, chain: 'creative', level: 1 }
+            ];
+
+            initialSpawns.forEach(item => {
+                gameState.board[item.idx] = {
+                    chain: item.chain,
+                    level: item.level,
+                    id: `${item.chain}_${item.level}`
+                };
+            });
+        }
+
+        function renderBoard() {
+            const gridEl = document.getElementById('board-grid');
+            gridEl.innerHTML = '';
+
+            gameState.board.forEach((cell, idx) => {
+                const cellEl = document.createElement('div');
+                const isNeighbor = selectedIndex !== null && areBoardCellsAdjacent(selectedIndex, idx);
+                cellEl.className = `grid-cell w-full h-full aspect-square rounded-xl flex items-center justify-center relative cursor-pointer border ${
+                    selectedIndex === idx 
+                        ? 'border-yellow-400 bg-yellow-500/25 shadow-lg shadow-yellow-500/30 scale-95 z-10' 
+                        : 'border-slate-800/80 bg-slate-950/60 hover:border-purple-500/30'
+                } ${isNeighbor ? 'ring-2 ring-cyan-400/70 ring-inset' : ''}`;
+                cellEl.dataset.index = idx;
+
+                if (cell) {
+                    if (cell.isNoise) {
+                        cellEl.innerHTML = `
+                            <div class="w-full h-full rounded-xl bg-slate-900/90 border border-slate-500/70 flex flex-col items-center justify-center text-slate-200">
+                                <div class="noise-orb" role="img" aria-label="AI噪声干扰"></div>
+                                <span class="text-[10px] lg:text-xs font-black mt-1 text-slate-200">AI 噪声</span>
+                            </div>
+                        `;
+                    } else {
+                        const chainObj = CHAINS.find(c => c.id === cell.chain);
+                        const itemObj = chainObj.items.find(i => i.level === cell.level);
+                        
+                        cellEl.innerHTML = `
+                            <div class="item-card w-full h-full p-1 flex flex-col items-center justify-between relative rounded-xl bg-gradient-to-br ${chainObj.gradient} border ${chainObj.borderColor} shadow-inner overflow-hidden">
+                                <span class="absolute top-1 left-1 text-[10px] lg:text-xs font-black ${chainObj.textColor} bg-slate-950/90 px-1.5 py-0.5 rounded-md border ${chainObj.borderColor}">${chainObj.tag}</span>
+                                <span class="absolute top-1 right-1 text-[10px] lg:text-xs font-black text-white bg-slate-950/90 px-1.5 py-0.5 rounded-md border ${chainObj.borderColor}">Lv.${cell.level}</span>
+                                <div class="board-item-visual"><div class="sprite-frame rounded-lg drop-shadow-md"><span class="game-sprite ${itemObj.sprite}" role="img" aria-label="${itemObj.name}"></span></div></div>
+                                <div class="absolute bottom-1 left-1 right-1 text-[9px] lg:text-xs font-black text-white truncate text-center leading-tight px-1 drop-shadow">${itemObj.name}</div>
+                            </div>
+                        `;
+                    }
+                }
+
+                cellEl.addEventListener('click', () => handleCellClick(idx));
+                gridEl.appendChild(cellEl);
+            });
+        }
+
+        function triggerCombo() {
+            gameState.combo += 1;
+            const comboBadge = document.getElementById('combo-badge');
+            const comboText = document.getElementById('combo-text');
+
+            if (gameState.combo > 1) {
+                comboBadge.classList.remove('hidden');
+                comboBadge.classList.add('flex');
+                comboText.innerText = `Combo x${gameState.combo}`;
+            }
+
+            if (gameState.comboTimer) clearTimeout(gameState.comboTimer);
+
+            gameState.comboTimer = setTimeout(() => {
+                gameState.combo = 0;
+                comboBadge.classList.add('hidden');
+                comboBadge.classList.remove('flex');
+            }, 3000);
+        }
+
+        function areBoardCellsAdjacent(firstIndex, secondIndex) {
+            const firstRow = Math.floor(firstIndex / 5);
+            const firstColumn = firstIndex % 5;
+            const secondRow = Math.floor(secondIndex / 5);
+            const secondColumn = secondIndex % 5;
+            return Math.abs(firstRow - secondRow) + Math.abs(firstColumn - secondColumn) === 1;
+        }
+
+        function handleCellClick(index) {
+            const clickedCell = gameState.board[index];
+
+            if (clickedCell && clickedCell.isNoise) {
+                showDiandianSpeech("这是数据噪声迷雾！点击下方【消除噪声】可以净化这块格子！");
+                sound.playPop();
+                return;
+            }
+
+            if (selectedIndex === null) {
+                if (clickedCell) {
+                    selectedIndex = index;
+                    sound.playPop();
+                    renderBoard();
+                }
+                return;
+            }
+
+            if (selectedIndex === index) {
+                selectedIndex = null;
+                renderBoard();
+                return;
+            }
+
+            const sourceCell = gameState.board[selectedIndex];
+            if (!areBoardCellsAdjacent(selectedIndex, index)) {
+                showDiandianSpeech("只能移动或合并上下左右相邻的一格，斜着走和跨格移动都不可以哦！");
+                sound.playPop();
+                renderBoard();
+                return;
+            }
+
+            // 移动到空格
+            if (!clickedCell) {
+                gameState.board[index] = sourceCell;
+                gameState.board[selectedIndex] = null;
+                selectedIndex = null;
+                sound.playPop();
+                renderBoard();
+                return;
+            }
+
+            // 合成进化
+            if (sourceCell.chain === clickedCell.chain && sourceCell.level === clickedCell.level) {
+                if (sourceCell.level < 5) {
+                    const newLevel = sourceCell.level + 1;
+                    const chainId = sourceCell.chain;
+                    
+                    gameState.board[index] = {
+                        chain: chainId,
+                        level: newLevel,
+                        id: `${chainId}_${newLevel}`
+                    };
+                    gameState.board[selectedIndex] = null;
+                    selectedIndex = null;
+
+                    const newId = `${chainId}_${newLevel}`;
+                    const isFirstUnlock = !gameState.unlockedItems.has(newId);
+                    gameState.unlockedItems.add(newId);
+
+                    triggerCombo();
+                    const comboMultiplier = 1 + (gameState.combo * 0.2);
+
+                    sound.playMerge();
+                    addExp(Math.floor(15 * newLevel * comboMultiplier));
+                    addCoins(Math.floor(10 * newLevel * comboMultiplier));
+
+                    const chainObj = CHAINS.find(c => c.id === chainId);
+                    const itemObj = chainObj.items.find(i => i.level === newLevel);
+
+                    if (isFirstUnlock) {
+                        showItemInfoModal(chainObj, itemObj);
+                        showDiandianSpeech(`太棒了！首次合成了【${itemObj.name}】，点亮了新的AI知识图鉴！`);
+                    } else if (gameState.combo > 1) {
+                        showDiandianSpeech(`触发 Combo x${gameState.combo}！获得额外经验与金币！`);
+                    } else {
+                        showDiandianSpeech(`成功合成【${itemObj.name}】！逻辑能力大大提升！`);
+                    }
+
+                    renderBoard();
+                    checkOrders();
+                    return;
+                } else {
+                    showDiandianSpeech("已经是该条线的最高等级物件啦！");
+                }
+            } else {
+                showDiandianSpeech("这个相邻格已经被其他物件占用。请移动到空格，或选择相邻的同类同等级物件进行合并。");
+                sound.playPop();
+            }
+
+            selectedIndex = null;
+            renderBoard();
+        }
+
+        // 发射生成新灵感按钮
+        document.getElementById('btn-spawner').addEventListener('click', () => {
+            if (gameState.energy < 1) {
+                showDiandianSpeech("能量不足啦！休息一会儿或者点击【能量补给】吧！");
+                return;
+            }
+
+            const emptyIndices = gameState.board
+                .map((cell, idx) => cell === null ? idx : null)
+                .filter(idx => idx !== null);
+
+            if (emptyIndices.length === 0) {
+                showDiandianSpeech("棋盘装满啦！快把相同的物件合并腾出空间吧！");
+                return;
+            }
+
+            gameState.energy -= 1;
+            const targetIdx = emptyIndices[Math.floor(Math.random() * emptyIndices.length)];
+            const randomChain = CHAINS[Math.floor(Math.random() * CHAINS.length)];
+            
+            gameState.board[targetIdx] = {
+                chain: randomChain.id,
+                level: 1,
+                id: `${randomChain.id}_1`
+            };
+
+            sound.playPop();
+            updateUI();
+            renderBoard();
+            checkOrders();
+        });
+
+        function createSingleOrder() {
+            const config = getStageConfig();
+            const randomChain = CHAINS[Math.floor(Math.random() * CHAINS.length)];
+            const maxOrderLevel = gameState.stageCompletedOrders < 2 ? 2 : config.maxOrderLevel;
+            const randomLevel = Math.floor(Math.random() * maxOrderLevel) + 1;
+            const itemObj = randomChain.items.find(i => i.level === randomLevel);
+            const timeLimit = Math.max(24, Math.round((40 + randomLevel * 10) * config.orderTimeFactor));
+
+            return {
+                id: Date.now() + Math.random(),
+                chainId: randomChain.id,
+                level: randomLevel,
+                itemName: itemObj.name,
+                sprite: itemObj.sprite,
+                rewardCoins: randomLevel * 30 + (gameState.stage - 1) * 5,
+                rewardExp: randomLevel * 25 + (gameState.stage - 1) * 5,
+                maxTime: timeLimit,
+                timeLeft: timeLimit
+            };
+        }
+
+        function generateOrders() {
+            gameState.orders = Array.from({ length: getStageConfig().orderSlots }, () => createSingleOrder());
+        }
+
+        function refreshSingleOrder(orderId) {
+            const idx = gameState.orders.findIndex(o => o.id === orderId);
+            if (idx !== -1) {
+                gameState.orders[idx] = createSingleOrder();
+            }
+        }
+
+        function renderOrders() {
+            const container = document.getElementById('orders-container');
+            container.innerHTML = '';
+
+            gameState.orders.forEach(order => {
+                const hasItem = gameState.board.some(cell => cell && !cell.isNoise && cell.chain === order.chainId && cell.level === order.level);
+                const timePercent = Math.max(0, (order.timeLeft / order.maxTime) * 100);
+
+                const card = document.createElement('div');
+                card.className = `glass-panel rounded-xl p-2 flex flex-col justify-between border relative overflow-hidden ${
+                    hasItem ? 'border-emerald-500/60 bg-emerald-950/30' : 'border-slate-800'
+                }`;
+
+                card.innerHTML = `
+                    <div class="flex items-center justify-between mb-1">
+                        <div class="flex items-center space-x-1.5 min-w-0">
+                            <div class="sprite-frame w-11 rounded-lg bg-slate-900 border border-slate-700 flex items-center justify-center flex-shrink-0">
+                                <span class="game-sprite ${order.sprite}" role="img" aria-label="${order.itemName}"></span>
+                            </div>
+                            <div class="min-w-0">
+                                <div class="text-xs sm:text-sm font-bold text-white truncate">${order.itemName}</div>
+                                <div class="text-[9px] text-amber-300 flex items-center">
+                                    <i class="fa-solid fa-coins mr-0.5 text-[8px]"></i>+${order.rewardCoins}
+                                </div>
+                            </div>
+                        </div>
+                        <button class="btn-submit-order px-2 py-1 rounded-lg text-[10px] font-bold flex-shrink-0 ${
+                            hasItem 
+                                ? 'bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-md active:scale-95 animate-pulse' 
+                                : 'bg-slate-800 text-slate-500 cursor-not-allowed'
+                        }" ${!hasItem ? 'disabled' : ''} data-id="${order.id}">
+                            <i class="fa-solid fa-paper-plane mr-1"></i>提交
+                        </button>
+                    </div>
+                    <div class="w-full h-1 bg-slate-800 rounded-full overflow-hidden mt-0.5">
+                        <div class="h-full ${timePercent < 30 ? 'bg-red-500' : 'bg-cyan-400'} transition-all duration-1000" style="width: ${timePercent}%"></div>
+                    </div>
+                `;
+
+                if (hasItem) {
+                    card.querySelector('.btn-submit-order').addEventListener('click', () => submitOrder(order));
+                }
+
+                container.appendChild(card);
+            });
+        }
+
+        function checkOrders() {
+            renderOrders();
+        }
+
+        function submitOrder(order) {
+            const targetIdx = gameState.board.findIndex(cell => cell && !cell.isNoise && cell.chain === order.chainId && cell.level === order.level);
+            if (targetIdx !== -1) {
+                gameState.board[targetIdx] = null;
+                addCoins(order.rewardCoins);
+                addExp(order.rewardExp);
+                gameState.completedOrders += 1;
+                gameState.stageCompletedOrders += 1;
+                sound.playCoin();
+
+                refreshSingleOrder(order.id);
+                showDiandianSpeech(`第${gameState.stage}关课题提交成功！收获了 ${order.rewardCoins} 金币与经验！`);
+                renderBoard();
+                renderOrders();
+                updateGoalProgress();
+            }
+        }
+
+        function addExp(amount) {
+            gameState.exp += amount;
+            if (gameState.exp >= gameState.maxExp) {
+                gameState.level += 1;
+                gameState.exp -= gameState.maxExp;
+                gameState.maxExp = Math.floor(gameState.maxExp * 1.3);
+                gameState.energy = gameState.maxEnergy;
+                showDiandianSpeech(`恭喜升级到 LV.${gameState.level}！能量已全额补满！`);
+            }
+            updateUI();
+        }
+
+        function addCoins(amount) {
+            gameState.coins += amount;
+            updateUI();
+        }
+
+        function updateUI() {
+            document.getElementById('player-level').innerText = gameState.level;
+            document.getElementById('exp-bar').style.width = `${(gameState.exp / gameState.maxExp) * 100}%`;
+            document.getElementById('energy-count').innerText = gameState.energy;
+            document.getElementById('coin-count').innerText = gameState.coins;
+            updateGoalProgress();
+        }
+
+        function updateGoalProgress() {
+            const config = getStageConfig();
+            const orderGoal = Math.min(gameState.stageCompletedOrders, config.orderGoal);
+            const handbookGoal = Math.min(gameState.unlockedItems.size, config.handbookGoal);
+            const progress = ((orderGoal / config.orderGoal) + (handbookGoal / config.handbookGoal)) / 2;
+            document.getElementById('goal-text').innerText = `第${gameState.stage}/${STAGE_CONFIGS.length}关：订单 ${orderGoal}/${config.orderGoal} · 图鉴 ${handbookGoal}/${config.handbookGoal}`;
+            document.getElementById('goal-progress').style.width = `${progress * 100}%`;
+
+            const signature = `${gameState.stage}-${orderGoal}-${handbookGoal}`;
+            if (signature !== gameState.lastProgressSignature) {
+                gameState.lastProgressSignature = signature;
+                reportProgress(false);
+            }
+
+            if (orderGoal >= config.orderGoal && handbookGoal >= config.handbookGoal && !gameState.isStageComplete) {
+                gameState.isStageComplete = true;
+                const isFinalStage = gameState.stage >= STAGE_CONFIGS.length;
+                gameState.isCompleted = isFinalStage;
+                bgm.pause();
+                sound.playMerge();
+                reportProgress(isFinalStage);
+                document.getElementById('stage-result-title').innerText = isFinalStage ? 'AI知识梦工坊毕业！' : `第${gameState.stage}关挑战完成！`;
+                document.getElementById('stage-result-desc').innerText = isFinalStage
+                    ? '你完成了全部5关研学订单，并点亮了高级AI知识产物，正式从梦工坊毕业！'
+                    : `已完成本关目标。下一关将增加订单、图鉴与噪声压力，准备继续挑战！`;
+                document.getElementById('btn-next-stage').innerHTML = isFinalStage
+                    ? '<i class="fa-solid fa-rotate-right mr-2"></i>重新挑战全部关卡'
+                    : '<i class="fa-solid fa-arrow-right mr-2"></i>进入下一关';
+                const modal = document.getElementById('victory-modal');
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+            }
+        }
+
+        function showDiandianSpeech(text) {
+            const el = document.getElementById('diandian-speech');
+            el.innerText = text;
+        }
+
+        function advanceToNextStage() {
+            if (gameState.stage >= STAGE_CONFIGS.length) {
+                location.reload();
+                return;
+            }
+
+            const modal = document.getElementById('victory-modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            gameState.stage += 1;
+            gameState.stageCompletedOrders = 0;
+            gameState.isStageComplete = false;
+            gameState.isCompleted = false;
+            gameState.noiseElapsed = 0;
+            gameState.lastProgressSignature = '';
+            gameState.combo = 0;
+            selectedIndex = null;
+
+            const config = getStageConfig();
+            gameState.energy = config.energy;
+            gameState.coins = config.coins;
+            setupInitialBoard();
+            generateOrders();
+            applyStageHeader();
+            renderBoard();
+            renderOrders();
+            updateUI();
+            startBgm();
+            showDiandianSpeech(`进入第${gameState.stage}关【${config.name}】！订单更多、时间更紧，数据噪声也会更频繁。`);
+        }
+
+        // 消除噪声按钮
+        document.getElementById('btn-clear-noise').addEventListener('click', () => {
+            const noiseIndices = gameState.board
+                .map((cell, idx) => (cell && cell.isNoise) ? idx : null)
+                .filter(idx => idx !== null);
+
+            if (noiseIndices.length === 0) {
+                showDiandianSpeech("棋盘上没有噪声迷雾啦！");
+                return;
+            }
+
+            if (gameState.coins < 30) {
+                showDiandianSpeech("消除一个噪声需要 30 金币，金币不够啦！");
+                return;
+            }
+
+            gameState.coins -= 30;
+            const targetIdx = noiseIndices[0];
+            gameState.board[targetIdx] = null;
+            sound.playMerge();
+            showDiandianSpeech("成功净化了一块场地，获得了全新的空格子！");
+            updateUI();
+            renderBoard();
+        });
+
+        // 能量补给按钮
+        document.getElementById('btn-boost').addEventListener('click', () => {
+            if (gameState.coins < 50) {
+                showDiandianSpeech("购买 30 能量需要 50 金币哦！");
+                return;
+            }
+            gameState.coins -= 50;
+            gameState.energy = Math.min(gameState.maxEnergy, gameState.energy + 30);
+            sound.playCoin();
+            showDiandianSpeech("能量补给成功！能量 +30");
+            updateUI();
+        });
+
+        // 玩法指南 Modal 逻辑
+        const tutorialModal = document.getElementById('tutorial-modal');
+        
+        function showTutorialModal() {
+            currentTutorialStep = 0;
+            renderTutorialStep();
+            tutorialModal.classList.remove('hidden');
+        }
+
+        function renderTutorialStep() {
+            const step = TUTORIAL_STEPS[currentTutorialStep];
+            const contentEl = document.getElementById('tutorial-content');
+            
+            contentEl.innerHTML = `
+                <div class="flex flex-col items-center text-center p-2">
+                    <div class="sprite-frame w-20 rounded-2xl bg-gradient-to-tr from-ai-purple to-cyan-500 flex items-center justify-center shadow-lg mb-3">
+                        <span class="game-sprite ${step.sprite}" role="img" aria-label="${step.title}"></span>
+                    </div>
+                    <h4 class="text-sm font-bold text-white mb-1.5">${step.title}</h4>
+                    <p class="text-xs text-slate-300 leading-relaxed">${step.desc}</p>
+                </div>
+            `;
+
+            const dotsEl = document.getElementById('tutorial-dots');
+            dotsEl.innerHTML = TUTORIAL_STEPS.map((_, idx) => `
+                <div class="w-2 h-2 rounded-full ${idx === currentTutorialStep ? 'bg-cyan-400 w-4' : 'bg-slate-700'} transition-all"></div>
+            `).join('');
+
+            document.getElementById('btn-tutorial-prev').disabled = (currentTutorialStep === 0);
+            const nextBtn = document.getElementById('btn-tutorial-next');
+            const isLastStep = currentTutorialStep === TUTORIAL_STEPS.length - 1;
+            document.getElementById('tutorial-next-label').innerText = isLastStep ? '开始探险' : '下一步';
+            document.getElementById('tutorial-next-icon').className = isLastStep ? 'fa-solid fa-play mr-1' : 'fa-solid fa-arrow-right mr-1';
+        }
+
+        document.getElementById('btn-tutorial').addEventListener('click', showTutorialModal);
+        document.getElementById('btn-sound').addEventListener('click', () => {
+            sound.enabled = !sound.enabled;
+            if (sound.enabled) startBgm(); else bgm.pause();
+            document.getElementById('sound-icon').className = sound.enabled ? 'fa-solid fa-volume-high text-xs sm:text-sm' : 'fa-solid fa-volume-xmark text-xs sm:text-sm text-rose-400';
+            document.getElementById('sound-label').innerText = sound.enabled ? '声音' : '静音';
+        });
+        document.getElementById('close-tutorial').addEventListener('click', closeTutorial);
+        document.getElementById('tutorial-bg').addEventListener('click', closeTutorial);
+
+        function closeTutorial() {
+            tutorialModal.classList.add('hidden');
+            localStorage.setItem('diandian_tutorial_done', 'true');
+        }
+
+        document.getElementById('btn-tutorial-prev').addEventListener('click', () => {
+            if (currentTutorialStep > 0) {
+                currentTutorialStep--;
+                renderTutorialStep();
+            }
+        });
+
+        document.getElementById('btn-tutorial-next').addEventListener('click', () => {
+            if (currentTutorialStep < TUTORIAL_STEPS.length - 1) {
+                currentTutorialStep++;
+                renderTutorialStep();
+            } else {
+                closeTutorial();
+            }
+        });
+
+        // AI启蒙图鉴 Modal 逻辑
+        const handbookModal = document.getElementById('handbook-modal');
+        document.getElementById('btn-handbook').addEventListener('click', () => {
+            renderHandbook();
+            handbookModal.classList.remove('hidden');
+        });
+
+        document.getElementById('close-handbook').addEventListener('click', () => {
+            handbookModal.classList.add('hidden');
+        });
+        document.getElementById('handbook-bg').addEventListener('click', () => {
+            handbookModal.classList.add('hidden');
+        });
+
+        function renderHandbook() {
+            const container = document.getElementById('handbook-grid');
+            container.innerHTML = '';
+            let totalUnlocked = 0;
+
+            CHAINS.forEach(chain => {
+                const chainSec = document.createElement('div');
+                chainSec.className = 'bg-slate-900/60 border border-slate-800 rounded-xl p-2.5';
+
+                let cardsHTML = '';
+                chain.items.forEach(item => {
+                    const itemId = `${chain.id}_${item.level}`;
+                    const isUnlocked = gameState.unlockedItems.has(itemId);
+                    if (isUnlocked) totalUnlocked++;
+
+                    cardsHTML += `
+                        <div class="flex items-start space-x-2.5 p-1.5 rounded-lg ${isUnlocked ? 'bg-slate-800/80 border border-purple-500/20' : 'bg-slate-950/40 opacity-50'}">
+                            <div class="sprite-frame w-14 rounded-lg bg-slate-900 flex items-center justify-center flex-shrink-0 border border-slate-700">
+                                ${isUnlocked ? `<span class="game-sprite ${item.sprite}" role="img" aria-label="${item.name}"></span>` : '<i class="fa-solid fa-lock text-slate-500"></i>'}
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <div class="flex items-center justify-between">
+                                    <h4 class="text-xs font-bold ${isUnlocked ? 'text-white' : 'text-slate-500'}">${isUnlocked ? item.name : '未解锁'}</h4>
+                                    <span class="text-[8px] font-bold px-1 py-0.2 rounded bg-slate-900 text-purple-400">Lv.${item.level}</span>
+                                </div>
+                                <p class="text-[9px] text-cyan-300 font-bold mt-0.5 truncate">${isUnlocked ? item.lesson : '？？？'}</p>
+                                <p class="text-[9px] text-slate-400 mt-0.5 line-clamp-2 leading-tight">${isUnlocked ? item.desc : '通过合成解锁知识卡片'}</p>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                chainSec.innerHTML = `
+                    <h3 class="text-xs font-bold text-purple-300 mb-1.5 flex items-center">
+                        <i class="fa-solid fa-layer-group mr-1 text-ai-pink"></i>${chain.name}
+                    </h3>
+                    <div class="space-y-1.5">${cardsHTML}</div>
+                `;
+
+                container.appendChild(chainSec);
+            });
+
+            document.getElementById('handbook-progress').innerText = `${totalUnlocked} / 20`;
+        }
+
+        // 知识卡片 Modal 逻辑
+        const itemInfoModal = document.getElementById('item-info-modal');
+
+        function showItemInfoModal(chainObj, itemObj) {
+            const modalIcon = document.getElementById('modal-item-icon');
+            modalIcon.className = `game-sprite ${itemObj.sprite}`;
+            modalIcon.setAttribute('aria-label', itemObj.name);
+            document.getElementById('modal-item-chain').innerText = chainObj.name;
+            document.getElementById('modal-item-name').innerText = itemObj.name;
+            document.getElementById('modal-item-level').innerText = `等级 ${itemObj.level} 知识产物`;
+            document.getElementById('modal-lesson-title').innerText = itemObj.lesson;
+            document.getElementById('modal-lesson-desc').innerText = itemObj.desc;
+
+            itemInfoModal.classList.remove('hidden');
+        }
+
+        document.getElementById('close-item-info').addEventListener('click', () => {
+            itemInfoModal.classList.add('hidden');
+        });
+        document.getElementById('btn-modal-confirm').addEventListener('click', () => {
+            itemInfoModal.classList.add('hidden');
+        });
+        document.getElementById('item-info-bg').addEventListener('click', () => {
+            itemInfoModal.classList.add('hidden');
+        });
+
+        document.getElementById('btn-next-stage').addEventListener('click', advanceToNextStage);
+        document.body.addEventListener('pointerdown', startBgm, { once: true });
+
+        // 页面加载启动
+        window.onload = () => {
+            initGame();
+        };
+    </script>
+</body>
+</html>
