@@ -1,0 +1,21 @@
+AI人工智能启蒙通识课程——账号服务（宝塔专用）
+
+本压缩包解压后，package.json、server.mjs、start-baota.mjs 和 public 文件夹必须位于同一级目录。
+
+推荐服务器目录：
+/www/wwwroot/aibook-account-server
+
+账号数据目录：
+/www/wwwroot/aibook-account-data
+
+宝塔添加Node项目时填写：
+项目目录：/www/wwwroot/aibook-account-server
+项目名称：AIBook账号服务
+启动选项：start
+Node版本：20或22
+包管理器：npm
+运行用户：www
+
+不需要安装node_modules，不需要填写自定义启动命令，不需要配置数据库。
+
+程序默认监听127.0.0.1:4181，账号数据默认写入/www/wwwroot/aibook-account-data。

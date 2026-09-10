@@ -1,5 +1,11 @@
 node_modules/
 dist/
+.cache/
+dist-*/
+output/
+release/
+account-server/data/*
+!account-server/data/.gitkeep
 .DS_Store
 *.local
 .env

@@ -37,7 +37,7 @@ await cp(publicRoot, outputRoot, {
 
 await writeFile(
   path.join(outputRoot, '部署说明.txt'),
-  `AI启蒙绘本 Web 发布包\n\n发布目录：/AIBook/\n\n部署方法：\n1. 在网站根目录创建 AIBook 文件夹。\n2. 将本发布包内的全部文件和文件夹上传到 AIBook 文件夹内。\n3. 发布后访问：https://你的域名/AIBook/\n\n服务器要求：\n- 支持 MP4 的 Range 分段请求。\n- MP4 返回 Content-Type: video/mp4。\n- 建议为图片、音频、视频设置浏览器缓存。\n- 请勿遗漏 assets/videos、assets/sounds 和 assets/games 目录。\n`,
+  `AI人工智能启蒙通识课程 Web 发布包\n\n网站发布目录：/AIBook/\n\n部署方法：\n1. 在网站根目录创建 AIBook 文件夹。\n2. 将本发布包内的全部文件和文件夹上传到 AIBook 文件夹内。\n3. 部署 account-server，并将 /AIBook/api/ 与 /AIBook/admin 反向代理到账号服务。\n4. 发布后访问：https://你的域名/AIBook/\n\n服务器要求：\n- 全站使用 HTTPS。\n- 支持 MP4 的 Range 分段请求。\n- MP4 返回 Content-Type: video/mp4。\n- 建议为图片、音频、视频设置浏览器缓存。\n- 请勿遗漏 assets/videos、assets/sounds 和 assets/games 目录。\n- 不要将现有 account-server/data 账号数据放入公开网站目录。\n`,
   'utf8',
 );
 

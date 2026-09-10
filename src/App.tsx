@@ -6,6 +6,9 @@ import CinemaPage from './sections/CinemaPage';
 import GamePage from './sections/GamePage';
 import ArchivePage from './sections/ArchivePage';
 import AppErrorBoundary from './components/AppErrorBoundary';
+import LoginPage from './sections/LoginPage';
+import { useAuth } from './auth/useAuth';
+import { LockKeyhole, LogOut, UserRound } from 'lucide-react';
 import './App.css';
 
 export type TabType = 'home' | 'cinema' | 'game' | 'archive';
@@ -70,6 +73,8 @@ export default function App() {
   const [currentTab, setCurrentTab] = useState<TabType>(initialRoute.tab);
   const [currentCourseId, setCurrentCourseId] = useState<number | null>(initialRoute.courseId);
   const { scale, offset, compact } = useAppScale();
+  const { user, loading, login, logout, canAccessCourse } = useAuth();
+  const [accessNotice, setAccessNotice] = useState<number | null>(null);
 
   useEffect(() => {
     const route = window.location.hash.replace(/^#\/?/, '');
@@ -77,6 +82,18 @@ export default function App() {
       window.history.replaceState(null, '', `${window.location.pathname}${window.location.search}#/home`);
     }
   }, []);
+
+  useEffect(() => {
+    if (!user || currentCourseId === null || canAccessCourse(currentCourseId)) return;
+    const blockedCourseId = currentCourseId;
+    const redirectTimer = window.setTimeout(() => {
+      setAccessNotice(blockedCourseId);
+      setCurrentCourseId(null);
+      setCurrentTab('home');
+      window.history.replaceState(null, '', `${window.location.pathname}${window.location.search}#/home`);
+    }, 0);
+    return () => window.clearTimeout(redirectTimer);
+  }, [user, currentCourseId, canAccessCourse]);
 
   useEffect(() => {
     const restoreRoute = () => {
@@ -119,6 +136,10 @@ export default function App() {
   }, []);
 
   const handleSelectCourse = (id: number) => {
+    if (!canAccessCourse(id)) {
+      setAccessNotice(id);
+      return;
+    }
     pushRoute(`course/${id}`);
     setCurrentCourseId(id);
   };
@@ -141,17 +162,23 @@ export default function App() {
     }
     switch (currentTab) {
       case 'home':
-        return <HomePage onSelectCourse={handleSelectCourse} />;
+        return <HomePage onSelectCourse={handleSelectCourse} canAccessCourse={canAccessCourse} onLockedCourse={setAccessNotice} />;
       case 'cinema':
-        return <CinemaPage />;
+        return <CinemaPage trialMode={user?.accountType === 'trial'} />;
       case 'game':
-        return <GamePage />;
+        return <GamePage trialMode={user?.accountType === 'trial'} />;
       case 'archive':
         return <ArchivePage onSelectCourse={handleSelectCourse} />;
       default:
-        return <HomePage onSelectCourse={handleSelectCourse} />;
+        return <HomePage onSelectCourse={handleSelectCourse} canAccessCourse={canAccessCourse} onLockedCourse={setAccessNotice} />;
     }
   };
+
+  if (loading) {
+    return <div className="auth-loading"><div className="auth-loading-mark">AI</div><span>正在连接课程服务…</span></div>;
+  }
+
+  if (!user) return <LoginPage onLogin={login} />;
 
   return (
     <div className={`fixed inset-0 overflow-hidden app-shell ${compact ? 'is-compact' : ''}`} style={{ backgroundColor: '#b8d4f0' }}>
@@ -183,6 +210,12 @@ export default function App() {
           }}
         />
 
+        <div className="account-chip">
+          <div className="account-avatar"><UserRound size={20} /></div>
+          <div className="account-copy"><strong>{user.displayName}</strong><span>{user.accountType === 'trial' ? '试用账号' : '正式账号'}</span></div>
+          <button onClick={() => void logout()} title="退出登录"><LogOut size={19} /><span>退出</span></button>
+        </div>
+
         {/* 主内容区 */}
         <div
           className="relative z-10 overflow-y-auto overflow-x-hidden scrollbar-kid app-content"
@@ -200,6 +233,17 @@ export default function App() {
         >
           <BottomNav currentTab={currentTab} onTabChange={handleTabChange} />
         </div>
+
+        {accessNotice !== null && (
+          <div className="access-notice" role="dialog" aria-modal="true">
+            <div>
+              <span className="access-notice-icon"><LockKeyhole size={30} /></span>
+              <h3>第 {accessNotice} 课暂未开放</h3>
+              <p>当前为试用账号，可体验第 1、5、10、31 课。开通正式账号后即可学习全部课程。</p>
+              <button onClick={() => setAccessNotice(null)}>我知道了</button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

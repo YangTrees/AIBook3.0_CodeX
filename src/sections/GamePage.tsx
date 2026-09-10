@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import COURSE_DATA from '../data/courseData.ts';
 import { useStorage } from '../hooks/useStorage';
-import { Gamepad2, RotateCcw, CircleCheck, Rocket, Shield, Sparkles, Target, Clock3, Castle, Building2, Combine } from 'lucide-react';
+import { Gamepad2, RotateCcw, CircleCheck, Rocket, Shield, Sparkles, Target, Clock3, Castle, Building2, Combine, LockKeyhole } from 'lucide-react';
 
 type GameEntry = {
   id: string;
@@ -81,7 +81,7 @@ const FEATURED_GAMES: GameEntry[] = [
   },
 ];
 
-export default function GamePage() {
+export default function GamePage({ trialMode }: { trialMode: boolean }) {
   const [playingGame, setPlayingGame] = useState<GameEntry | null>(null);
   const [showConfetti, setShowConfetti] = useState(false);
   const [gameFrameKey, setGameFrameKey] = useState(0);
@@ -140,6 +140,7 @@ export default function GamePage() {
   };
 
   const handlePlayGame = (game: GameEntry) => {
+    if (trialMode && game.kind === 'course') return;
     setPlayingGame(game);
     setGameFrameKey(value => value + 1);
   };
@@ -237,6 +238,10 @@ export default function GamePage() {
         <p style={{ margin: '5px 0 0', color: 'var(--kid-gray-400)', fontSize: 14 }}>按课程顺序练习，每课都有专属知识小游戏</p>
       </div>
 
+      {trialMode && (
+        <div className="trial-lock-banner"><LockKeyhole size={22} /><div><strong>试用账号可玩上方六个精选挑战</strong><span>32个课程专属游戏将在开通正式账号后解锁。</span></div></div>
+      )}
+
       {/* 游戏网格 */}
       <div className="media-card-grid" style={{
         display: 'grid',
@@ -256,7 +261,7 @@ export default function GamePage() {
                 borderRadius: 24,
                 overflow: 'hidden',
                 boxShadow: '0 4px 16px rgba(0,0,0,0.08)',
-                cursor: 'pointer',
+                cursor: trialMode ? 'not-allowed' : 'pointer',
                 transition: 'all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)',
                 border: '2px solid var(--kid-gray-100)',
                 position: 'relative',
@@ -336,6 +341,9 @@ export default function GamePage() {
                   }}>
                     ✓
                   </div>
+                )}
+                {trialMode && (
+                  <div className="media-lock-overlay"><span><LockKeyhole size={26} />正式账号开放</span></div>
                 )}
               </div>
 

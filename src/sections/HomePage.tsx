@@ -1,11 +1,13 @@
 import { Fragment } from 'react';
 import COURSE_DATA from '../data/courseData.ts';
 import { COURSE_CHAPTERS } from '../data/courseChapters';
-import { BookOpen, Target, Brain, Layers, Gamepad2, Award, PlayCircle, CheckCircle2, Flame } from 'lucide-react';
+import { BookOpen, Target, Brain, Layers, Gamepad2, Award, PlayCircle, CheckCircle2, Flame, LockKeyhole } from 'lucide-react';
 import { useStorage } from '../hooks/useStorage';
 
 interface HomePageProps {
   onSelectCourse: (id: number) => void;
+  canAccessCourse: (id: number) => boolean;
+  onLockedCourse: (id: number) => void;
 }
 
 /* 模块颜色映射 */
@@ -25,10 +27,11 @@ function getModuleShort(module: string) {
   return module.replace(/模块[A-Z]｜/, '').replace(/模块[A-Z]\|/, '');
 }
 
-export default function HomePage({ onSelectCourse }: HomePageProps) {
+export default function HomePage({ onSelectCourse, canAccessCourse, onLockedCourse }: HomePageProps) {
   const { storage, getStats } = useStorage();
   const stats = getStats();
-  const currentCourse = COURSE_DATA.find(course => course.id === storage.currentLessonId);
+  const savedCourse = COURSE_DATA.find(course => course.id === storage.currentLessonId);
+  const currentCourse = savedCourse && canAccessCourse(savedCourse.id) ? savedCourse : COURSE_DATA.find(course => canAccessCourse(course.id));
   const currentRecord = currentCourse ? storage.lessons[currentCourse.id] : undefined;
 
   return (
@@ -261,6 +264,7 @@ export default function HomePage({ onSelectCourse }: HomePageProps) {
           const chapter = COURSE_CHAPTERS[chapterIndex];
           const chapterCourses = COURSE_DATA.slice(chapterIndex * 8, chapterIndex * 8 + 8);
           const chapterCompleted = chapterCourses.filter(item => storage.lessons[item.id]?.completed).length;
+          const isLocked = !canAccessCourse(course.id);
           return (
             <Fragment key={course.id}>
             {idx % 8 === 0 && (
@@ -274,7 +278,8 @@ export default function HomePage({ onSelectCourse }: HomePageProps) {
             )}
             <button
               key={course.id}
-              onClick={() => onSelectCourse(course.id)}
+              onClick={() => isLocked ? onLockedCourse(course.id) : onSelectCourse(course.id)}
+              aria-label={isLocked ? `第${course.id}课未开放` : `学习第${course.id}课`}
               className="kid-course-card"
               style={{
                 textAlign: 'left',
@@ -341,13 +346,17 @@ export default function HomePage({ onSelectCourse }: HomePageProps) {
                     background: `linear-gradient(transparent 45%, ${mc.dot}cc 100%)`,
                     display: 'flex', alignItems: 'flex-end', justifyContent: 'center',
                     paddingBottom: 12,
-                    opacity: 0,
+                    opacity: isLocked ? 1 : 0,
                     transition: 'opacity 0.25s ease',
                   }}
                   onMouseEnter={(e) => { (e.currentTarget as HTMLDivElement).style.opacity = '1'; }}
-                  onMouseLeave={(e) => { (e.currentTarget as HTMLDivElement).style.opacity = '0'; }}
+                  onMouseLeave={(e) => { (e.currentTarget as HTMLDivElement).style.opacity = isLocked ? '1' : '0'; }}
                 >
-                  <span style={{ color: '#fff', fontSize: 13, fontWeight: 800 }}>点击开始学习 →</span>
+                  {isLocked ? (
+                    <span style={{ color: '#fff', fontSize: 13, fontWeight: 800, display: 'flex', alignItems: 'center', gap: 6, padding: '8px 12px', borderRadius: 999, background: 'rgba(20,34,54,.82)' }}><LockKeyhole size={16} /> 正式账号开放</span>
+                  ) : (
+                    <span style={{ color: '#fff', fontSize: 13, fontWeight: 800 }}>点击开始学习 →</span>
+                  )}
                 </div>
               </div>
 

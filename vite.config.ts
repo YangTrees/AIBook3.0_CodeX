@@ -9,6 +9,14 @@ export default defineConfig({
     reportCompressedSize: false,
     copyPublicDir: process.env.AIBOOK_SKIP_PUBLIC_COPY !== '1',
   },
+  server: {
+    proxy: {
+      '/api': {
+        target: 'http://127.0.0.1:4181',
+        changeOrigin: true,
+      },
+    },
+  },
   plugins: [react()],
   resolve: {
     alias: {

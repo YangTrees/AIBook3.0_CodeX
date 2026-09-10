@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI课程账号管理平台</title>
+  <link rel="stylesheet" href="./admin/admin.css" />
+  <style>[hidden]{display:none!important}.message:popover-open{border:0;margin:0;inset:auto auto auto 50%;top:20px}</style>
+</head>
+<body>
+  <div id="message" class="message" popover="manual"></div>
+  <main id="loginView" class="login-shell">
+    <form id="loginForm" class="panel login-panel">
+      <div class="brand-mark">AI</div><h1>课程账号管理平台</h1><p>管理员登录后可开通、调整和停用学习账号。</p>
+      <label>管理员账号<input name="username" value="admin" autocomplete="username" required /></label>
+      <label>密码<input name="password" type="password" autocomplete="current-password" required /></label>
+      <button type="submit">登录后台</button>
+    </form>
+  </main>
+  <main id="dashboardView" class="dashboard" hidden>
+    <header><div><div class="brand-mark small">AI</div><div><h1>账号管理</h1><p>AI人工智能启蒙通识课程</p></div></div><button id="logoutButton" class="ghost">退出登录</button></header>
+    <section class="stats"><article><span>全部账号</span><strong id="totalStat">0</strong></article><article><span>正式账号</span><strong id="fullStat">0</strong></article><article><span>试用账号</span><strong id="trialStat">0</strong></article><article><span>已停用</span><strong id="disabledStat">0</strong></article></section>
+    <section class="workspace">
+      <div class="toolbar"><div><h2>学习账号</h2><p>试用账号开放第 1、5、10、31 课；正式账号开放全部课程。</p></div><button id="createButton">＋ 新建账号</button></div>
+      <div class="filters"><input id="searchInput" placeholder="搜索账号或使用者名称" /><select id="typeFilter"><option value="all">全部类型</option><option value="trial">试用账号</option><option value="full">正式账号</option><option value="disabled">已停用</option></select></div>
+      <div class="table-wrap"><table><thead><tr><th>账号</th><th>类型</th><th>状态</th><th>最近登录</th><th>登录次数</th><th>备注</th><th>操作</th></tr></thead><tbody id="userRows"></tbody></table></div><div id="emptyState" class="empty" hidden>没有符合条件的账号</div>
+    </section>
+  </main>
+  <dialog id="accountDialog"><form id="accountForm" method="dialog"><div class="dialog-head"><div><h2>新建学习账号</h2><p>创建后即可把账号和密码发送给客户。</p></div><button type="button" class="icon-button" data-close>×</button></div><label>登录账号<input name="username" placeholder="例如：sunshine01" required pattern="[a-zA-Z0-9_.-]{3,32}" /></label><label>使用者名称<input name="displayName" placeholder="例如：阳光幼儿园" required /></label><label>初始密码<input name="password" type="text" minlength="8" placeholder="至少8位" required /></label><label>账号类型<select name="accountType"><option value="trial">试用账号</option><option value="full">正式账号</option></select></label><label>备注<textarea name="note" placeholder="联系人、订单或到期说明等"></textarea></label><div class="dialog-actions"><button type="button" class="ghost" data-close>取消</button><button type="submit">创建账号</button></div></form></dialog>
+  <dialog id="passwordDialog"><form id="passwordForm" method="dialog"><div class="dialog-head"><div><h2>重置密码</h2><p id="passwordTarget"></p></div><button type="button" class="icon-button" data-close>×</button></div><input type="hidden" name="userId" /><label>新密码<input name="password" type="text" minlength="8" required /></label><div class="dialog-actions"><button type="button" class="ghost" data-close>取消</button><button type="submit">确认重置</button></div></form></dialog>
+  <script src="./admin/admin.js"></script>
+</body>
+</html>

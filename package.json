@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "account-server": "node account-server/server.mjs",
     "build": "tsc -b && vite build",
     "build:web": "tsc -b && node scripts/build-web.mjs",
     "lint": "eslint .",

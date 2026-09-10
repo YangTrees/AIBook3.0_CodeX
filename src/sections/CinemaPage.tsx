@@ -2,7 +2,7 @@ import { useState, useRef, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import COURSE_DATA from '../data/courseData.ts';
 import { useStorage } from '../hooks/useStorage';
-import { BookOpen, Blocks, Clapperboard } from 'lucide-react';
+import { BookOpen, Blocks, Clapperboard, LockKeyhole } from 'lucide-react';
 
 type ZoneType = 'picturebook' | 'hands-on';
 
@@ -49,7 +49,7 @@ function generateVideoList(): VideoItem[] {
   return videos;
 }
 
-export default function CinemaPage() {
+export default function CinemaPage({ trialMode }: { trialMode: boolean }) {
   const [activeZone, setActiveZone] = useState<ZoneType>('picturebook');
   const [playingVideo, setPlayingVideo] = useState<VideoItem | null>(null);
   const { storage, updateVideoProgress } = useStorage();
@@ -65,6 +65,7 @@ export default function CinemaPage() {
   const filteredVideos = allVideos.filter(v => v.zone === activeZone);
 
   const handleVideoClick = (video: VideoItem) => {
+    if (trialMode) return;
     setPlayingVideo(video);
   };
 
@@ -107,6 +108,9 @@ export default function CinemaPage() {
       </div>
 
       {/* 视频区域Tab */}
+      {trialMode && (
+        <div className="trial-lock-banner"><LockKeyhole size={22} /><div><strong>影院为正式账号内容</strong><span>试用期间可前往首页体验指定课程，开通正式账号后可观看全部课程视频。</span></div></div>
+      )}
       <div style={{ display: 'flex', gap: 16, marginBottom: 32 }}>
         {zones.map(zone => (
           <button
@@ -164,7 +168,7 @@ export default function CinemaPage() {
                 borderRadius: 24,
                 overflow: 'hidden',
                 boxShadow: '0 4px 16px rgba(0,0,0,0.08)',
-                cursor: isPlaceholder ? 'default' : 'pointer',
+                cursor: isPlaceholder || trialMode ? 'not-allowed' : 'pointer',
                 transition: 'all 0.2s ease',
                 border: '2px solid var(--kid-gray-100)',
               }}
@@ -243,6 +247,9 @@ export default function CinemaPage() {
                 }}>
                   第{video.lessonId}课
                 </div>
+                {trialMode && (
+                  <div className="media-lock-overlay"><span><LockKeyhole size={26} />正式账号开放</span></div>
+                )}
               </div>
 
               {/* 视频信息 */}
